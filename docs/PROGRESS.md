@@ -518,3 +518,58 @@ cd ui && npm test       # 59 files; 192 passed
 ```
 
 - [x] 301 — Freeze — [`V1.5.md`](V1.5.md) ends **READY** (300 counts; `first_course_sitting`, **Show folder**, Settings shortcuts named; AppImage launch **unproven** → [`PACKAGE.md`](PACKAGE.md)); no release tag.
+
+## Pending plan (prompts 302–351)
+
+Repo: `/home/xingzi/Documents/lessonbinder`. Full text: `~/Documents/auravault-cursor-prompts.md`. Sitting in the app, one AppImage try, a few outline icons, and docs for Windows, macOS, and signing. Commit on 302 when dirty, then every even prompt through 350, and on 351.
+
+- [x] 302 — Clean tree — **clean** on `origin/master` for v1.5 freeze (`ebf3b5a`); no empty commit. Local `PROGRESS.md` **302–351** section tracks the pending plan (not the freeze commit).
+- [x] 303 — Sitting script — [`docs/SITTING-RUN.md`](SITTING-RUN.md): import, resume, note, subtitle-cue card, review, theme, quit, relaunch, Continue; fixture `/tmp/lessonbinder-sitting`.
+- [x] 304 — Fixture — `/tmp/lessonbinder-sitting`: `intro.mp4` + `intro.srt` (two cues), `notes.md`, `extra.mp4` + `.lessonbinderignore` (ffmpeg on PATH); fixture not committed.
+- [ ] 305 — Import in the app
+- [ ] 306 — Resume in the app
+- [ ] 307 — Note in the app
+- [ ] 308 — One card in the app
+- [ ] 309 — Review in the app
+- [ ] 310 — Theme in the app
+- [ ] 311 — Quit and relaunch
+- [ ] 312 — Sitting page
+- [ ] 313 — patchelf again
+- [ ] 314 — Bundle once
+- [ ] 315 — Launch the image
+- [ ] 316 — Install stays true
+- [ ] 317 — Image identity
+- [ ] 318 — Fonts in the image build
+- [ ] 319 — Which icons
+- [ ] 320 — Copy the outlines
+- [ ] 321 — Show folder icon
+- [ ] 322 — Search icon
+- [ ] 323 — Settings icon
+- [ ] 324 — Reader and list
+- [ ] 325 — Names survive the icons
+- [ ] 326 — Icons are local
+- [ ] 327 — Other operating systems
+- [ ] 328 — Commands for those machines
+- [ ] 329 — Linux target stays
+- [ ] 330 — Signing stays off
+- [ ] 331 — Deslop
+- [ ] 332 — Doctor
+- [ ] 333 — README
+- [ ] 334 — Scope
+- [ ] 335 — Checklist
+- [ ] 336 — Tests
+- [ ] 337 — Cancel still works
+- [ ] 338 — Show folder still opens the root
+- [ ] 339 — Shortcuts still match
+- [ ] 340 — Backup
+- [ ] 341 — Note and card boundaries
+- [ ] 342 — OCR still local
+- [ ] 343 — No extra kit files
+- [ ] 344 — Human rows that failed
+- [ ] 345 — Typecheck
+- [ ] 346 — Lint
+- [ ] 347 — Unsigned
+- [ ] 348 — Icons paragraph
+- [ ] 349 — Checklist evidence
+- [ ] 350 — Tests before freeze
+- [ ] 351 — Freeze
