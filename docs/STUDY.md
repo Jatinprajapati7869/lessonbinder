@@ -1,5 +1,7 @@
 # Study and review
 
+**In-app review is the default.** **Anki Desktop** is an optional fallback when you choose **Open in Anki Desktop**—you do not need Anki Desktop installed to use **Study**.
+
 Lessonbinder tracks **due counts** in-process via `anki-bridge` (`due_summary()` on the Lessonbinder Anki collection). **Default study** is the in-app **Review** screen (`next_review_card`, `answer_card`, `note_study_text`, `read_media`).
 
 ## Flow

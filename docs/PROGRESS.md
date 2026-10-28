@@ -427,8 +427,8 @@ cd ui && npm test       # 55 files; 175 passed
 npm run typecheck       # ok
 ```
 
-- [ ] 243 — Study doc
-- [ ] 244 — Pin path
+- [x] 243 — Study doc — [`docs/STUDY.md`](STUDY.md): in-app default, Anki Desktop fallback; no “install Anki before Study” requirement; scheduler wording unchanged.
+- [x] 244 — Pin path — [`docs/ANKI_PIN.md`](ANKI_PIN.md) matches `crates/anki-bridge/Cargo.toml` path deps; documents unpublished crates; no vendoring.
 - [ ] 245 — Command failures
 - [ ] 246 — Continue after relaunch
 - [ ] 247 — No network font in the image
