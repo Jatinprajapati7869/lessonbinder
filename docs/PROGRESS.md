@@ -509,6 +509,12 @@ cd ui && npm test       # 59 files; 192 passed
 - [x] 296 — Unsigned — [`PACKAGE.md`](PACKAGE.md) **Bundle identity** + prompt **248** paragraph: **unsigned**, `createUpdaterArtifacts` **false**, `version` **0.0.0**; **not published** from this repo.
 - [x] 297 — Typecheck — `npm run typecheck` (`tsc -p ui/tsconfig.json --noEmit`): **pass**.
 - [x] 298 — Lint — `npm run lint` (`eslint .`): **pass**; no fixes in pack-touched files.
-- [ ] 299 — First course page
-- [ ] 300 — Tests before freeze
+- [x] 299 — First course page — [`FIRST-COURSE.md`](FIRST-COURSE.md) links [`SITTING.md`](SITTING.md) (intro + Related); **Do not check those rows pass** for human-only steps.
+- [x] 300 — Tests before freeze — `cargo test --workspace`: **241 passed** (77 suites); `cd ui && npm test`: **192 passed** (59 files).
+
+```bash
+cargo test --workspace   # 241 passed (77 suites); 0 failed
+cd ui && npm test       # 59 files; 192 passed
+```
+
 - [ ] 301 — Freeze
