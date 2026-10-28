@@ -416,8 +416,17 @@ Share: https://react.doctor/share?p=ui&s=64&w=34&f=16
 
 - [x] 239 — README — cancel import + one scan at a time; **Install** from 220 unchanged; no published release / Windows / macOS claims.
 - [x] 240 — Scope — [`docs/SCOPE-v1.4.md`](SCOPE-v1.4.md): cancellable import/rescan, scan count, empty-folder refusal, AppImage attempt, profile-in-use sentence; out-of-scope table unchanged on accounts/cloud/kits/signing/auto-done.
-- [ ] 241 — Checklist
-- [ ] 242 — Tests
+- [x] 241 — Checklist — [`docs/V1.4.md`](V1.4.md) from [`SCOPE-v1.4.md`](SCOPE-v1.4.md): 28 pass / 1 unproven (mid-row cancel granularity).
+- [x] 242 — Tests — `cargo test --workspace`: **232 passed** (74 suites); `cd ui && npm test`: **175 passed** (55 files); `npm run typecheck`: **pass**.
+
+**Prompt 242 — verification (2026-10-28):**
+
+```bash
+cargo test --workspace   # 232 passed (74 suites); 0 failed
+cd ui && npm test       # 55 files; 175 passed
+npm run typecheck       # ok
+```
+
 - [ ] 243 — Study doc
 - [ ] 244 — Pin path
 - [ ] 245 — Command failures
