@@ -137,7 +137,7 @@ This repository does **not** automate publishing or signing; maintainers are res
 
 ## Code signing
 
-Not configured. Tauri bundle settings do not enable macOS notarization or Windows Authenticode. Linux AppImages from this project are unsigned.
+Not configured. Linux AppImages from this project are unsigned.
 
 ## AppImage smoke test (post-build)
 

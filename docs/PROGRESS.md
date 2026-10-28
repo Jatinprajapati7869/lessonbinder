@@ -491,8 +491,8 @@ cd ui && npm test       # 59 files; 192 passed
 npm run typecheck       # tsc -p ui/tsconfig.json --noEmit; pass
 ```
 
-- [ ] 287 — Icons stay waiting
-- [ ] 288 — No other platforms
+- [x] 287 — Icons stay waiting — [`SCOPE-v1.5.md`](SCOPE-v1.5.md) out-of-scope + UI kits paragraph: FlutKit/ProKit **icons** unused; only kit files in app are four **Google Sans** + **Andina** `.ttf` under `ui/src/theme/fonts/` (no icons copied).
+- [x] 288 — No other platforms — [`README.md`](../README.md) + [`PACKAGE.md`](PACKAGE.md): Linux-only bundling copy; removed macOS/Windows/signing name-drops that read like platform claims.
 - [ ] 289 — Note and search
 - [ ] 290 — Backup
 - [ ] 291 — Profile lock

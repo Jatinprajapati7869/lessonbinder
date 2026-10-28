@@ -1,6 +1,6 @@
 # Lessonbinder
 
-Lessonbinder is an offline desktop app (Tauri, React, and TypeScript) for course folders you keep on disk. You import those paths, track lesson progress yourself, and review flashcards in a private Anki collection the app opens in-process through Anki’s Rust library (`rslib`). There is no account or cloud sync. Development and release bundling in this repository target Linux (AppImage via `tauri.conf.json`); it does not claim Windows, macOS, or a signed installer from here.
+Lessonbinder is an offline desktop app (Tauri, React, and TypeScript) for course folders you keep on disk. You import those paths, track lesson progress yourself, and review flashcards in a private Anki collection the app opens in-process through Anki’s Rust library (`rslib`). There is no account or cloud sync. Development and release bundling in this repository target **Linux** AppImage output only (`tauri.conf.json` `bundle.targets`).
 
 ## What it does
 
@@ -40,7 +40,7 @@ Lessonbinder is an offline desktop app (Tauri, React, and TypeScript) for course
 
 ## Install
 
-Build a **Linux AppImage on your own machine** from this repository. Images are **unsigned**; the bundled app version in `tauri.conf.json` is **0.0.0**. Builds are for **local** installation and testing only—not a published or signed release from the project.
+Build a **Linux AppImage on your own machine** from this repository. The bundled app version in `tauri.conf.json` is **0.0.0**. Builds are for **local** installation and testing only—not a published release from the project.
 
 From the repository root, with UI dependencies installed (`npm ci --prefix ui`):
 
