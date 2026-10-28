@@ -1,0 +1,1 @@
+ALTER TABLE progress ADD COLUMN document_position INTEGER NOT NULL DEFAULT 0;

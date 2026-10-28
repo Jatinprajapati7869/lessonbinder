@@ -1,0 +1,53 @@
+/* AuraVault design tokens — sole source of literal colors and font family (docs/DESIGN.md). */
+
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap");
+
+:root {
+  --bg-app: #f4f4f3;
+  --bg-surface: #fafaf9;
+  --bg-elevated: #ffffff;
+  --border: #e5e4e2;
+  --border-strong: #d6d4d1;
+  --text-primary: #1c1917;
+  --text-secondary: #57534e;
+  --text-muted: #78716c;
+  --accent: #0d6e6a;
+  --accent-hover: #0a5c58;
+  --accent-subtle: #e6f2f1;
+  --on-accent: #ffffff;
+  --progress-track: #e7e5e4;
+  --status-broken: #b45309;
+  --status-done: #44403c;
+  --danger: #b91c1c;
+  --focus-ring: #0d6e6a;
+
+  --font-family: "IBM Plex Sans", system-ui, sans-serif;
+  --font-size-root: 16px;
+  --line-height-body: 1.45;
+  --line-height-row: 1.25;
+
+  --text-xs: 0.75rem;
+  --text-sm: 0.8125rem;
+  --text-base: 0.875rem;
+  --text-md: 1rem;
+  --text-lg: 1.125rem;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+
+  --radius-sm: 4px;
+
+  --focus-ring-width: 2px;
+  --focus-ring-offset: 2px;
+
+  --motion-button: 120ms ease-out;
+
+  --shell-nav-width: 11rem;
+  --shell-due-count-min: 3.5rem;
+  --shell-status-max-width: 20rem;
+  --shadow-elevated-bar: 0 1px 0 var(--border);
+}

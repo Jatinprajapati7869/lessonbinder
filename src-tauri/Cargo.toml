@@ -1,0 +1,31 @@
+[package]
+name = "auravault"
+version = "0.0.0"
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+publish = false
+
+[lib]
+name = "auravault_lib"
+crate-type = ["lib", "cdylib", "staticlib"]
+
+[[bin]]
+name = "auravault"
+path = "src/main.rs"
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+anki-bridge = { path = "../crates/anki-bridge" }
+auravault-tauri = { path = "../crates/tauri" }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tauri = { version = "2", features = [] }
+tauri-plugin-dialog = "2"
+vault-core = { path = "../crates/vault-core" }
+uuid = { version = "1.11", features = ["v4"] }
+
+[dev-dependencies]
+tempfile = "3.14"

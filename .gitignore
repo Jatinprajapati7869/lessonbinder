@@ -1,0 +1,7 @@
+.venv/
+node_modules/
+dist/
+src-tauri/target/
+**/target/
+.DS_Store
+*.local

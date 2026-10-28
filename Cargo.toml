@@ -1,0 +1,13 @@
+[workspace]
+members = [
+    "crates/anki-bridge",
+    "crates/tauri",
+    "crates/vault-core",
+    "src-tauri",
+]
+resolver = "2"
+
+[workspace.package]
+edition = "2021"
+license = "AGPL-3.0-or-later"
+rust-version = "1.80"

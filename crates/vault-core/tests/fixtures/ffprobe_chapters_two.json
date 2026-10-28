@@ -1,0 +1,18 @@
+{
+  "chapters": [
+    {
+      "id": 0,
+      "start_time": "0.000000",
+      "tags": {
+        "title": "Opening"
+      }
+    },
+    {
+      "id": 1,
+      "start_time": "125.500000",
+      "tags": {
+        "title": "Main topic"
+      }
+    }
+  ]
+}

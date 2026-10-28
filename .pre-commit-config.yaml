@@ -1,0 +1,45 @@
+# Install: pre-commit install  (also run via Husky)
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-added-large-files
+        args: ["--maxkb=1024"]
+      - id: check-merge-conflict
+
+  - repo: https://github.com/Yelp/detect-secrets
+    rev: v1.5.0
+    hooks:
+      - id: detect-secrets
+        args: ["--baseline", ".secrets.baseline"]
+        exclude: package-lock.json
+
+  - repo: local
+    hooks:
+      - id: rust-fmt
+        name: rustfmt (workspace)
+        entry: scripts/check-rust.sh fmt
+        language: system
+        pass_filenames: false
+        files: \.rs$
+      - id: rust-clippy
+        name: clippy (workspace)
+        entry: scripts/check-rust.sh clippy
+        language: system
+        pass_filenames: false
+        files: \.rs$
+      - id: typescript-eslint
+        name: eslint (ui)
+        entry: scripts/check-typescript.sh lint
+        language: system
+        pass_filenames: false
+        files: ^ui/.*\.(ts|tsx)$
+      - id: prettier-check
+        name: prettier
+        entry: scripts/check-typescript.sh format
+        language: system
+        pass_filenames: false
+        files: \.(ts|tsx|js|mjs|cjs|json|md|ya?ml|css)$

@@ -1,0 +1,24 @@
+{
+  "title": "Fixture Playlist",
+  "playlist_url": "https://example.com/playlists/fixture-three",
+  "items": [
+    {
+      "external_id": "item-alpha",
+      "title": "Alpha",
+      "url": "https://example.com/watch/alpha",
+      "duration_ms": 60000
+    },
+    {
+      "external_id": "item-beta",
+      "title": "Beta renamed",
+      "url": "https://example.com/watch/beta",
+      "duration_ms": 95000
+    },
+    {
+      "external_id": "item-delta",
+      "title": "Delta",
+      "url": "https://example.com/watch/delta",
+      "duration_ms": 120000
+    }
+  ]
+}

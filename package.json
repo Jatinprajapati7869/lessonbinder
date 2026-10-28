@@ -1,0 +1,35 @@
+{
+  "name": "auravault",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "prepare": "husky",
+    "tauri:dev": "tauri dev",
+    "tauri:build:appimage": "tauri build --bundles appimage",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "eslint .",
+    "typecheck": "node scripts/typecheck-if-ui.mjs",
+    "test": "npm test --prefix ui"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.12.0",
+    "@eslint/js": "^9.16.0",
+    "eslint": "^9.16.0",
+    "globals": "^15.13.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.2.11",
+    "prettier": "^3.4.2",
+    "typescript": "^5.7.2",
+    "typescript-eslint": "^8.18.0"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "prettier --write",
+      "eslint --fix"
+    ],
+    "*.{js,mjs,cjs,json,md,yml,yaml,css}": [
+      "prettier --write"
+    ]
+  }
+}
