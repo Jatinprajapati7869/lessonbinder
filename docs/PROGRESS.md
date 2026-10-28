@@ -526,8 +526,8 @@ Repo: `/home/xingzi/Documents/lessonbinder`. Full text: `~/Documents/auravault-c
 - [x] 302 — Clean tree — **clean** on `origin/master` for v1.5 freeze (`ebf3b5a`); no empty commit. Local `PROGRESS.md` **302–351** section tracks the pending plan (not the freeze commit).
 - [x] 303 — Sitting script — [`docs/SITTING-RUN.md`](SITTING-RUN.md): import, resume, note, subtitle-cue card, review, theme, quit, relaunch, Continue; fixture `/tmp/lessonbinder-sitting`.
 - [x] 304 — Fixture — `/tmp/lessonbinder-sitting`: `intro.mp4` + `intro.srt` (two cues), `notes.md`, `extra.mp4` + `.lessonbinderignore` (ffmpeg on PATH); fixture not committed.
-- [ ] 305 — Import in the app
-- [ ] 306 — Resume in the app
+- [x] 305 — Import in the app — [`SITTING-RUN.md`](SITTING-RUN.md) **Import** **pass** (sitting profile + fixture; `extra.mp4` ignored).
+- [x] 306 — Resume in the app — [`SITTING-RUN.md`](SITTING-RUN.md) **Resume** **pass** (1500 ms resume; not **done**); commit 305–306.
 - [ ] 307 — Note in the app
 - [ ] 308 — One card in the app
 - [ ] 309 — Review in the app
