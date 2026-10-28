@@ -91,7 +91,7 @@
 
 ## Standards
 
-_Sources:_ `AGENTS.md` (SPEC before behavior, anki-bridge-only Anki access, DESIGN for UI), `docs/SPEC-v1.1.md` evidence column, Fowler smell baseline (judgement calls).
+_Sources:_ `docs/SPEC.md`, `docs/DESIGN.md`, and `docs/ARCHITECTURE.md` (anki-bridge-only Anki access), `docs/SPEC-v1.1.md` evidence column, Fowler smell baseline (judgement calls).
 
 | Finding                                 | Type                           | Detail                                                                                                                                                                                                               |
 | --------------------------------------- | ------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |

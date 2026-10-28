@@ -287,7 +287,7 @@ Product name is Lessonbinder. Full text: `~/Documents/auravault-cursor-prompts.m
 - [x] 145 — Ignore file and playlist scheme
   - `.lessonbinderignore` module; `lessonbinder://` pasted playlist; tests and `docs/FIRST-TEST.md`.
 - [x] 146 — Docs inside the repo
-  - `docs/`, `AGENTS.md`, and product comments → Lessonbinder; `AULAVAULT-BEHAVIOR.md` keeps competitor `aulavault`; `ANKI_PIN.md` path unchanged.
+  - `docs/` and product comments → Lessonbinder; `AULAVAULT-BEHAVIOR.md` keeps competitor `aulavault`; `ANKI_PIN.md` path unchanged. Contributor agent rules stay in local **`AGENTS.md`** (gitignored, not published).
 - [x] 147 — Planning copies in Documents
   - Renamed `~/Documents/lessonbinder-{charter,domain,SPEC,ARCHITECTURE,DESIGN,TICKETS,workspace}.md`; product name updated; prompt pack header unchanged for 01–140.
 - [x] 148 — Leftovers and tests
