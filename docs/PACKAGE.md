@@ -27,6 +27,40 @@ Release artifacts:
 
 The workspace crate is **`publish = false`**; do not `cargo publish` these packages.
 
+## Bundled UI fonts (shipped inside the AppImage)
+
+The Linux AppImage embeds the Tauri **`frontendDist`** tree (`../ui/dist`). That directory is produced by **`beforeBuildCommand`**: `npm run build --prefix ui`, which runs Vite on the React UI. The four licensed font files below are **source inputs** to that frontend build—not separate Tauri bundle resources.
+
+They are referenced from `ui/src/theme/tokens.css` (`@font-face` with `url("./fonts/…")`). Vite copies them into `ui/dist/assets/` (hashed filenames). `ui/vite.config.ts` calls `assertBundledFontFilesPresent` at `buildStart`; `ui/fontsBuild.test.ts` asserts the four paths exist and that a production build emits at least four `.ttf` files under `ui/dist/assets/`. See also [`docs/FONTS.md`](FONTS.md).
+
+| Repo path                                   |
+| ------------------------------------------- |
+| `ui/src/theme/fonts/googlesans-regular.ttf` |
+| `ui/src/theme/fonts/googlesans-medium.ttf`  |
+| `ui/src/theme/fonts/googlesans-bold.ttf`    |
+| `ui/src/theme/fonts/andina.ttf`             |
+
+Config: `src-tauri/tauri.conf.json` — `build.frontendDist`: `../ui/dist`, `build.beforeBuildCommand`: `npm run build --prefix ui`.
+
+## AppImage build (prompt 218, 2026-10-28)
+
+From the repository root:
+
+```bash
+npm run tauri:build:appimage
+```
+
+**Result:** **No AppImage was produced.** The Vite UI build and release binary succeeded; Tauri bundling did not finish.
+
+| Artifact               | Path                          | Byte size     |
+| ---------------------- | ----------------------------- | ------------- |
+| Release binary (built) | `target/release/lessonbinder` | 30 008 952    |
+| AppImage               | —                             | **not built** |
+
+Bundling failed with `failed to bundle project: timeout: global` while downloading Tauri’s `linuxdeploy-x86_64.AppImage` from GitHub (after starting `AppRun-x86_64`). `target/release/bundle/appimage/` was not created.
+
+**Missing system package:** **`patchelf`** is not installed on this host (`command -v patchelf` fails). Install with `sudo pacman -S patchelf` before retrying. Do not claim an AppImage exists until a bundle completes and `target/release/bundle/appimage/*.AppImage` is present.
+
 ## Development (no bundle)
 
 Does not require `patchelf` or AppImage tooling:

@@ -376,8 +376,8 @@ Repo: `/home/xingzi/Documents/lessonbinder`. Full text: `~/Documents/auravault-c
 - [x] 214 — Cancel is not completion — `import_cancel.rs`: cancel after first of two files leaves that lesson `not_started`, not `done` or `broken`.
 - [x] 215 — Count — `FolderScanProgress` + `folder_scan_progress` event; library/course scan UI shows real `n of m` (`folderScanProgress.ts`, `import_progress.rs`).
 - [x] 216 — One scan at a time — `folder_scan_guard` rejects overlapping import/rescan with `folder_scan_in_progress`; first scan keeps the guard until done (`folder_scan_guard.rs` tests + `libraryImportError.test.ts`).
-- [ ] 217 — Fonts the bundle will ship
-- [ ] 218 — Build the AppImage
+- [x] 217 — Fonts the bundle will ship
+- [x] 218 — Build the AppImage
 - [ ] 219 — Launch the image
 - [ ] 220 — Install section
 - [ ] 221 — Identity of the bundle

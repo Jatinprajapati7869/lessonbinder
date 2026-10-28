@@ -149,17 +149,16 @@ export function LibraryScreen({
     void (async () => {
       const { getCurrentWebview } = await import("@tauri-apps/api/webview");
       unlisten = await getCurrentWebview().onDragDropEvent((event) => {
-        if (event.payload.type !== "drop") {
+        const payload = event.payload;
+        if (payload.type !== "drop") {
           return;
         }
+        const { paths } = payload;
         void (async () => {
-          const dropError = await libraryFolderDropIntoLibrary(
-            event.payload.paths,
-            {
-              pathIsDirectory: (path) => commands.pathIsDirectory(path),
-              importFolderAtPath,
-            }
-          );
+          const dropError = await libraryFolderDropIntoLibrary(paths, {
+            pathIsDirectory: (path) => commands.pathIsDirectory(path),
+            importFolderAtPath,
+          });
           if (dropError !== null) {
             setError(dropError);
           }

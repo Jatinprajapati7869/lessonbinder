@@ -3,7 +3,7 @@ import { dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { defineConfig } from "vite";
 
-import { assertBundledFontFilesPresent } from "./build/assertBundledFonts";
+import { assertBundledFontFilesPresent } from "./build/assertBundledFonts.js";
 
 const uiRoot = dirname(fileURLToPath(import.meta.url));
 
