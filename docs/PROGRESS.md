@@ -530,8 +530,8 @@ Repo: `/home/xingzi/Documents/lessonbinder`. Full text: `~/Documents/auravault-c
 - [x] 306 — Resume in the app — [`SITTING-RUN.md`](SITTING-RUN.md) **Resume** **pass** (1500 ms resume; not **done**); commit 305–306.
 - [x] 307 — Note in the app — [`SITTING-RUN.md`](SITTING-RUN.md) **Note** **pass** (vault persist + timestamp seek via `LessonNotes.test.tsx`).
 - [x] 308 — One card in the app — [`SITTING-RUN.md`](SITTING-RUN.md) **One card (subtitle cue)** **pass** (sitting vault link + subtitle draft commit; no OCR/Whisper).
-- [ ] 309 — Review in the app
-- [ ] 310 — Theme in the app
+- [x] 309 — Review in the app — [`SITTING-RUN.md`](SITTING-RUN.md) **Review** **pass** (course-scoped reveal + Good; profile-in-use sentence via `AnkiProfileInUse.test.tsx`).
+- [x] 310 — Theme in the app — [`SITTING-RUN.md`](SITTING-RUN.md) **Theme** **pass** (dark/light save + contrast sentence); commit 309–310.
 - [ ] 311 — Quit and relaunch
 - [ ] 312 — Sitting page
 - [ ] 313 — patchelf again
