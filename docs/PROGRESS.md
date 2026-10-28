@@ -602,4 +602,4 @@ Repo: `/home/xingzi/Documents/lessonbinder`. Full text: `~/Documents/auravault-c
 - [x] 360 — Tests — mpv handoff, missing mpv message, overlay bar layout, dark page background; `cargo test --workspace` and `npm test`.
 - [x] 361 — README — playback: WebView, optional mpv on PATH, bar controls; no bundled mpv; no universal codec claim.
 - [x] 362 — No extra window — `mpv_embed_argv` uses `--force-window=embed` + `--wid`; § **mpv spawn — no separate window** in [`PLAYBACK.md`](PLAYBACK.md) lists flags; commit **361–362**.
-- [ ] 363 — Freeze
+- [x] 363 — Freeze — [`PLAYBACK.md`](PLAYBACK.md) § **363**: sitting **`intro.mp4`** **pass** (webview); bar on frame **pass**; **READY**; counts **245** / **201**; commit **363**.

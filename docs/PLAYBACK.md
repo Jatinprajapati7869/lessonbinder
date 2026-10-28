@@ -132,3 +132,26 @@ Handoff spawns **`mpv`** once per session from `spawn_embedded_mpv` in `src-taur
 After spawn, Rust calls **`loadfile`** on the lesson **`local_media_path`**, optional seek for resume, then **`set_pause` false**. **`stop_mpv_lesson_handoff`** kills the child and removes the socket file.
 
 ---
+
+## Prompt 363 — Playback freeze (2026-10-28)
+
+**Video exercised:** **`/tmp/lessonbinder-sitting/intro.mp4`** (fixture still on disk; H.264 in `.mp4`, **3 s** per **`ffprobe`**).
+
+**How it was played:** WebKitGTK probe with **`file:///tmp/lessonbinder-sitting/_probe.html`** and **`<video src="intro.mp4">`** (same stack as the Tauri webview). **`currentTime`** advanced (**~0.001 s**) with **`readyState` 3** and no **`error`** code — playback starts without **mpv**.
+
+| Check                       | Result                                                                                                                                                                                                                         |
+| --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Engine**                  | **pass — webview.** **`intro.mp4`** decodes in WebKit; **mpv handoff** not used (no `<video>` **`error`** on this file).                                                                                                       |
+| **Player bar on frame**     | **pass.** Transport controls live on **`player-bar--overlay`** inside **`player-frame`** (prompt **356**); regression **`ui/PlayerMpvHandoff.test.tsx`** (_overlay transport bar_). Not re-screenshot in the GUI this session. |
+| **mpv handoff (this file)** | **n/a** — not required for sitting **`intro.mp4`**.                                                                                                                                                                            |
+
+**Known gap (not this fixture):** First-course **HEVC-in-MKV** (prompt **352**) can stall the webview without firing **`error`**, so **mpv** may never start for that row — see § **352** above. That does not fail sitting **`intro.mp4`**.
+
+```bash
+cargo test --workspace   # 245 passed (80 suites); 0 failed
+cd ui && npm test       # 61 files; 201 passed
+```
+
+**READY** — Sitting fixture **`intro.mp4`** plays in the webview; the overlay bar is on the frame (code + tests). No release tag.
+
+---
