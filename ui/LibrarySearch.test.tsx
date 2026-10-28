@@ -84,6 +84,21 @@ describe("Library search", () => {
     vi.useRealTimers();
   });
 
+  it("keeps Search library as the search field accessible name with the outline icon", async () => {
+    render(
+      <LibraryCommandsProvider commands={baseCommands()}>
+        <LibraryScreen onOpenCourse={vi.fn()} onOpenLesson={vi.fn()} />
+      </LibraryCommandsProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByLabelText("Search library")).toBeInTheDocument();
+    });
+    expect(screen.getByRole("searchbox")).toHaveAccessibleName(
+      "Search library"
+    );
+  });
+
   it("opens the lesson at the cue start time when a subtitle result is chosen", async () => {
     const commands = baseCommands({
       searchLibrary: vi.fn().mockResolvedValue([subtitleHit]),

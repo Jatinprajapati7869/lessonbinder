@@ -546,7 +546,7 @@ Repo: `/home/xingzi/Documents/lessonbinder`. Full text: `~/Documents/auravault-c
 - [x] 322 — Search icon — `search-outline.png` in library search field; **Search library** label unchanged; commit **321–322**.
 - [x] 323 — Settings icon — `setting-outline.png` beside side-nav **Settings**; accessible name unchanged.
 - [x] 324 — Reader and list — reader on **Show lesson file** + **Notes**; list on **Lessons** heading; **school-outline** unused; commit **323–324**.
-- [ ] 325 — Names survive the icons
+- [x] 325 — Names survive the icons — `Course.test.tsx` **Show folder**; `LibrarySearch.test.tsx` **Search library**; `shell.test.tsx` **Settings**.
 - [ ] 326 — Icons are local
 - [ ] 327 — Other operating systems
 - [ ] 328 — Commands for those machines
