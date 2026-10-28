@@ -25,7 +25,7 @@ describe("importCancellableFolderAtPath", () => {
     expect(message).toBe(RISKY_IMPORT_PATH_MESSAGE);
   });
 
-  it("is the single validate-then-import path for picker and drop", async () => {
+  it("calls validate then import", async () => {
     const importFolder = vi.fn().mockResolvedValue(undefined);
     const validateImportFolderPath = vi.fn().mockResolvedValue(undefined);
 

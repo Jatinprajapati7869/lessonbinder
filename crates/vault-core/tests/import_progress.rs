@@ -53,8 +53,9 @@ fn cancellable_import_finish_does_not_mark_lessons_done() {
 
     assert_eq!(report.lesson_ids.len(), 2);
     for lesson_id in &report.lesson_ids {
-        let progress = db.progress_for_lesson(lesson_id).unwrap();
-        assert_eq!(progress.status, LessonStatus::NotStarted);
-        assert_ne!(progress.status, LessonStatus::Done);
+        assert_eq!(
+            db.progress_for_lesson(lesson_id).unwrap().status,
+            LessonStatus::NotStarted
+        );
     }
 }

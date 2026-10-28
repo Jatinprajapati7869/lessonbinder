@@ -31,7 +31,7 @@ fn validate_import_folder_path_guard_blocks_drop_on_risky_root() {
     assert!(matches!(err, ImportError::RiskyImportPath));
     assert!(
         !scan_or_upsert_started.load(Ordering::Relaxed),
-        "risky root must be rejected before directory scan"
+        "expected no scan before risky root rejection"
     );
 }
 

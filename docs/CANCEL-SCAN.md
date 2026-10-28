@@ -39,6 +39,5 @@ Import cancel belongs on the library import / scanning UI (e.g. the in-progress 
 
 ## Related
 
-- Implementation target: **`import_folder_with_cancel`** in **`vault-core`**, **`cancel_import_course_folder`** / **`import_course_folder`** in **`src-tauri/src/library_commands.rs`**
-- Next step: prompt **211** (library Cancel control)
+- **`import_folder_with_cancel`** in **`vault-core`**, **`cancel_import_course_folder`** / **`import_course_folder`** in **`src-tauri/src/library_commands.rs`**
 - Competitor note: AulaVault-style **`cancel_scan_course_folder`** — [`AULAVAULT-BEHAVIOR.md`](AULAVAULT-BEHAVIOR.md)

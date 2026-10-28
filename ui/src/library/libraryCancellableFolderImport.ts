@@ -8,10 +8,6 @@ export type CancellableFolderImportDeps = {
   importFolder: (path: string) => Promise<void>;
 };
 
-/**
- * Validate then invoke the backend cancellable folder import (`import_course_folder`).
- * Used by Add folder and drag-and-drop so neither path runs its own scan loop.
- */
 export async function importCancellableFolderAtPath(
   path: string,
   deps: CancellableFolderImportDeps

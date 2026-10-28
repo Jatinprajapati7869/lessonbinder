@@ -396,8 +396,24 @@ Repo: `/home/xingzi/Documents/lessonbinder`. Full text: `~/Documents/auravault-c
 - [x] 234 — Backup still round-trips — `crates/tauri/tests/restore.rs`: `backup_restore_round_trip_preserves_study_days_and_pack_settings` (passes unchanged after cancellable import work).
 - [x] 235 — Notes and search — `lesson_note_export.rs`: `markdown_export_reads_vault_notes_only_and_does_not_delete_cards`; `search.rs`: `matches_lesson_note_text`, `search_stays_local_lesson_note_body_returned_and_missing_note_not`.
 - [x] 236 — First-course page — [`docs/FIRST-COURSE.md`](FIRST-COURSE.md): **Cancel import** checklist row; AppImage omitted in one line (218 produced no bundle).
-- [ ] 237 — Deslop
-- [ ] 238 — Doctor
+- [x] 237 — Deslop this pack — trimmed redundant test asserts, import doc comment, cancellable-import JSDoc, stale CANCEL-SCAN “next step”, verbose Vitest title.
+- [x] 238 — Doctor — `npx react-doctor@latest --verbose .` in `ui/`: **64 / 100** (34 issues). No crash, dead Cancel, or missing label on pack-added controls; left complexity / giant-component / dialog / iframe / fetch warnings unchanged.
+
+**Prompt 238 — `npx react-doctor@latest --verbose .` (ui/, 2026-10-28):**
+
+```text
+React Doctor — ui
+Score: 64 / 100 Needs work
+34 issues
+Accessibility: 6 warnings
+Bugs: 7 warnings
+Security: 2 warnings
+Maintainability: 16 warnings
+Performance: 3 warnings
+
+Share: https://react.doctor/share?p=ui&s=64&w=34&f=16
+```
+
 - [ ] 239 — README
 - [ ] 240 — Scope
 - [ ] 241 — Checklist

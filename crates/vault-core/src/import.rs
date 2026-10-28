@@ -148,8 +148,7 @@ pub fn import_folder(db: &VaultDb, picked: &Path) -> Result<ImportReport, Import
     import_folder_with_cancel(db, picked, &|| false, None)
 }
 
-/// Import a folder, checking `should_cancel` between directory entries while scanning
-/// and again before each lesson upsert (never mid-write for a single lesson).
+/// Import a folder; honors `should_cancel` between scan entries and before each lesson upsert.
 pub fn import_folder_with_cancel(
     db: &VaultDb,
     picked: &Path,

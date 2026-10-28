@@ -84,8 +84,6 @@ fn cancel_after_first_of_two_files_does_not_mark_that_lesson_done_or_broken() {
         .expect("first lesson");
     let progress = db.progress_for_lesson(&lesson_id).unwrap();
     assert_eq!(progress.status, LessonStatus::NotStarted);
-    assert_ne!(progress.status, LessonStatus::Done);
-    assert_ne!(progress.status, LessonStatus::Broken);
 }
 
 #[test]
