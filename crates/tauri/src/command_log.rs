@@ -31,7 +31,6 @@ pub fn command_log_path(app_data_dir: &Path) -> std::path::PathBuf {
     app_data_dir.join(COMMAND_LOG_FILE)
 }
 
-/// Newest-first lines from the persisted command error log (empty if missing).
 pub fn read_command_log_lines(app_data_dir: &Path) -> std::io::Result<Vec<String>> {
     let path = command_log_path(app_data_dir);
     let contents = match std::fs::read_to_string(&path) {
@@ -121,7 +120,6 @@ pub fn log_command_error(
     let path = command_log_path(app_data_dir);
     let mut file = OpenOptions::new().create(true).append(true).open(&path)?;
     writeln!(file, "{line}")?;
-    drop(file);
     trim_command_log_to_max_lines(&path)?;
     Ok(())
 }

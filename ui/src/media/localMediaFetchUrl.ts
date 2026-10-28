@@ -1,4 +1,3 @@
-/** Whether `fetch` may load lesson media converted for this app (never third-party hosts). */
 export function isAllowedLocalMediaFetchUrl(url: string): boolean {
   if (url.startsWith("asset://")) {
     return true;

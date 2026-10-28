@@ -19,7 +19,6 @@ function renderImagePlaceholder(alt: string): ReactNode {
   );
 }
 
-/** Render lesson markdown without fetching remote images. */
 export function LessonMarkdownBody({ source }: { source: string }) {
   const blocks: ReactNode[] = [];
   const paragraph: string[] = [];
