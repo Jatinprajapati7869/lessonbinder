@@ -454,8 +454,8 @@ Repo: `/home/xingzi/Documents/lessonbinder`. Full text: `~/Documents/auravault-c
 - [x] 254 — One sitting test — `vault_core::first_course_sitting::first_course_sitting` (temp folder: import, resume, note, manual done, rescan; watch percent ≠ done).
 - [x] 255 — Checklist matches the test — `docs/SITTING.md` Import, Resume, and A note rows point at `first_course_sitting`; human-only rows unchanged.
 - [x] 256 — Do not fake the human rows — `docs/FIRST-COURSE.md` points at `SITTING.md` and says not to check human-only rows pass.
-- [ ] 257 — patchelf, no install
-- [ ] 258 — One bundle attempt
+- [x] 257 — patchelf, no install — **`patchelf` missing** (`command -v patchelf` empty, 2026-10-28); left existing `sudo pacman -S patchelf` line in [`docs/PACKAGE.md`](PACKAGE.md); stopped (no install).
+- [x] 258 — One bundle attempt — **not run** (`patchelf` missing; bundler not invoked).
 - [ ] 259 — Launch only a real image
 - [ ] 260 — Install section stays true
 - [ ] 261 — Bundle identity
