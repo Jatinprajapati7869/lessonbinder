@@ -468,8 +468,8 @@ Repo: `/home/xingzi/Documents/lessonbinder`. Full text: `~/Documents/auravault-c
 - [x] 268 — Opener failure — `opener_open_path_failed` command error; course + player use `invokeErrorMessage`; `Course.test.tsx` / `Player.test.tsx` / `courseFolderOpenError.test.ts`.
 - [x] 269 — Shortcut list — `ui/src/keyboard/implementedShortcuts.ts` reads `playerSeekKeyboard`, `playerCompleteKeyboard`, `playerModeKeyboard`, `reviewKeyboard`; `implementedShortcuts.test.ts`.
 - [x] 270 — Shortcuts in Settings — `SettingsKeyboardShortcutsList`; `Settings.test.tsx` — `renders keyboard shortcut rows from the implemented list`; `assertImplementedShortcutsMatchKeyModules` in `implementedShortcuts.test.ts`.
-- [ ] 271 — Last errors
-- [ ] 272 — Twenty lines
+- [x] 271 — Last errors — already persisted: **`command-errors.log`** under app data (`lessonbinder_tauri::command_log::COMMAND_LOG_FILE`, `log_command_error`); not stderr-only; nothing uploaded.
+- [x] 272 — Twenty lines — `command_log.rs` `COMMAND_LOG_MAX_LINES` (20); `crates/tauri/tests/command_log.rs` — `log_command_error_keeps_last_twenty_newest_lines`; library risky import sentence unchanged (`Library.test.tsx`).
 - [ ] 273 — Cues that already exist
 - [ ] 274 — Cue seek stays local
 - [ ] 275 — Source offer

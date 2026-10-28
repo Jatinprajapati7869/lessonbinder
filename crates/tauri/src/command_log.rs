@@ -1,4 +1,4 @@
-//! Append-only command error log under app data (no note text or image payloads).
+//! Command error log under app data (no note text or image payloads). Keeps the newest entries only.
 
 use std::fs::OpenOptions;
 use std::io::Write;
@@ -8,6 +8,7 @@ use std::time::{SystemTime, UNIX_EPOCH};
 use serde_json::Value;
 
 pub const COMMAND_LOG_FILE: &str = "command-errors.log";
+pub const COMMAND_LOG_MAX_LINES: usize = 20;
 pub const UNEXPECTED_COMMAND_ERROR_CODE: &str = "unexpected_command_error";
 
 const REDACTED: &str = "[redacted]";
@@ -28,6 +29,37 @@ const REDACT_FIELD_NAMES: &[&str] = &[
 
 pub fn command_log_path(app_data_dir: &Path) -> std::path::PathBuf {
     app_data_dir.join(COMMAND_LOG_FILE)
+}
+
+/// Newest-first lines from the persisted command error log (empty if missing).
+pub fn read_command_log_lines(app_data_dir: &Path) -> std::io::Result<Vec<String>> {
+    let path = command_log_path(app_data_dir);
+    let contents = match std::fs::read_to_string(&path) {
+        Ok(text) => text,
+        Err(err) if err.kind() == std::io::ErrorKind::NotFound => return Ok(Vec::new()),
+        Err(err) => return Err(err),
+    };
+    Ok(contents
+        .lines()
+        .filter(|line| !line.is_empty())
+        .map(str::to_owned)
+        .collect())
+}
+
+fn trim_command_log_to_max_lines(path: &Path) -> std::io::Result<()> {
+    let contents = std::fs::read_to_string(path)?;
+    let lines: Vec<&str> = contents.lines().filter(|line| !line.is_empty()).collect();
+    if lines.len() <= COMMAND_LOG_MAX_LINES {
+        return Ok(());
+    }
+    let keep = &lines[lines.len() - COMMAND_LOG_MAX_LINES..];
+    let body = keep.join("\n");
+    let with_newline = if body.is_empty() {
+        String::new()
+    } else {
+        format!("{body}\n")
+    };
+    std::fs::write(path, with_newline)
 }
 
 /// Redact sensitive object fields if they are passed in `context` by mistake.
@@ -87,7 +119,9 @@ pub fn log_command_error(
     let redacted = context.map(redact_json_value);
     let line = format_log_line(command, error_code, redacted.as_ref());
     let path = command_log_path(app_data_dir);
-    let mut file = OpenOptions::new().create(true).append(true).open(path)?;
+    let mut file = OpenOptions::new().create(true).append(true).open(&path)?;
     writeln!(file, "{line}")?;
+    drop(file);
+    trim_command_log_to_max_lines(&path)?;
     Ok(())
 }
