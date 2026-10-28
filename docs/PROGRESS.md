@@ -414,8 +414,8 @@ Performance: 3 warnings
 Share: https://react.doctor/share?p=ui&s=64&w=34&f=16
 ```
 
-- [ ] 239 — README
-- [ ] 240 — Scope
+- [x] 239 — README — cancel import + one scan at a time; **Install** from 220 unchanged; no published release / Windows / macOS claims.
+- [x] 240 — Scope — [`docs/SCOPE-v1.4.md`](SCOPE-v1.4.md): cancellable import/rescan, scan count, empty-folder refusal, AppImage attempt, profile-in-use sentence; out-of-scope table unchanged on accounts/cloud/kits/signing/auto-done.
 - [ ] 241 — Checklist
 - [ ] 242 — Tests
 - [ ] 243 — Study doc

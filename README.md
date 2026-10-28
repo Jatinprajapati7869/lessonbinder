@@ -4,7 +4,8 @@ Lessonbinder is an offline desktop app (Tauri, React, and TypeScript) for course
 
 ## What it does
 
-- Import a folder as a course of lessons (video, audio, PDF, markdown). Re-import and rescan can add lessons or mark missing files broken while keeping accepted order; `.lessonbinderignore` can exclude paths.
+- Import a folder as a course of lessons (video, audio, PDF, markdown). Re-import and rescan can add lessons or mark missing files broken while keeping accepted order; `.lessonbinderignore` can exclude paths. You can **cancel** an in-progress folder import or rescan; lessons already written before cancel stay in the library.
+- Only one folder import or rescan runs at a time—a second scan waits until the first finishes (the app rejects overlapping attempts with a short message).
 - Drop a folder onto the library to import it (same checks as **Add folder**; risky roots are rejected).
 - Pair `.srt` or `.vtt` files to videos by filename stem instead of importing subtitles as separate lessons.
 - Read duration and similar metadata when tools such as ffprobe are on `PATH`; otherwise store unknown values with a reason.
