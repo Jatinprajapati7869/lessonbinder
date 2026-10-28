@@ -482,8 +482,15 @@ Repo: `/home/xingzi/Documents/lessonbinder`. Full text: `~/Documents/auravault-c
 - [x] 282 — Doctor — `npx react-doctor@latest --verbose` on `ui/`: **64/100** (36 issues). No crash, dead Show folder/Shortcuts control, or missing pack control label; complexity warnings left as-is.
 - [x] 283 — README — [`README.md`](../README.md) mentions **Show folder**, **Show lesson file**, and Settings **keyboard shortcuts**; **Install** unchanged from **260** (no published AppImage claim).
 - [x] 284 — Scope — [`docs/SCOPE-v1.5.md`](SCOPE-v1.5.md): sitting test, AppImage retry docs, cancel-before-upsert, show folder, show lesson file, shortcut list, last-20 errors; out table on accounts/cloud/kits/signing/Windows/macOS/auto-done.
-- [ ] 285 — Checklist
-- [ ] 286 — Tests
+- [x] 285 — Checklist — [`docs/V1.5.md`](V1.5.md) from [`SCOPE-v1.5.md`](SCOPE-v1.5.md); AppImage launch row **unproven** → [`PACKAGE.md`](PACKAGE.md) (259 did not launch); other rows **pass** with test or SITTING.md evidence.
+- [x] 286 — Tests — `cargo test --workspace`: **241 passed** (77 suites); `cd ui && npm test`: **192 passed** (59 files); `npm run typecheck`: **pass**.
+
+```bash
+cargo test --workspace   # 241 passed (77 suites); 0 failed
+cd ui && npm test       # 59 files; 192 passed
+npm run typecheck       # tsc -p ui/tsconfig.json --noEmit; pass
+```
+
 - [ ] 287 — Icons stay waiting
 - [ ] 288 — No other platforms
 - [ ] 289 — Note and search
