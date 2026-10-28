@@ -287,9 +287,11 @@ describe("PlayerScreen", () => {
     expect(screen.getByTestId("player-capture-button")).toHaveFocus();
   });
 
-  it("clicking a cue seeks and saves resume immediately", async () => {
+  it("clicking a cue seeks local playback and saves resume without opening a URL or marking complete", async () => {
     const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
     const saveLessonResume = vi.fn().mockResolvedValue(undefined);
+    const markLessonComplete = vi.fn();
+    const openWindow = vi.spyOn(window, "open").mockImplementation(() => null);
     const cues = [
       { start_ms: 1_000, end_ms: 2_000, text: "First" },
       { start_ms: 3_000, end_ms: 4_500, text: "Second" },
@@ -297,7 +299,7 @@ describe("PlayerScreen", () => {
     ];
     const commands: CourseCommandPort = {
       getCourseDetail: vi.fn(),
-      markLessonComplete: vi.fn(),
+      markLessonComplete,
       markLessonIncomplete: vi.fn(),
       saveLessonResume,
       acceptOrderProposal: vi.fn(),
@@ -337,6 +339,9 @@ describe("PlayerScreen", () => {
 
     expect(video.currentTime).toBe(3);
     expect(saveLessonResume).toHaveBeenCalledWith("lesson-1", 3_000);
+    expect(markLessonComplete).not.toHaveBeenCalled();
+    expect(openWindow).not.toHaveBeenCalled();
+    openWindow.mockRestore();
   });
 
   it("seeks to initialSeekMs when the lesson loads (search hit navigation)", async () => {

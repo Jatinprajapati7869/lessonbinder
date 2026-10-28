@@ -470,8 +470,8 @@ Repo: `/home/xingzi/Documents/lessonbinder`. Full text: `~/Documents/auravault-c
 - [x] 270 — Shortcuts in Settings — `SettingsKeyboardShortcutsList`; `Settings.test.tsx` — `renders keyboard shortcut rows from the implemented list`; `assertImplementedShortcutsMatchKeyModules` in `implementedShortcuts.test.ts`.
 - [x] 271 — Last errors — already persisted: **`command-errors.log`** under app data (`lessonbinder_tauri::command_log::COMMAND_LOG_FILE`, `log_command_error`); not stderr-only; nothing uploaded.
 - [x] 272 — Twenty lines — `command_log.rs` `COMMAND_LOG_MAX_LINES` (20); `crates/tauri/tests/command_log.rs` — `log_command_error_keeps_last_twenty_newest_lines`; library risky import sentence unchanged (`Library.test.tsx`).
-- [ ] 273 — Cues that already exist
-- [ ] 274 — Cue seek stays local
+- [x] 273 — Cues that already exist — player lists sidecar cues via `PlayerCueList` (`listLessonCues`); **`PlayerCues.test.tsx`**; cue activate covered in **`Player.test.tsx`** below.
+- [x] 274 — Cue seek stays local — **`ui/Player.test.tsx`** — **`clicking a cue seeks local playback and saves resume without opening a URL or marking complete`**.
 - [ ] 275 — Source offer
 - [ ] 276 — No analytics host
 - [ ] 277 — Show folder only with a course
