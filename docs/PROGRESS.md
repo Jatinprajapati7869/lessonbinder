@@ -495,8 +495,8 @@ npm run typecheck       # tsc -p ui/tsconfig.json --noEmit; pass
 - [x] 288 — No other platforms — [`README.md`](../README.md) + [`PACKAGE.md`](PACKAGE.md): Linux-only bundling copy; removed macOS/Windows/signing name-drops that read like platform claims.
 - [x] 289 — Note and search — `vault_core::lesson_note_export::markdown_export_reads_vault_notes_only_and_does_not_delete_cards`; `vault_core::search::search_stays_local_lesson_note_body_returned_and_missing_note_not` (both pass; no pack regression).
 - [x] 290 — Backup — `lessonbinder_tauri::restore::backup_restore_round_trip_preserves_study_days_and_pack_settings` (pass; streak, theme, speed, volume unchanged).
-- [ ] 291 — Profile lock
-- [ ] 292 — Missing file
+- [x] 291 — Profile lock — `ui/AnkiProfileInUse.test.tsx` — `shows the profile lock sentence when study bar state fails`; sentence matches `anki_bridge` — **Lessonbinder Anki profile is in use (close Anki or wait for another operation to finish)**.
+- [x] 292 — Missing file — `vault_core::missing_media_on_resume::missing_file_on_resume_marks_broken_not_done` (pass; **Broken**, resume kept, not **done**).
 - [ ] 293 — Human rows
 - [ ] 294 — Counts again
 - [ ] 295 — Checklist evidence
