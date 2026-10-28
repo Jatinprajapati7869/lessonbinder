@@ -388,8 +388,8 @@ Repo: `/home/xingzi/Documents/lessonbinder`. Full text: `~/Documents/auravault-c
 - [x] 226 — OCR stays on the machine
 - [x] 227 — Cancel copy
 - [x] 228 — Escape is not cancel
-- [ ] 229 — Cancelled rescan keeps work
-- [ ] 230 — Import again after cancel
+- [x] 229 — Cancelled rescan keeps work — `rescan_cancel.rs`: `cancel_rescan_leaves_lesson_order_and_notes_unchanged` (cancel on second scan entry keeps explicit `reorder_lessons` order and lesson notes; no third lesson).
+- [x] 230 — Import again after cancel — `import_cancel.rs`: `reimport_after_cancelled_partial_import_finishes_without_duplicating_first_lesson`.
 - [ ] 231 — Ignore file still applies
 - [ ] 232 — Risky root
 - [ ] 233 — Done stays manual
