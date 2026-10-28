@@ -571,8 +571,8 @@ npm run typecheck       # pass (tsc -p ui/tsconfig.json --noEmit)
 - [x] 340 — Backup — **pass**: `lessonbinder_tauri::restore::backup_restore_round_trip_preserves_study_days_and_pack_settings` (streak, theme, speed, volume); commit **339–340**.
 - [x] 341 — Note and card boundaries — **pass**: `lesson_note_export.rs` — `markdown_export_reads_vault_notes_only_and_does_not_delete_cards`; `anki-bridge` — `unlink_card_keeps_note_in_temp_profile`.
 - [x] 342 — OCR still local — **pass**: `ocr.rs` — `ocr_shells_out_to_local_tesseract_binary_opens_no_url` (local `Command::new(tesseract)`; no HTTP in OCR source). Sitting **308** used a **subtitle cue** card, not frame OCR — [`SITTING-RUN.md`](SITTING-RUN.md) **One card (subtitle cue)**; commit **341–342**.
-- [ ] 343 — No extra kit files
-- [ ] 344 — Human rows that failed
+- [x] 343 — No extra kit files — `ui/src/theme/icons/` (**6** PNGs) matches [`ICONS.md`](ICONS.md) table only: `file-tray-full-outline.png`, `search-outline.png`, `setting-outline.png`, `reader-outline.png`, `school-outline.png`, `list-outline.png`; no extra files; nothing deleted.
+- [x] 344 — Human rows that failed — [`SITTING-RUN.md`](SITTING-RUN.md): **Continue**, AppImage launch, purchased-folder import, OCR capture, **Whisper**, **Cancel import** stay **blocked** (no false **pass**); commit **343–344**.
 - [ ] 345 — Typecheck
 - [ ] 346 — Lint
 - [ ] 347 — Unsigned
