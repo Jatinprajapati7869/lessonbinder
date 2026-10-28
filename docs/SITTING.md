@@ -2,7 +2,9 @@
 
 Maps each row in [`FIRST-COURSE.md`](FIRST-COURSE.md) to **existing automated tests** or **human-only** (needs a real course folder on disk, **Tesseract**, **ffmpeg** / **ffprobe**, a local **Whisper** model, or a full app quit/relaunch on a persistent profile). Test names are the exact `it("…")` titles in TypeScript or `fn …()` names in Rust unless noted as a module path.
 
-**Human-only** rows still belong on the manual checklist; they are not marked as proved by automation.
+**Manual app sitting (prompts 305–311):** step-by-step results and dates live in [`SITTING-RUN.md`](SITTING-RUN.md) (fixture **`/tmp/lessonbinder-sitting`**, profile **`XDG_DATA_HOME=/tmp/lessonbinder-sitting-data`**). That run is **not** a purchased course folder on disk.
+
+**Human-only** rows still belong on the manual checklist; they are not marked as proved by automation alone.
 
 ### Vault sitting integration
 
@@ -15,6 +17,25 @@ Maps each row in [`FIRST-COURSE.md`](FIRST-COURSE.md) to **existing automated te
 | Coverage       | Evidence                                                                                                                                                                                                 |
 | -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Human-only** | Dev launch (`npm run tauri:dev`), window title, Library route, and empty-library chrome are recorded manually in [`FIRST-COURSE.md`](FIRST-COURSE.md) § Boot. No automated boot or AppImage launch test. |
+
+---
+
+## App sitting — [`SITTING-RUN.md`](SITTING-RUN.md) (305–311)
+
+Fixture import only; **do not** treat **your purchased course folder** as **sat** here.
+
+| Checklist step (`FIRST-COURSE.md`) | App sitting        |
+| ---------------------------------- | ------------------ |
+| **Import** (fixture)               | **sat** 2026-10-28 |
+| **Resume**                         | **sat** 2026-10-28 |
+| **A note**                         | **sat** 2026-10-28 |
+| **One card** (subtitle cue)        | **sat** 2026-10-28 |
+| **A review**                       | **sat** 2026-10-28 |
+| **Theme switch**                   | **sat** 2026-10-28 |
+| **Quit**                           | **sat** 2026-10-28 |
+| **Relaunch**                       | **sat** 2026-10-28 |
+
+Not run in 305–311: **Cancel import**, **Continue**. **Import — your course directory** remains human-only (not **sat**).
 
 ---
 
@@ -54,27 +75,21 @@ rg 'https?://' ui/src src-tauri/src
 
 - Run `cargo test -p vault-core first_course_sitting` for the vault sitting integration, or the named slice tests in CI or locally (`cargo test`, `npm test`) without repeating the full folder walkthrough.
 - Rows with **human-only** cells still require [`FIRST-COURSE.md`](FIRST-COURSE.md) on a real course folder and persistent profile.
-- Related: [`FIRST-TEST.md`](FIRST-TEST.md) (fixture and slice checklist), [`STUDY.md`](STUDY.md) (in-app review flow).
+- Related: [`FIRST-TEST.md`](FIRST-TEST.md) (fixture and slice checklist), [`STUDY.md`](STUDY.md) (in-app review flow), [`SITTING-RUN.md`](SITTING-RUN.md) (manual app sitting **305–311**).
 
 ---
 
 ## Human-only rows (still open)
 
-Nothing below is marked **pass** by automation or this document. Keep these open on the manual checklist.
+Nothing below is marked **sat** for **your purchased or ad-hoc course folder** import. Rows **sat** on the **fixture** sitting are listed in [App sitting — `SITTING-RUN.md`](#app-sitting--sitting-runmd-305311) above.
 
-| Row / topic                               | Still open because                                                                                                                                                                           |
-| ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Boot**                                  | Dev or AppImage launch, window, empty Library — manual only ([`FIRST-COURSE.md`](FIRST-COURSE.md) § Boot).                                                                                   |
-| **Import (your folder)**                  | Choosing **your** purchased or local **course directory** and confirming the Library row in a running app (tests use temp folders, not your disk tree).                                      |
-| **Cancel import**                         | Large real folder + **Cancel import** in the UI (not **Escape**).                                                                                                                            |
-| **Resume**                                | Playable file, seek/watch, **Back**, reopen the same lesson in the running app.                                                                                                              |
-| **A note**                                | Notes column on a real lesson in the app.                                                                                                                                                    |
-| **One card — lesson note → Save to Anki** | Successful commit from a saved lesson note in the player UI (tests stop at “do not commit until Save to Anki”).                                                                              |
-| **One card — OCR capture**                | **Capture card** after real **Tesseract** OCR on a paused frame — **not pass**; `ui/CaptureCard.test.tsx` — `shows tesseract missing when OCR is unavailable` is the missing-tool path only. |
-| **One card — audio clip**                 | Attaching an **audio clip** when **ffmpeg** is required.                                                                                                                                     |
-| **Whisper transcription**                 | Local **Whisper** model + CLI on real lesson media in Settings — **not pass**; not covered by sitting automation.                                                                            |
-| **A review**                              | Top-bar due counts and **Study** after a card committed during the sitting.                                                                                                                  |
-| **Theme switch**                          | **Library** and **player** readability after save in the running app.                                                                                                                        |
-| **Quit**                                  | Closing the app process.                                                                                                                                                                     |
-| **Relaunch**                              | Same persistent profile after quit: course, note, card link, theme still present.                                                                                                            |
-| **Continue**                              | **Continue** row on **Library** with real prior resume from the sitting.                                                                                                                     |
+| Row / topic                               | Still open because                                                                                                                                                                    |
+| ----------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Boot**                                  | Dev or AppImage launch, window, empty Library — manual only ([`FIRST-COURSE.md`](FIRST-COURSE.md) § Boot).                                                                            |
+| **Import (your folder)**                  | Choosing **your** purchased or local **course directory** and confirming the Library row in a running app — **not sat** (fixture sitting in [`SITTING-RUN.md`](SITTING-RUN.md) only). |
+| **Cancel import**                         | Large real folder + **Cancel import** in the UI (not **Escape**).                                                                                                                     |
+| **Continue**                              | **Continue** row on **Library** with real prior resume from the sitting — not run in prompts **305–311** ([`SITTING-RUN.md`](SITTING-RUN.md) row still empty).                        |
+| **One card — lesson note → Save to Anki** | Successful commit from a saved lesson note in the player UI (tests stop at “do not commit until Save to Anki”).                                                                       |
+| **One card — OCR capture**                | **blocked** — **Tesseract** required for **Capture card** OCR; sitting used subtitle cue instead ([`SITTING-RUN.md`](SITTING-RUN.md) **One card** **pass** without OCR).              |
+| **One card — audio clip**                 | **blocked** when **ffmpeg** is required to attach clip audio (not exercised in fixture sitting).                                                                                      |
+| **Whisper transcription**                 | **blocked** — local **Whisper** model + CLI on real lesson media in Settings — not covered by sitting automation or [`SITTING-RUN.md`](SITTING-RUN.md).                               |
