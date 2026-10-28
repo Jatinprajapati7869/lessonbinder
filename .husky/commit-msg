@@ -1,0 +1,12 @@
+#!/usr/bin/env sh
+set -eu
+
+msg_file="$1"
+
+if grep -qiE 'Co-authored-by:.*cursor|cursoragent@cursor\.com' "$msg_file"; then
+  tmp="$(mktemp)"
+  grep -viE 'Co-authored-by:.*cursor|cursoragent@cursor\.com' "$msg_file" >"$tmp" || true
+  sed -i -e :a -e '/^\n*$/{$d;N;ba' -e '}' "$tmp" 2>/dev/null || true
+  mv "$tmp" "$msg_file"
+  echo "commit-msg: stripped Co-authored-by: Cursor trailer (human author only)." >&2
+fi

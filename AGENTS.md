@@ -1,4 +1,10 @@
-# Lessonbinder agent rules
+# Lessonbinder contributor rules
+
+## Git commits
+
+- Commits on this repo must list **only the human maintainer** as author. Do **not** add `Co-authored-by: Cursor` or other IDE/agent trailers.
+- Husky runs `.husky/prepare-commit-msg` and `.husky/commit-msg` to strip Cursor co-author lines when the IDE injects them.
+- **`HUSKY=0` disables those hooks.** Do not disable Husky in this repo when committing (unset `HUSKY` or use `HUSKY=1`).
 
 ## Agent skills
 

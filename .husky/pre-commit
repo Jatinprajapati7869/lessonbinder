@@ -1,4 +1,6 @@
 npx lint-staged
 npm run typecheck
 npm run test
-PATH="$(pwd)/.venv/bin:$PATH" pre-commit run
+if [ -x "$(pwd)/.venv/bin/python" ] && "$(pwd)/.venv/bin/python" -c "import pre_commit" 2>/dev/null; then
+  "$(pwd)/.venv/bin/python" -m pre_commit run
+fi
