@@ -97,3 +97,14 @@ rg 'fonts\.googleapis\.com|fonts\.gstatic\.com' ui/dist/
 Prompt **258** did not run the AppImage bundler (`patchelf` missing; see [`PROGRESS.md`](PROGRESS.md) **258**). There is **no `ui/dist` from 258** to search.
 
 **Result:** **no pass** — did not run a `fonts.googleapis.com` / `fonts.gstatic.com` scan against a **258** build output; an older local `ui/dist/` from other work does not count.
+
+## Prompt 318 — `ui/dist` from prompt 314 (2026-10-28)
+
+Prompt **314** ran `npm run tauri:build:appimage`, which executes **`beforeBuildCommand`** → `npm run build --prefix ui` and refreshed **`ui/dist/`** (AppImage bundling then failed; see [`PACKAGE.md`](PACKAGE.md) § AppImage build (prompt **314**)).
+
+```bash
+cd /home/xingzi/Documents/lessonbinder
+rg 'fonts\.googleapis\.com|fonts\.gstatic\.com' ui/dist/
+```
+
+**Result:** no matches (ripgrep exit code **1**). Four local `.ttf` files under `ui/dist/assets/` (Vite hashed names). This is a **pass** for network Google Font hosts in the **314** frontend bundle; it does **not** prove an AppImage exists.

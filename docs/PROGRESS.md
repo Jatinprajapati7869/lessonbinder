@@ -538,8 +538,8 @@ Repo: `/home/xingzi/Documents/lessonbinder`. Full text: `~/Documents/auravault-c
 - [x] 314 — Bundle once — **not built**; `npm run tauri:build:appimage` → `failed to bundle project: \`timeout: global\`` (AppRun download); release binary **34 158 352** B; [`PACKAGE.md`](PACKAGE.md) prompt **314**; commit **313–314**.
 - [x] 315 — Launch the image — no AppImage after **314**; [`SITTING-RUN.md`](SITTING-RUN.md) § AppImage launch command + one sentence → [`PACKAGE.md`](PACKAGE.md).
 - [x] 316 — Install stays true — [`README.md`](../README.md) **Install** matches **314**/**315** (unsigned, **0.0.0**, no Windows/macOS); commit **315–316**.
-- [ ] 317 — Image identity
-- [ ] 318 — Fonts in the image build
+- [x] 317 — Image identity — no AppImage after **314** (`.desktop` **`Name=`** not inspected on disk; Tauri would derive **Lessonbinder** from `productName`); [`src-tauri/tauri.conf.json`](../src-tauri/tauri.conf.json) unchanged: **`productName`** **Lessonbinder**, **`version`** **0.0.0**, **`createUpdaterArtifacts`** **false** (2026-10-28).
+- [x] 318 — Fonts in the image build — [`FONTS.md`](FONTS.md) § prompt **318**: `rg` on **`ui/dist/`** from **314** → no Google Font hosts; commit **317–318**.
 - [ ] 319 — Which icons
 - [ ] 320 — Copy the outlines
 - [ ] 321 — Show folder icon
