@@ -575,8 +575,8 @@ npm run typecheck       # pass (tsc -p ui/tsconfig.json --noEmit)
 - [x] 344 — Human rows that failed — [`SITTING-RUN.md`](SITTING-RUN.md): **Continue**, AppImage launch, purchased-folder import, OCR capture, **Whisper**, **Cancel import** stay **blocked** (no false **pass**); commit **343–344**.
 - [x] 345 — Typecheck — `npm run typecheck` (`tsc -p ui/tsconfig.json --noEmit`): **pass** (2026-10-28).
 - [x] 346 — Lint — `npm run lint` (`eslint .`): **pass**; no fixes in pack-touched files; commit **345–346**.
-- [ ] 347 — Unsigned
-- [ ] 348 — Icons paragraph
+- [x] 347 — Unsigned — [`PACKAGE.md`](PACKAGE.md) **Bundle identity** + prompt **248**: **unsigned**, `createUpdaterArtifacts` **false**, `version` **0.0.0**; § **Platform scope**: **Windows** / **macOS** bundles **not produced** here (**328** commands **unrun**); **not published** from this repo.
+- [x] 348 — Icons paragraph — [`ICONS.md`](ICONS.md) disk audit (**348**): six repo PNGs match table; FlutKit / ProKit remainder **unused**; README § Test lists same filenames; commit **347–348**.
 - [ ] 349 — Checklist evidence
 - [ ] 350 — Tests before freeze
 - [ ] 351 — Freeze
