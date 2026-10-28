@@ -569,8 +569,8 @@ npm run typecheck       # pass (tsc -p ui/tsconfig.json --noEmit)
 - [x] 338 — Show folder still opens the root — **pass**: `Course.test.tsx` — `Show folder calls open command with course id and stubbed opener receives course root` (`openCourseFolderInFileManager("course-1")`; outline icon did **not** replace course id with a typed path — `CourseScreen` still passes `course.course_id`); `lesson_file_directory_open.rs` — `rejects_lesson_media_that_escapes_course_root_via_symlink`.
 - [x] 339 — Shortcuts still match — **pass**: `implementedShortcuts.test.ts` — `matches key modules (fails when the list drifts)`; `Settings.test.tsx` — `renders keyboard shortcut rows from the implemented list` (icon pack did not change shortcut modules).
 - [x] 340 — Backup — **pass**: `lessonbinder_tauri::restore::backup_restore_round_trip_preserves_study_days_and_pack_settings` (streak, theme, speed, volume); commit **339–340**.
-- [ ] 341 — Note and card boundaries
-- [ ] 342 — OCR still local
+- [x] 341 — Note and card boundaries — **pass**: `lesson_note_export.rs` — `markdown_export_reads_vault_notes_only_and_does_not_delete_cards`; `anki-bridge` — `unlink_card_keeps_note_in_temp_profile`.
+- [x] 342 — OCR still local — **pass**: `ocr.rs` — `ocr_shells_out_to_local_tesseract_binary_opens_no_url` (local `Command::new(tesseract)`; no HTTP in OCR source). Sitting **308** used a **subtitle cue** card, not frame OCR — [`SITTING-RUN.md`](SITTING-RUN.md) **One card (subtitle cue)**; commit **341–342**.
 - [ ] 343 — No extra kit files
 - [ ] 344 — Human rows that failed
 - [ ] 345 — Typecheck
