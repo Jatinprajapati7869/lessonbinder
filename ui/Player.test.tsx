@@ -686,6 +686,69 @@ describe("PlayerScreen", () => {
     expect(markLessonComplete).not.toHaveBeenCalled();
   });
 
+  it("shows full watched percent without marking complete", async () => {
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+    const recordPlayback = vi
+      .fn()
+      .mockResolvedValue([{ start_ms: 0, end_ms: 120_000 }]);
+    const markLessonComplete = vi.fn();
+    const commands: CourseCommandPort = {
+      getCourseDetail: vi.fn(),
+      markLessonComplete,
+      markLessonIncomplete: vi.fn(),
+      saveLessonResume: vi.fn(),
+      acceptOrderProposal: vi.fn(),
+      rejectOrderProposal: vi.fn(),
+      reorderLessons: vi.fn(),
+      setPlaylistItemWatched: vi.fn(),
+      markLessonBroken: vi.fn(),
+      guardLessonMediaForResume: vi.fn().mockResolvedValue("in_progress"),
+      rescanCourse: vi.fn(),
+      mediaUrlForPath: vi.fn().mockResolvedValue("asset://intro.mp4"),
+      listLessonCues: vi.fn().mockResolvedValue([]),
+      listLessonWatchedRanges: vi.fn().mockResolvedValue([]),
+      recordPlayback,
+      ...lessonNoteCommandStubs,
+      ...transcriptionCommandStubs,
+    };
+
+    render(
+      <SettingsCommandsProvider commands={settingsCommandStubs}>
+        <CourseCommandsProvider commands={commands}>
+          <PlayerScreen lesson={lesson} courseId="course-1" onBack={() => {}} />
+        </CourseCommandsProvider>
+      </SettingsCommandsProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByRole("button", { name: "Play" })).toBeInTheDocument();
+    });
+
+    const video = document.querySelector("video") as HTMLMediaElement;
+    let current = 0;
+    Object.defineProperty(video, "currentTime", {
+      configurable: true,
+      get: () => current,
+      set: (value: number) => {
+        current = value;
+      },
+    });
+    Object.defineProperty(video, "duration", {
+      configurable: true,
+      value: 120,
+    });
+
+    await user.click(screen.getByRole("button", { name: "Play" }));
+    current = 120;
+    await vi.advanceTimersByTimeAsync(PLAYBACK_WATCH_INTERVAL_MS);
+
+    await waitFor(() => {
+      expect(recordPlayback).toHaveBeenCalledWith("lesson-1", 0, 120_000);
+      expect(screen.getByText("Watched 100%")).toBeInTheDocument();
+    });
+    expect(markLessonComplete).not.toHaveBeenCalled();
+  });
+
   it("lists lesson resources and opens pdf and image viewers", async () => {
     const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
     const listLessonResources = vi.fn().mockResolvedValue([

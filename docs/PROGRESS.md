@@ -476,8 +476,8 @@ Repo: `/home/xingzi/Documents/lessonbinder`. Full text: `~/Documents/auravault-c
 - [x] 276 — No analytics host — `docs/SITTING.md` § Prompt 276 ripgrep audit; removed fixture `example.com` URL + block off-localhost `fetch`; `noPhoneHomeHosts.test.ts`.
 - [x] 277 — Show folder only with a course — `LibraryEmpty.test.tsx` — empty library has no **Show folder**; `Library.test.tsx` — `course row list does not show Show folder`; `Course.test.tsx` — `folder course screen shows Show folder`.
 - [x] 278 — Show folder waits for the scan — `CourseScreen` disables **Show folder** when `rescanningFolder`; `Course.test.tsx` — cancel rescan test asserts disabled **Show folder** + enabled **Cancel rescan**; `Library.test.tsx` — import in flight has no **Show folder**, **Cancel import** enabled.
-- [ ] 279 — Complete stays manual
-- [ ] 280 — Cancel still wins
+- [x] 279 — Complete stays manual — **D → done:** `ui/Player.test.tsx` — **`d key marks complete and exposes the shortcut on the control`**; `ui/playerCompleteKeyboard.test.ts`. **Full watch % → not done:** `vault_core::watched::union_full_watch_does_not_auto_done`; `ui/Player.test.tsx` — **`records watched playback on interval without marking complete`**, **`shows full watched percent without marking complete`**; `vault_core::first_course_sitting::first_course_sitting`. No new auto-`done` path in prompts 252–279.
+- [x] 280 — Cancel still wins — `Library.test.tsx` — `cancel folder scan calls command layer while import is in flight`; `Course.test.tsx` — `cancel rescan calls command layer while rescan is in flight` (Show folder / shortcut list unchanged).
 - [ ] 281 — Deslop
 - [ ] 282 — Doctor
 - [ ] 283 — README
