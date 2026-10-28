@@ -112,4 +112,23 @@ Prompt **358** replaced the rows above with `var(--…)` theme tokens (and roadm
 - **Prompt 359:** In **`[data-theme="dark"]`**, **`player-frame`**, video letterbox, and **`player-bar--overlay`** use **`--bg-surface`** (not **`--bg-elevated`**); theater/zen **`player-screen`** uses **`--bg-app`** and **`player-main`** uses **`--bg-surface`** for idle fill. Light theme unchanged (stone **`--bg-surface`** / **`--bg-elevated`** on the bar).
 - **Prompt 360:** Tests in **`ui/PlayerMpvHandoff.test.tsx`**, **`ui/darkThemePageBackground.test.tsx`**, and **`ui/theme.test.ts`** (dark player bar); **`cargo test --workspace`** and **`npm test`**.
 
+## mpv spawn — no separate window (prompt 362)
+
+Handoff spawns **`mpv`** once per session from `spawn_embedded_mpv` in `src-tauri/src/mpv_commands.rs`, using **`mpv_embed_argv`** in `crates/tauri/src/mpv.rs`. Video paints into the Tauri window via the host **`wid`**; there is **no** standalone mpv top-level window. Do **not** pass **`--force-window=yes`**, **`--force-window=immediate`**, or other values that create mpv’s own GUI frame.
+
+| Flag                              | Role                                                                               |
+| --------------------------------- | ---------------------------------------------------------------------------------- |
+| **`--no-terminal`**               | Avoid attaching mpv to the launching terminal.                                     |
+| **`--idle=yes`**                  | Keep the process alive before **`loadfile`** over IPC.                             |
+| **`--force-window=embed`**        | Embed video into the existing host window (not a separate mpv window).             |
+| **`--wid=0x…`**                   | X11/Wayland window id of the webview host surface to embed into.                   |
+| **`--geometry=WxH+X+Y`**          | Embedded sub-rectangle (matches the `<video>` layout in device pixels).            |
+| **`--osc=no`**                    | Disable mpv’s on-screen controller (Lessonbinder bar is the UI).                   |
+| **`--input-default-bindings=no`** | Disable default key bindings in the embed.                                         |
+| **`--input-builtin-bindings=no`** | Disable built-in bindings in the embed.                                            |
+| **`--keep-open=yes`**             | Stay open after the file ends (user leaves via Lessonbinder).                      |
+| **`--input-ipc-server=PATH`**     | Unix socket for JSON IPC (`loadfile`, seek, pause, volume, speed, **`time-pos`**). |
+
+After spawn, Rust calls **`loadfile`** on the lesson **`local_media_path`**, optional seek for resume, then **`set_pause` false**. **`stop_mpv_lesson_handoff`** kills the child and removes the socket file.
+
 ---

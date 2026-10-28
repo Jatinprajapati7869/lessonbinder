@@ -21,6 +21,7 @@ Lessonbinder is an offline desktop app (Tauri, React, and TypeScript) for course
 - Pair `.srt` or `.vtt` files to videos by filename stem instead of importing subtitles as separate lessons.
 - Read duration and similar metadata when tools such as ffprobe are on `PATH`; otherwise store unknown values with a reason.
 - Resume video or document position, record watched intervals for a percentage display, and mark lessons complete or incomplete yourself.
+- **Playback** uses the embedded WebView **video** element when it can decode the file. When it cannot, the same local path is handed to **mpv** if `mpv` is on your **PATH**. **mpv** is not bundled, and mpv’s on-screen controls are not the Lessonbinder UI. **Speed**, **volume**, **mute**, **theater**, and **zen** are on the player bar over the frame. Neither stack guarantees every codec or container will play.
 - Move lessons up or down within a course; accept or reject order proposals where the UI exposes them.
 - On a folder **course** screen, **Show folder** opens that course’s root in your file manager (the control is disabled while a folder rescan is in progress).
 - In the **player**, **Show lesson file** opens the lesson media’s directory in your file manager.
@@ -34,7 +35,7 @@ Lessonbinder is an offline desktop app (Tauri, React, and TypeScript) for course
 - Keep per-lesson notes in the vault; save a note to Anki only after you confirm. List linked cards on a lesson and unlink without deleting the note.
 - Optionally attach a local audio clip to a card when ffmpeg and the capture flow are available.
 - Show ffprobe-derived chapters when present; offer “Up next” in course order and course-scoped review when cards are due.
-- Use player **theater** and **zen** modes to hide chrome for focused playback. Picture-in-picture is supported in code but the control stays hidden when the embedded WebView does not expose PiP (common on Linux builds).
+- Picture-in-picture is supported in code but the control stays hidden when the embedded WebView does not expose PiP (common on Linux builds).
 - Choose **light** or **dark** theme in Settings (stored in `vault.db`). UI text uses bundled **Google Sans**; the shell wordmark uses bundled **Andina** (local files — see [`docs/FONTS.md`](docs/FONTS.md)).
 - Show a **study streak** on the library for consecutive days with qualifying study activity (not opening a course alone).
 - Transcribe locally when Settings points at a Whisper model file and the CLI is available.

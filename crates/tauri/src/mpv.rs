@@ -93,6 +93,9 @@ mod tests {
             },
         );
         assert!(argv.iter().any(|a| a == "--force-window=embed"));
+        assert!(!argv
+            .iter()
+            .any(|a| a.starts_with("--force-window") && a != "--force-window=embed"));
         assert!(argv.iter().any(|a| a.starts_with("--input-ipc-server=")));
         assert!(argv.iter().any(|a| a == "--osc=no"));
         assert!(!argv.iter().any(|a| a == "--osc=yes"));

@@ -600,6 +600,6 @@ Repo: `/home/xingzi/Documents/lessonbinder`. Full text: `~/Documents/auravault-c
 - [x] 358 — Dark tokens everywhere — § **Dark gaps** remediated in CSS + roadmap SVG export; `DESIGN_DARK_COLOR_TOKENS` mirrors `tokens.css`; contrast tests unchanged; commit **357–358**.
 - [x] 359 — The frame stays dark — dark theme: `player-frame`, overlay bar, and theater/zen idle use `--bg-surface` / `--bg-app`; light stone surfaces unchanged.
 - [x] 360 — Tests — mpv handoff, missing mpv message, overlay bar layout, dark page background; `cargo test --workspace` and `npm test`.
-- [ ] 361 — README
-- [ ] 362 — No extra window
+- [x] 361 — README — playback: WebView, optional mpv on PATH, bar controls; no bundled mpv; no universal codec claim.
+- [x] 362 — No extra window — `mpv_embed_argv` uses `--force-window=embed` + `--wid`; § **mpv spawn — no separate window** in [`PLAYBACK.md`](PLAYBACK.md) lists flags; commit **361–362**.
 - [ ] 363 — Freeze
