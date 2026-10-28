@@ -493,7 +493,7 @@ npm run typecheck       # tsc -p ui/tsconfig.json --noEmit; pass
 
 - [x] 287 — Icons stay waiting — [`SCOPE-v1.5.md`](SCOPE-v1.5.md) out-of-scope + UI kits paragraph: FlutKit/ProKit **icons** unused; only kit files in app are four **Google Sans** + **Andina** `.ttf` under `ui/src/theme/fonts/` (no icons copied).
 - [x] 288 — No other platforms — [`README.md`](../README.md) + [`PACKAGE.md`](PACKAGE.md): Linux-only bundling copy; removed macOS/Windows/signing name-drops that read like platform claims.
-- [ ] 289 — Note and search
+- [x] 289 — Note and search — `vault_core::lesson_note_export::markdown_export_reads_vault_notes_only_and_does_not_delete_cards`; `vault_core::search::search_stays_local_lesson_note_body_returned_and_missing_note_not` (both pass; no pack regression).
 - [ ] 290 — Backup
 - [ ] 291 — Profile lock
 - [ ] 292 — Missing file
