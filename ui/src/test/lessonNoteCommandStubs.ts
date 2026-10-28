@@ -15,4 +15,5 @@ export const lessonNoteCommandStubs = {
   listLessonChapters: vi.fn().mockResolvedValue({ chapters: [], reason: null }),
   upNext: vi.fn().mockResolvedValue(null),
   openCourseFolderInFileManager: vi.fn().mockResolvedValue(undefined),
+  openLessonFileDirectoryInFileManager: vi.fn().mockResolvedValue(undefined),
 };

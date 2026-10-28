@@ -6,9 +6,9 @@ use tauri_plugin_dialog::{DialogExt, FilePath};
 use vault_core::chapters::{
     list_chapters as load_lesson_chapters, refresh_lesson_chapters, ChapterError,
 };
-use vault_core::course::course_detail;
-use vault_core::course::LessonKind;
+use vault_core::course::{course_detail, LessonKind};
 use vault_core::course_archive::{archive_course, unarchive_course};
+use vault_core::course_folder::lesson_file_directory_for_open;
 use vault_core::cues::list_player_cues;
 use vault_core::extract::ExtractorEnv;
 use vault_core::import::{rescan_with_cancel, FolderScanProgress};
@@ -29,7 +29,9 @@ use vault_core::CueError;
 use vault_core::LessonStatus;
 use vault_core::WatchedRange;
 
-use lessonbinder_tauri::command_error::{from_rescan_error, from_thumbnail_error};
+use lessonbinder_tauri::command_error::{
+    from_course_folder_open_error, from_rescan_error, from_thumbnail_error, opener_open_path_failed,
+};
 use lessonbinder_tauri::command_log::log_command_error;
 
 use crate::app_state::AppState;
@@ -671,6 +673,23 @@ pub fn set_playlist_item_watched(
         }
         Ok(())
     })
+}
+
+#[tauri::command]
+pub fn open_lesson_file_directory_in_file_manager(
+    app: AppHandle,
+    state: State<AppState>,
+    lesson_id: String,
+) -> Result<(), String> {
+    use tauri_plugin_opener::OpenerExt;
+
+    let path = state.with_vault(|vault| {
+        lesson_file_directory_for_open(vault, &lesson_id)
+            .map_err(|e| from_course_folder_open_error(e).to_invoke_string())
+    })?;
+    app.opener()
+        .open_path(path.to_string_lossy().into_owned(), None::<&str>)
+        .map_err(|_| opener_open_path_failed().to_invoke_string())
 }
 
 impl From<vault_core::course::CourseDetail> for CourseDetailDto {

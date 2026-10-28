@@ -8,6 +8,7 @@ import type {
   WatchedRange,
 } from "../api/courseTypes";
 import type { VaultSettings } from "../api/settingsTypes";
+import { invokeErrorMessage } from "../api/invokeError";
 import { useCourseCommands } from "../course/useCourseCommands";
 import { formatDurationMs, watchedPercent } from "../library/format";
 import { isDocumentLessonPath } from "../lesson/lessonDocument";
@@ -177,6 +178,9 @@ export function PlayerScreen({
   const [transcribeError, setTranscribeError] = useState<string | null>(null);
   const [thumbnailBusy, setThumbnailBusy] = useState(false);
   const [thumbnailError, setThumbnailError] = useState<string | null>(null);
+  const [lessonFileOpenError, setLessonFileOpenError] = useState<string | null>(
+    null
+  );
   const [theaterMode, setTheaterMode] = useState(false);
   const [theaterControlsVisible, setTheaterControlsVisible] = useState(true);
   const [zenMode, setZenMode] = useState(false);
@@ -756,6 +760,17 @@ export function PlayerScreen({
     }
   }
 
+  async function handleShowLessonFileDirectory() {
+    setLessonFileOpenError(null);
+    try {
+      await commands.openLessonFileDirectoryInFileManager(lesson.lesson_id);
+    } catch (e) {
+      setLessonFileOpenError(
+        invokeErrorMessage(e, "Could not open lesson file folder.")
+      );
+    }
+  }
+
   function openAudioClipCard() {
     const video = videoRef.current;
     if (!video) {
@@ -1013,6 +1028,16 @@ export function PlayerScreen({
           >
             Capture card
           </button>
+          {lesson.kind === "local_file" && lesson.local_media_path ? (
+            <button
+              type="button"
+              className="library-button-secondary"
+              aria-label="Show lesson file"
+              onClick={() => void handleShowLessonFileDirectory()}
+            >
+              Show lesson file
+            </button>
+          ) : null}
           {lesson.kind === "local_file" ? (
             <button
               type="button"
@@ -1039,6 +1064,11 @@ export function PlayerScreen({
       {!zenMode && thumbnailError ? (
         <p className="library-error" role="alert">
           {thumbnailError}
+        </p>
+      ) : null}
+      {!zenMode && lessonFileOpenError ? (
+        <p className="library-error" role="alert">
+          {lessonFileOpenError}
         </p>
       ) : null}
       {audioClipOpen ? (

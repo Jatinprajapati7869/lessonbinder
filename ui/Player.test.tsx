@@ -1227,4 +1227,59 @@ describe("PlayerScreen", () => {
       });
     });
   });
+
+  it("shows one sentence when the file manager cannot open the lesson file folder", async () => {
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+    const openLessonFileDirectoryInFileManager = vi.fn().mockRejectedValue(
+      new Error(
+        JSON.stringify({
+          code: "opener_open_path_failed",
+          message: "Could not open that folder in your file manager.",
+        })
+      )
+    );
+    const commands: CourseCommandPort = {
+      getCourseDetail: vi.fn(),
+      markLessonComplete: vi.fn(),
+      markLessonIncomplete: vi.fn(),
+      saveLessonResume: vi.fn(),
+      acceptOrderProposal: vi.fn(),
+      rejectOrderProposal: vi.fn(),
+      reorderLessons: vi.fn(),
+      setPlaylistItemWatched: vi.fn(),
+      markLessonBroken: vi.fn(),
+      guardLessonMediaForResume: vi.fn().mockResolvedValue("in_progress"),
+      rescanCourse: vi.fn(),
+      mediaUrlForPath: vi.fn().mockResolvedValue("asset://intro.mp4"),
+      listLessonCues: vi.fn().mockResolvedValue([]),
+      listLessonWatchedRanges: vi.fn().mockResolvedValue([]),
+      recordPlayback: vi.fn().mockResolvedValue([]),
+      ...lessonNoteCommandStubs,
+      ...transcriptionCommandStubs,
+      openLessonFileDirectoryInFileManager,
+    };
+
+    render(
+      <SettingsCommandsProvider commands={settingsCommandStubs}>
+        <CourseCommandsProvider commands={commands}>
+          <PlayerScreen lesson={lesson} courseId="course-1" onBack={() => {}} />
+        </CourseCommandsProvider>
+      </SettingsCommandsProvider>
+    );
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole("button", { name: "Show lesson file" })
+      ).toBeInTheDocument();
+    });
+
+    await user.click(screen.getByRole("button", { name: "Show lesson file" }));
+
+    await waitFor(() => {
+      expect(screen.getByRole("alert")).toHaveTextContent(
+        "Could not open that folder in your file manager."
+      );
+    });
+    expect(screen.getByRole("alert").textContent).not.toMatch(/stack/i);
+  });
 });

@@ -49,6 +49,13 @@ pub fn from_import_error(err: ImportError) -> CommandError {
     }
 }
 
+pub fn opener_open_path_failed() -> CommandError {
+    CommandError {
+        code: "opener_open_path_failed".into(),
+        message: "Could not open that folder in your file manager.".into(),
+    }
+}
+
 pub fn from_course_folder_open_error(err: CourseFolderOpenError) -> CommandError {
     match err {
         CourseFolderOpenError::Import(import_err) => from_import_error(import_err),
@@ -67,6 +74,18 @@ pub fn from_course_folder_open_error(err: CourseFolderOpenError) -> CommandError
         CourseFolderOpenError::CourseRootStale => CommandError {
             code: "course_root_stale".into(),
             message: "course_root_stale".into(),
+        },
+        CourseFolderOpenError::LessonNotFound => CommandError {
+            code: "lesson_not_found".into(),
+            message: "lesson_not_found".into(),
+        },
+        CourseFolderOpenError::LessonMediaMissing => CommandError {
+            code: "lesson_media_missing".into(),
+            message: "lesson_media_missing".into(),
+        },
+        CourseFolderOpenError::PathOutsideCourseRoot => CommandError {
+            code: "path_outside_course_root".into(),
+            message: "path_outside_course_root".into(),
         },
         CourseFolderOpenError::Db(db_err) => CommandError {
             code: "open_course_folder_db_error".into(),

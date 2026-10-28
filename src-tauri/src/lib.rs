@@ -83,6 +83,7 @@ pub fn run() {
             course_commands::set_playlist_item_watched,
             course_commands::mark_lesson_broken,
             course_commands::guard_lesson_media_for_resume,
+            course_commands::open_lesson_file_directory_in_file_manager,
             course_commands::rescan_course,
             course_commands::archive_course_entry,
             course_commands::unarchive_course_entry,

@@ -16,7 +16,9 @@ use vault_core::study_day::{
 use vault_core::DerivedStatus;
 use vault_core::VaultDb;
 
-use lessonbinder_tauri::command_error::{from_course_folder_open_error, from_import_error};
+use lessonbinder_tauri::command_error::{
+    from_course_folder_open_error, from_import_error, opener_open_path_failed,
+};
 
 use crate::app_state::AppState;
 use crate::folder_scan_progress::emit_folder_scan_progress;
@@ -306,7 +308,7 @@ pub fn open_course_folder_in_file_manager(
     })?;
     app.opener()
         .open_path(path.to_string_lossy().into_owned(), None::<&str>)
-        .map_err(|e| e.to_string())
+        .map_err(|_| opener_open_path_failed().to_invoke_string())
 }
 
 #[tauri::command]

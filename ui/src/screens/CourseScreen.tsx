@@ -3,6 +3,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { handleTableArrowKeys } from "../keyboard/tableListNavigation";
 
 import type { CourseDetail, LessonRow } from "../api/courseTypes";
+import { invokeErrorMessage } from "../api/invokeError";
 import { CourseLessonTitleCell } from "../course/CourseLessonTitleCell";
 import { libraryImportErrorMessage } from "../library/libraryImportError";
 import { LibraryFolderScan } from "../library/LibraryFolderScan";
@@ -136,9 +137,7 @@ export function CourseScreen({
     try {
       await commands.openCourseFolderInFileManager(course.course_id);
     } catch (e) {
-      setError(
-        e instanceof Error ? e.message : "Could not open course folder."
-      );
+      setError(invokeErrorMessage(e, "Could not open course folder."));
     } finally {
       setBusy(false);
     }

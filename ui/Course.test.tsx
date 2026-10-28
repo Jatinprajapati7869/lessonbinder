@@ -105,6 +105,40 @@ describe("CourseScreen", () => {
     expect(openPath).toHaveBeenCalledWith(courseRoot);
   });
 
+  it("shows one sentence when the file manager cannot open the course folder", async () => {
+    const user = userEvent.setup();
+    const openCourseFolderInFileManager = vi.fn().mockRejectedValue(
+      new Error(
+        JSON.stringify({
+          code: "opener_open_path_failed",
+          message: "Could not open that folder in your file manager.",
+        })
+      )
+    );
+    render(
+      <CourseCommandsProvider
+        commands={baseCommands({ openCourseFolderInFileManager })}
+      >
+        <CourseScreen
+          course={courseRow}
+          onBack={() => {}}
+          onPlayLesson={() => {}}
+        />
+      </CourseCommandsProvider>
+    );
+
+    await user.click(
+      await screen.findByRole("button", { name: "Show folder" })
+    );
+
+    await waitFor(() => {
+      expect(screen.getByRole("alert")).toHaveTextContent(
+        "Could not open that folder in your file manager."
+      );
+    });
+    expect(screen.getByRole("alert").textContent).not.toMatch(/stack/i);
+  });
+
   it("Review this course passes the course id to the review handler", async () => {
     const user = userEvent.setup();
     const onReviewThisCourse = vi.fn();

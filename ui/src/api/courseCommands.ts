@@ -31,6 +31,7 @@ export type CourseCommandPort = {
   rescanCourse(courseId: string): Promise<void>;
   cancelFolderScan(): Promise<void>;
   openCourseFolderInFileManager(courseId: string): Promise<void>;
+  openLessonFileDirectoryInFileManager(lessonId: string): Promise<void>;
   archiveCourse(courseId: string): Promise<void>;
   unarchiveCourse(courseId: string): Promise<void>;
   mediaUrlForPath(path: string): Promise<string>;
@@ -101,6 +102,8 @@ export const tauriCourseCommands: CourseCommandPort = {
   cancelFolderScan: () => invoke("cancel_import_course_folder"),
   openCourseFolderInFileManager: (courseId) =>
     invoke("open_course_folder_in_file_manager", { courseId }),
+  openLessonFileDirectoryInFileManager: (lessonId) =>
+    invoke("open_lesson_file_directory_in_file_manager", { lessonId }),
   archiveCourse: (courseId) => invoke("archive_course_entry", { courseId }),
   unarchiveCourse: (courseId) => invoke("unarchive_course_entry", { courseId }),
   mediaUrlForPath: async (path) => {

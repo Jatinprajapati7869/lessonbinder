@@ -66,7 +66,9 @@ pub use continue_learning::{
 };
 pub use course::{course_detail, CourseDetail, LessonKind, LessonView, OrderProposalView};
 pub use course_archive::{archive_course, unarchive_course, CourseArchiveError};
-pub use course_folder::{course_folder_path_for_open, CourseFolderOpenError};
+pub use course_folder::{
+    course_folder_path_for_open, lesson_file_directory_for_open, CourseFolderOpenError,
+};
 pub use cues::{list_cues, list_player_cues, parse_subtitle_file, CueError, SubtitleCue};
 pub use db::LessonStatus;
 pub use db::VaultDb;
