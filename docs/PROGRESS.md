@@ -536,8 +536,8 @@ Repo: `/home/xingzi/Documents/lessonbinder`. Full text: `~/Documents/auravault-c
 - [x] 312 — Sitting page — [`SITTING.md`](SITTING.md) links [`SITTING-RUN.md`](SITTING-RUN.md); **sat** rows **305–311** dated **2026-10-28**; purchased-folder import not **sat**; commit 311–312.
 - [x] 313 — patchelf again — **`/usr/bin/patchelf`** (`command -v patchelf`, 2026-10-28).
 - [x] 314 — Bundle once — **not built**; `npm run tauri:build:appimage` → `failed to bundle project: \`timeout: global\`` (AppRun download); release binary **34 158 352** B; [`PACKAGE.md`](PACKAGE.md) prompt **314**; commit **313–314**.
-- [ ] 315 — Launch the image
-- [ ] 316 — Install stays true
+- [x] 315 — Launch the image — no AppImage after **314**; [`SITTING-RUN.md`](SITTING-RUN.md) § AppImage launch command + one sentence → [`PACKAGE.md`](PACKAGE.md).
+- [x] 316 — Install stays true — [`README.md`](../README.md) **Install** matches **314**/**315** (unsigned, **0.0.0**, no Windows/macOS); commit **315–316**.
 - [ ] 317 — Image identity
 - [ ] 318 — Fonts in the image build
 - [ ] 319 — Which icons

@@ -46,3 +46,31 @@ npm run tauri:dev
 | `intro.srt` | Two cues paired by stem.                                          |
 | `notes.md`  | Markdown lesson.                                                  |
 | `extra.mp4` | Second video; listed in `.lessonbinderignore` so import skips it. |
+
+---
+
+## AppImage launch (prompt 315)
+
+Use when `target/release/bundle/appimage/*.AppImage` exists (repo root):
+
+```bash
+export APP_HOME="$(mktemp -d)"
+export HOME="$APP_HOME"
+export XDG_DATA_HOME="$(mktemp -d)"
+export XDG_CONFIG_HOME="$(mktemp -d)"
+export XDG_CACHE_HOME="$(mktemp -d)"
+trap 'rm -rf "$APP_HOME" "$XDG_DATA_HOME" "$XDG_CONFIG_HOME" "$XDG_CACHE_HOME"' EXIT
+
+cd /home/xingzi/Documents/lessonbinder
+APPIMAGE="$(ls -1 target/release/bundle/appimage/*.AppImage | head -1)"
+chmod +x "$APPIMAGE"
+
+"$APPIMAGE" &
+APP_PID=$!
+sleep 15
+# Confirm empty Library (Add folder / playlist actions), then quit:
+kill -TERM "$APP_PID" 2>/dev/null || true
+wait "$APP_PID" 2>/dev/null || true
+```
+
+**Result (2026-10-28):** **not run** — no `*.AppImage` on this machine after prompt **314**; see [`PACKAGE.md`](PACKAGE.md) § AppImage build (prompt **314**).

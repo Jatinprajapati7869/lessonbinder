@@ -51,7 +51,7 @@ Lessonbinder is an offline desktop app (Tauri, React, and TypeScript) for course
 
 ## Install
 
-Build a **Linux AppImage on your own machine** from this repository. The bundled app version in `tauri.conf.json` is **0.0.0**. Builds are for **local** installation and testing only—not a published release from the project.
+Build an **unsigned** **Linux AppImage on your own machine** from this repository. The bundled app version in `tauri.conf.json` is **0.0.0**. Builds are for **local** installation and testing only—not a published release from the project. This repository does **not** ship **Windows** or **macOS** binaries.
 
 From the repository root, with UI dependencies installed (`npm ci --prefix ui`):
 
@@ -59,7 +59,7 @@ From the repository root, with UI dependencies installed (`npm ci --prefix ui`):
 npm run tauri:build:appimage
 ```
 
-When bundling succeeds, the file appears under `target/release/bundle/appimage/*.AppImage`. Host dependencies, runtime tools on `PATH`, and AGPL distribution notes are in [`docs/PACKAGE.md`](docs/PACKAGE.md).
+When bundling succeeds, the file appears under `target/release/bundle/appimage/*.AppImage`. On the reference machine (prompt **314**, 2026-10-28), bundling did **not** finish—no AppImage to install or launch; see [`docs/PACKAGE.md`](docs/PACKAGE.md) § AppImage build (prompt **314**). Isolated AppImage smoke-test commands (when a bundle exists) are in [`docs/SITTING-RUN.md`](docs/SITTING-RUN.md) § AppImage launch (prompt **315**). Host dependencies, runtime tools on `PATH`, and AGPL distribution notes are in [`docs/PACKAGE.md`](docs/PACKAGE.md).
 
 ## Develop
 
