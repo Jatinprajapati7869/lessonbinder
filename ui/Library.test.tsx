@@ -270,4 +270,44 @@ describe("LibraryScreen", () => {
 
     finishImport?.();
   });
+
+  it("Escape during folder import does not call cancelImportFolder", async () => {
+    const user = userEvent.setup();
+    let finishImport: (() => void) | undefined;
+    const importFolder = vi.fn(
+      () =>
+        new Promise<void>((resolve) => {
+          finishImport = resolve;
+        })
+    );
+    const cancelImportFolder = vi.fn().mockResolvedValue(undefined);
+    renderLibrary(
+      libraryCommands({
+        importFolder,
+        cancelImportFolder,
+        pickFolder: vi.fn().mockResolvedValue("/tmp/course"),
+      })
+    );
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole("button", { name: "Add folder" })
+      ).toBeInTheDocument();
+    });
+
+    await user.click(screen.getByRole("button", { name: "Add folder" }));
+
+    await waitFor(() => {
+      expect(screen.getByRole("status")).toHaveTextContent("Scanning folder");
+    });
+
+    await user.keyboard("{Escape}");
+
+    expect(cancelImportFolder).not.toHaveBeenCalled();
+    expect(
+      screen.getByRole("button", { name: "Cancel import" })
+    ).toBeInTheDocument();
+
+    finishImport?.();
+  });
 });

@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import {
   FOLDER_SCAN_BUSY_MESSAGE,
+  IMPORT_CANCELLED_MESSAGE,
   LIBRARY_DROP_FILE_MESSAGE,
   libraryImportErrorMessage,
   NO_LESSON_FILES_MESSAGE,
@@ -35,7 +36,7 @@ describe("libraryImportErrorMessage", () => {
     expect(message).toBe(LIBRARY_DROP_FILE_MESSAGE);
   });
 
-  it("returns null for user-cancelled import", () => {
+  it("maps import_cancelled to one library sentence", () => {
     const message = libraryImportErrorMessage(
       new Error(
         JSON.stringify({
@@ -45,7 +46,10 @@ describe("libraryImportErrorMessage", () => {
       ),
       "Import folder failed."
     );
-    expect(message).toBeNull();
+    expect(message).toBe(IMPORT_CANCELLED_MESSAGE);
+    expect(message).not.toMatch(/deleted|removed/i);
+    expect(message).not.toContain("\n");
+    expect(message).not.toMatch(/Import folder failed/);
   });
 
   it("maps folder_scan_in_progress to one sentence", () => {

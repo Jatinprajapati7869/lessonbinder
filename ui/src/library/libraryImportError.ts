@@ -15,6 +15,9 @@ export const FOLDER_SCAN_BUSY_MESSAGE = "A folder scan is already running.";
 
 export const NO_LESSON_FILES_MESSAGE = "No lesson files.";
 
+export const IMPORT_CANCELLED_MESSAGE =
+  "Folder import was cancelled; lessons already added stay in the library.";
+
 export function libraryImportErrorMessage(
   raw: unknown,
   fallback: string
@@ -28,7 +31,7 @@ export function libraryImportErrorMessage(
       return LIBRARY_DROP_FILE_MESSAGE;
     }
     if (parsed?.code === "import_cancelled") {
-      return null;
+      return IMPORT_CANCELLED_MESSAGE;
     }
     if (parsed?.code === "folder_scan_in_progress") {
       return FOLDER_SCAN_BUSY_MESSAGE;
