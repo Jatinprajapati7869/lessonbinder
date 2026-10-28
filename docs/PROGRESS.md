@@ -554,8 +554,8 @@ Repo: `/home/xingzi/Documents/lessonbinder`. Full text: `~/Documents/auravault-c
 - [x] 330 — Signing stays off — [`PACKAGE.md`](PACKAGE.md) § **Code signing**: not configured for Linux / Windows / macOS; commit **329–330**.
 - [x] 331 — Deslop — icon pack UI: dropped dead `course-header__show-folder` / `nav-item--with-icon` / `library-search__icon`; one search a11y assert.
 - [x] 332 — Doctor — `npx react-doctor@latest --verbose` on `ui/`: **64 / 100** (36 warnings). No crash, dead icon-pack control, or missing accessible name on icon additions; complexity warnings unchanged; commit **331–332**.
-- [ ] 333 — README
-- [ ] 334 — Scope
+- [x] 333 — README — links [`SITTING-RUN.md`](SITTING-RUN.md); names copied outline PNGs; **Install** matches **314** (no published/signed/Win/macOS claims).
+- [x] 334 — Scope — [`docs/SCOPE-v1.6.md`](SCOPE-v1.6.md): sitting run, AppImage **314** retry, six outline PNGs, Win/macOS doc §, signing off; out table on accounts/cloud/kit illustrations/certificate/auto-done; commit **333–334**.
 - [ ] 335 — Checklist
 - [ ] 336 — Tests
 - [ ] 337 — Cancel still works

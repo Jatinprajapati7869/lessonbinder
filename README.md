@@ -80,6 +80,10 @@ cd ui && npm test
 
 The manual launch, fixture, and safety checklist is in [`docs/FIRST-TEST.md`](docs/FIRST-TEST.md).
 
+Manual **sitting** results for the dev fixture run (prompts **305–311**) are recorded in [`docs/SITTING-RUN.md`](docs/SITTING-RUN.md). How those rows map to the first-course checklist is in [`docs/SITTING.md`](docs/SITTING.md).
+
+Licensed FlutKit **outline** PNGs in `ui/src/theme/icons/`: `file-tray-full-outline.png`, `search-outline.png`, `setting-outline.png`, `reader-outline.png`, `list-outline.png`, and `school-outline.png` (`school-outline.png` is copied but not shown in the UI—see [`docs/ICONS.md`](docs/ICONS.md)).
+
 ## License
 
 This project is AGPL-3.0-or-later (workspace `Cargo.toml`). Binaries link the `anki` crate from Anki’s `rslib`, which is AGPL as well; distributing a build requires complying with both licenses, including source obligations for the linked library.
