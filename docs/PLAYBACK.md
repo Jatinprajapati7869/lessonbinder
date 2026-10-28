@@ -109,5 +109,7 @@ The **first lesson in this course is a video** (`.mkv`), not markdown or PDF—n
 Prompt **358** replaced the rows above with `var(--…)` theme tokens (and roadmap SVG export uses `themeColors.ts` / active `data-theme`). **`theme.contrast.test.ts`** still asserts dark body text ≥ 4.5:1 on app, surface, and elevated backgrounds.
 
 - **Prompt 358:** CSS gaps from § **Dark gaps** use existing light/dark tokens only (`course.css`, `library.css`, `roadmap.css`); `roadmapGraphSvg.ts` reads `DESIGN_*_COLOR_TOKENS` via `themeColors.ts` (matches `[data-theme="dark"]`). No second palette.
+- **Prompt 359:** In **`[data-theme="dark"]`**, **`player-frame`**, video letterbox, and **`player-bar--overlay`** use **`--bg-surface`** (not **`--bg-elevated`**); theater/zen **`player-screen`** uses **`--bg-app`** and **`player-main`** uses **`--bg-surface`** for idle fill. Light theme unchanged (stone **`--bg-surface`** / **`--bg-elevated`** on the bar).
+- **Prompt 360:** Tests in **`ui/PlayerMpvHandoff.test.tsx`**, **`ui/darkThemePageBackground.test.tsx`**, and **`ui/theme.test.ts`** (dark player bar); **`cargo test --workspace`** and **`npm test`**.
 
 ---

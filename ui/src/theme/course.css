@@ -309,6 +309,32 @@
   object-fit: contain;
 }
 
+/* Prompt 359: dark player chrome uses surface/app tokens (no elevated “panel” on the frame). */
+:root[data-theme="dark"] .player-frame {
+  background: var(--bg-surface);
+}
+
+:root[data-theme="dark"] .player-frame .player-video,
+:root[data-theme="dark"] .player-video {
+  background: var(--bg-surface);
+}
+
+:root[data-theme="dark"] .player-bar--overlay,
+:root[data-theme="dark"] .player-bar {
+  background: var(--bg-surface);
+  box-shadow: none;
+}
+
+:root[data-theme="dark"] .player-screen--theater,
+:root[data-theme="dark"] .player-screen--zen {
+  background: var(--bg-app);
+}
+
+:root[data-theme="dark"] .player-main--theater,
+:root[data-theme="dark"] .player-main--zen {
+  background: var(--bg-surface);
+}
+
 .player-actions {
   display: flex;
   flex-wrap: wrap;

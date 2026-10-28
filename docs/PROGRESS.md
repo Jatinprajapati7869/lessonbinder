@@ -598,8 +598,8 @@ Repo: `/home/xingzi/Documents/lessonbinder`. Full text: `~/Documents/auravault-c
 - [x] 356 — Overlay bar — transport controls on **`player-bar--overlay`** over **`player-frame`**; auto-hide on idle (all modes); **`player-actions`** row for capture / complete / PiP; commit **355–356**.
 - [x] 357 — Dark gaps — [`PLAYBACK.md`](PLAYBACK.md) § **Dark gaps**: ripgrep audit of non-token `color` / `background` in player bar, library, course, review, settings, roadmap; no visual edits.
 - [x] 358 — Dark tokens everywhere — § **Dark gaps** remediated in CSS + roadmap SVG export; `DESIGN_DARK_COLOR_TOKENS` mirrors `tokens.css`; contrast tests unchanged; commit **357–358**.
-- [ ] 359 — The frame stays dark
-- [ ] 360 — Tests
+- [x] 359 — The frame stays dark — dark theme: `player-frame`, overlay bar, and theater/zen idle use `--bg-surface` / `--bg-app`; light stone surfaces unchanged.
+- [x] 360 — Tests — mpv handoff, missing mpv message, overlay bar layout, dark page background; `cargo test --workspace` and `npm test`.
 - [ ] 361 — README
 - [ ] 362 — No extra window
 - [ ] 363 — Freeze

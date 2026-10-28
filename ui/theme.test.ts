@@ -104,6 +104,16 @@ describe("DESIGN.md CSS tokens", () => {
     expect(shellCss).not.toMatch(/font-family:\s*["']/);
   });
 
+  it("dark player frame and overlay bar avoid elevated panel background", () => {
+    const courseCss = readFileSync(join(here, "src/theme/course.css"), "utf8");
+    const darkPlayerBar = courseCss.match(
+      /:root\[data-theme="dark"\][\s\S]*?\.player-bar--overlay[\s\S]*?\}/
+    )?.[0];
+    expect(darkPlayerBar).toBeDefined();
+    expect(darkPlayerBar).toContain("background: var(--bg-surface)");
+    expect(darkPlayerBar).not.toContain("--bg-elevated");
+  });
+
   it("uses the wordmark face only on the shell wordmark", () => {
     const themeDir = join(here, "src/theme");
     for (const file of readdirSync(themeDir).filter((name) =>
