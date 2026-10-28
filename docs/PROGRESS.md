@@ -460,8 +460,8 @@ Repo: `/home/xingzi/Documents/lessonbinder`. Full text: `~/Documents/auravault-c
 - [x] 260 — Install section stays true — [`README.md`](../README.md) **Install** matches **258** (bundler not run; **`patchelf`**); still **unsigned**, **0.0.0**.
 - [x] 261 — Bundle identity — no AppImage to inspect `.desktop` **`Name=`**; [`src-tauri/tauri.conf.json`](../src-tauri/tauri.conf.json) unchanged: `productName` **Lessonbinder**, `version` **0.0.0**, `createUpdaterArtifacts` **false**.
 - [x] 262 — Fonts in that build — **no pass**; no **`ui/dist` from 258** ([`docs/FONTS.md`](FONTS.md) § Prompt 262).
-- [ ] 263 — Cancel before the row write
-- [ ] 264 — Close that row
+- [x] 263 — Cancel before the row write — `vault_core::import_cancel::cancel_before_lesson_upsert_leaves_no_half_written_row`.
+- [x] 264 — Close that row — [`docs/V1.4.md`](V1.4.md) mid-write cancel row **pass** with `cancel_before_lesson_upsert_leaves_no_half_written_row`.
 - [ ] 265 — Show the course folder
 - [ ] 266 — Show folder control
 - [ ] 267 — Show the lesson file

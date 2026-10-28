@@ -128,3 +128,52 @@ fn reimport_after_cancelled_partial_import_finishes_without_duplicating_first_le
         first_lesson_id
     );
 }
+
+#[test]
+fn cancel_before_lesson_upsert_leaves_no_half_written_row() {
+    let dir = tempdir().unwrap();
+    let root = dir.path();
+    fs::write(root.join("one.mp4"), b"one-bytes").unwrap();
+    fs::write(root.join("one.srt"), b"cue").unwrap();
+    fs::write(root.join("two.mp4"), b"two-bytes").unwrap();
+    fs::write(root.join("two.srt"), b"cue").unwrap();
+
+    let db = VaultDb::open_in_memory().unwrap();
+    let pre_upsert_cancel_checks = AtomicUsize::new(0);
+    let should_cancel = || {
+        if total_lesson_count(&db) == 0 {
+            return false;
+        }
+        pre_upsert_cancel_checks.fetch_add(1, Ordering::Relaxed);
+        true
+    };
+
+    let err = import_folder_with_cancel(&db, root, &should_cancel, None).unwrap_err();
+    assert!(matches!(err, ImportError::Cancelled));
+    assert_eq!(
+        pre_upsert_cancel_checks.load(Ordering::Relaxed),
+        1,
+        "cancel flag must be read once before the second lesson upsert, not mid-statement"
+    );
+
+    let courses = list_courses(&db, None, CourseLibraryVisibility::Active).unwrap();
+    assert_eq!(courses.len(), 1);
+    let course_id = courses[0].course_id.clone();
+    assert_eq!(db.lesson_count_for_course(&course_id).unwrap(), 1);
+    assert!(
+        db.lesson_id_for_stable_key(&course_id, "two.mp4").is_err(),
+        "cancel before upsert must not leave a row for the next lesson file"
+    );
+
+    let kept_id = db.lesson_id_for_stable_key(&course_id, "one.mp4").unwrap();
+    assert_eq!(
+        db.progress_for_lesson(&kept_id).unwrap().status,
+        LessonStatus::NotStarted
+    );
+    assert_eq!(
+        db.subtitle_relative_path_for_lesson(&kept_id)
+            .unwrap()
+            .as_deref(),
+        Some("one.srt")
+    );
+}
