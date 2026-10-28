@@ -443,4 +443,4 @@ cargo test --workspace   # 232 passed (74 suites); 0 failed
 cd ui && npm test       # 55 files; 175 passed
 ```
 
-- [ ] 251 — Freeze
+- [x] 251 — Freeze — [`docs/V1.4.md`](V1.4.md) ends **READY** (242 + cancel-import test names); prompt 250 counts pasted; no release tag.
