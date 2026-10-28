@@ -22,3 +22,7 @@ All six candidate names above exist in the FlutKit icons directory. No other kit
 ## Repo copies (prompt 320)
 
 Copied into `ui/src/theme/icons/` with the same filenames as the table above (FlutKit source path unchanged in this doc).
+
+**Show folder (prompt 321):** `file-tray-full-outline.png` beside the **Show folder** label on the folder course screen (`CourseScreen`); accessible name remains **Show folder** (`aria-label`).
+
+**Search library (prompt 322):** `search-outline.png` inside the library search field beside the input; visible label **Search library** and `htmlFor` / `id` association unchanged.

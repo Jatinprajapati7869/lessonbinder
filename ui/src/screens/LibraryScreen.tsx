@@ -35,6 +35,7 @@ import { libraryImportErrorMessage } from "../library/libraryImportError";
 import { importCancellableFolderAtPath } from "../library/libraryCancellableFolderImport";
 import { libraryFolderDropIntoLibrary } from "../library/libraryFolderDrop";
 import { useLibraryCommands } from "../library/useLibraryCommands";
+import searchOutline from "../theme/icons/search-outline.png";
 
 export type LibraryScreenProps = {
   onOpenCourse: (course: CourseRow) => void;
@@ -215,14 +216,22 @@ export function LibraryScreen({
       <label className="library-search__label" htmlFor="library-search-input">
         Search library
       </label>
-      <input
-        id="library-search-input"
-        type="search"
-        className="library-search__input"
-        value={searchQuery}
-        placeholder="Lesson title, path, subtitle, or note text"
-        onChange={(event) => setSearchQuery(event.target.value)}
-      />
+      <div className="library-search__field">
+        <img
+          src={searchOutline}
+          alt=""
+          aria-hidden
+          className="library-search__icon"
+        />
+        <input
+          id="library-search-input"
+          type="search"
+          className="library-search__input"
+          value={searchQuery}
+          placeholder="Lesson title, path, subtitle, or note text"
+          onChange={(event) => setSearchQuery(event.target.value)}
+        />
+      </div>
       <LibrarySearchResults
         hits={searchHits}
         searching={searching}

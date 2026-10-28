@@ -17,6 +17,7 @@ import {
   watchedPercent,
 } from "../library/format";
 import { OrderProposalPanel } from "./OrderProposalPanel";
+import showFolderOutline from "../theme/icons/file-tray-full-outline.png";
 
 export type CourseScreenProps = {
   course: CourseRow;
@@ -412,11 +413,17 @@ export function CourseScreen({
           {isFolderCourse ? (
             <button
               type="button"
-              className="library-button-secondary"
+              className="library-button-secondary course-header__show-folder"
               disabled={busy || rescanningFolder}
               aria-label="Show folder"
               onClick={() => void handleShowFolder()}
             >
+              <img
+                src={showFolderOutline}
+                alt=""
+                aria-hidden
+                className="course-header__show-folder-icon"
+              />
               Show folder
             </button>
           ) : null}
