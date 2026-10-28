@@ -1,7 +1,8 @@
 use std::fs;
 
 use tempfile::tempdir;
-use vault_core::import::import_folder;
+use vault_core::import::{import_folder, ImportError};
+use vault_core::library::{list_courses, CourseLibraryVisibility};
 use vault_core::VaultDb;
 
 #[test]
@@ -57,4 +58,22 @@ fn attaches_subtitle_by_stem() {
         .subtitle_relative_path_for_lesson(&report.lesson_ids[0])
         .unwrap();
     assert_eq!(subtitle.as_deref(), Some("lecture.srt"));
+}
+
+#[test]
+fn empty_folder_creates_no_course() {
+    let dir = tempdir().unwrap();
+    let root = dir.path();
+    fs::create_dir(root.join("empty-sub")).unwrap();
+    fs::write(root.join("readme.doc"), b"").unwrap();
+
+    let db = VaultDb::open_in_memory().unwrap();
+    let err = import_folder(&db, root).unwrap_err();
+    assert!(matches!(err, ImportError::NoLessonFiles));
+    assert_eq!(
+        list_courses(&db, None, CourseLibraryVisibility::Active)
+            .unwrap()
+            .len(),
+        0
+    );
 }

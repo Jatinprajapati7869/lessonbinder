@@ -4,6 +4,7 @@ import {
   FOLDER_SCAN_BUSY_MESSAGE,
   LIBRARY_DROP_FILE_MESSAGE,
   libraryImportErrorMessage,
+  NO_LESSON_FILES_MESSAGE,
   RISKY_IMPORT_PATH_MESSAGE,
 } from "./src/library/libraryImportError";
 
@@ -58,5 +59,18 @@ describe("libraryImportErrorMessage", () => {
       "Import folder failed."
     );
     expect(message).toBe(FOLDER_SCAN_BUSY_MESSAGE);
+  });
+
+  it("maps no_lesson_files to one sentence", () => {
+    const message = libraryImportErrorMessage(
+      new Error(
+        JSON.stringify({
+          code: "no_lesson_files",
+          message: "no_lesson_files",
+        })
+      ),
+      "Import folder failed."
+    );
+    expect(message).toBe(NO_LESSON_FILES_MESSAGE);
   });
 });

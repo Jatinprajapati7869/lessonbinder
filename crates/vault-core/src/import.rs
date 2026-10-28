@@ -51,6 +51,8 @@ pub enum ImportError {
     InvalidPath(String),
     #[error("risky_import_path")]
     RiskyImportPath,
+    #[error("no_lesson_files")]
+    NoLessonFiles,
     #[error("cancelled")]
     Cancelled,
 }
@@ -156,6 +158,9 @@ pub fn import_folder_with_cancel(
 ) -> Result<ImportReport, ImportError> {
     let root = resolve_import_root(picked)?;
     let lessons = scan_folder_with_cancel(&root, should_cancel, on_progress)?;
+    if lessons.is_empty() {
+        return Err(ImportError::NoLessonFiles);
+    }
     let title = root
         .file_name()
         .and_then(OsStr::to_str)

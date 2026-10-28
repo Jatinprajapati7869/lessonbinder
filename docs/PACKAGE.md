@@ -27,6 +27,18 @@ Release artifacts:
 
 The workspace crate is **`publish = false`**; do not `cargo publish` these packages.
 
+## Bundle identity (prompt 221, 2026-10-28)
+
+Checked `src-tauri/tauri.conf.json` (version **not** bumped):
+
+| Setting                  | Value            |
+| ------------------------ | ---------------- |
+| `productName`            | **Lessonbinder** |
+| `version`                | **0.0.0**        |
+| `createUpdaterArtifacts` | **false**        |
+
+**AppImage desktop name:** No AppImage on this machine after prompt 218, so the `.desktop` **`Name=`** was not inspected on disk. Tauri derives the Linux desktop entry from `productName`; a successful bundle should show **Lessonbinder** in the menu (same as `app.windows[0].title`).
+
 ## Bundled UI fonts (shipped inside the AppImage)
 
 The Linux AppImage embeds the Tauri **`frontendDist`** tree (`../ui/dist`). That directory is produced by **`beforeBuildCommand`**: `npm run build --prefix ui`, which runs Vite on the React UI. The four licensed font files below are **source inputs** to that frontend build—not separate Tauri bundle resources.

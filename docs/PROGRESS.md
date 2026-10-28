@@ -380,8 +380,8 @@ Repo: `/home/xingzi/Documents/lessonbinder`. Full text: `~/Documents/auravault-c
 - [x] 218 — Build the AppImage
 - [x] 219 — Launch the image
 - [x] 220 — Install section
-- [ ] 221 — Identity of the bundle
-- [ ] 222 — Empty folder
+- [x] 221 — Identity of the bundle
+- [x] 222 — Empty folder
 - [ ] 223 — File disappears
 - [ ] 224 — Media symlink
 - [ ] 225 — Delete keeps the Anki note

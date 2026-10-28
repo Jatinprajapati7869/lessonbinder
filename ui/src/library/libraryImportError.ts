@@ -13,6 +13,8 @@ export const RISKY_IMPORT_PATH_MESSAGE =
 
 export const FOLDER_SCAN_BUSY_MESSAGE = "A folder scan is already running.";
 
+export const NO_LESSON_FILES_MESSAGE = "No lesson files.";
+
 export function libraryImportErrorMessage(
   raw: unknown,
   fallback: string
@@ -30,6 +32,9 @@ export function libraryImportErrorMessage(
     }
     if (parsed?.code === "folder_scan_in_progress") {
       return FOLDER_SCAN_BUSY_MESSAGE;
+    }
+    if (parsed?.code === "no_lesson_files") {
+      return NO_LESSON_FILES_MESSAGE;
     }
     return invokeErrorMessage(raw, fallback);
   }

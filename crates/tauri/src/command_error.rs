@@ -37,6 +37,7 @@ pub fn from_import_error(err: ImportError) -> CommandError {
     let code = match &err {
         ImportError::RiskyImportPath => "risky_import_path",
         ImportError::InvalidPath(_) => "import_invalid_path",
+        ImportError::NoLessonFiles => "no_lesson_files",
         ImportError::Io(_) => "import_io_error",
         ImportError::Db(_) => "import_db_error",
         ImportError::Cancelled => "import_cancelled",
