@@ -517,4 +517,4 @@ cargo test --workspace   # 241 passed (77 suites); 0 failed
 cd ui && npm test       # 59 files; 192 passed
 ```
 
-- [ ] 301 — Freeze
+- [x] 301 — Freeze — [`V1.5.md`](V1.5.md) ends **READY** (300 counts; `first_course_sitting`, **Show folder**, Settings shortcuts named; AppImage launch **unproven** → [`PACKAGE.md`](PACKAGE.md)); no release tag.
