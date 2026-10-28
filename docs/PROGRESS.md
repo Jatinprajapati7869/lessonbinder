@@ -378,8 +378,8 @@ Repo: `/home/xingzi/Documents/lessonbinder`. Full text: `~/Documents/auravault-c
 - [x] 216 — One scan at a time — `folder_scan_guard` rejects overlapping import/rescan with `folder_scan_in_progress`; first scan keeps the guard until done (`folder_scan_guard.rs` tests + `libraryImportError.test.ts`).
 - [x] 217 — Fonts the bundle will ship
 - [x] 218 — Build the AppImage
-- [ ] 219 — Launch the image
-- [ ] 220 — Install section
+- [x] 219 — Launch the image
+- [x] 220 — Install section
 - [ ] 221 — Identity of the bundle
 - [ ] 222 — Empty folder
 - [ ] 223 — File disappears

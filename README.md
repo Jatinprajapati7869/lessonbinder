@@ -34,6 +34,20 @@ Lessonbinder is an offline desktop app (Tauri, React, and TypeScript) for course
 - Downloading Whisper model weights
 - Mobile clients
 
+## Install
+
+Build a **Linux AppImage on your own machine** from this repository. Images are **unsigned** and meant for **local** installation and testing only—not a published or signed release from the project.
+
+From the repository root, with UI dependencies installed (`npm ci --prefix ui`):
+
+```bash
+npm run tauri:build:appimage
+```
+
+When bundling succeeds, the file appears under `target/release/bundle/appimage/*.AppImage`. Host dependencies, runtime tools on `PATH`, and AGPL distribution notes are in [`docs/PACKAGE.md`](docs/PACKAGE.md).
+
+**Build did not finish on the reference machine (2026-10-28):** **`patchelf`** is not installed on this host (`command -v patchelf` fails). Install with `sudo pacman -S patchelf` before retrying. Do not claim an AppImage exists until a bundle completes and `target/release/bundle/appimage/*.AppImage` is present.
+
 ## Develop
 
 Install UI dependencies once (`cd ui && npm install`, as in [`docs/FIRST-TEST.md`](docs/FIRST-TEST.md)), then from the repository root:

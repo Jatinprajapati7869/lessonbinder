@@ -31,6 +31,16 @@ npm run tauri:dev
 
 ---
 
+## AppImage launch (prompt 219, 2026-10-28)
+
+Prompt **218** did not finish bundling; there is no `target/release/bundle/appimage/*.AppImage` to run. **No launch command was executed** and the library was not confirmed inside an AppImage.
+
+**Missing system package:** **`patchelf`** is not installed on this host (`command -v patchelf` fails). Install with `sudo pacman -S patchelf` before retrying. Do not claim an AppImage exists until a bundle completes and `target/release/bundle/appimage/*.AppImage` is present.
+
+(See also [`docs/PACKAGE.md`](PACKAGE.md) § AppImage build (prompt 218).)
+
+---
+
 ## Checklist
 
 | Step                                                                                                                                                                                                                                   | Expected                                                                                                                                                                                                | Blocked if                                                                                                                                                                                                                                                                                                               |
