@@ -78,3 +78,16 @@ cd ui && npm test -- --run fontsBuild.test.ts
 ```
 
 The `missing bundled font` cases in that file assert the error text and run `vite build` once with a font temporarily renamed away.
+
+## Release bundle scan (prompt 247, 2026-10-28)
+
+**AppImage from prompt 218:** Not built on this machine — `target/release/bundle/appimage/*.AppImage` is absent (see [`PACKAGE.md`](PACKAGE.md) § AppImage build). **No AppImage to search; that absence is not a pass.**
+
+**`ui/dist`:** A local Vite output exists under `ui/dist/`, but it was **not** produced by a completed prompt **218** AppImage bundle. Searched anyway for network font hosts in the web bundle:
+
+```bash
+cd /home/xingzi/Documents/lessonbinder
+rg 'fonts\.googleapis\.com|fonts\.gstatic\.com' ui/dist/
+```
+
+**Result:** no matches (ripgrep exit code **1** — empty). This records the current `ui/dist/` tree only; it does **not** certify an AppImage shipped without Google Fonts URLs.

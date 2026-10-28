@@ -37,6 +37,8 @@ Checked `src-tauri/tauri.conf.json` (version **not** bumped):
 | `version`                | **0.0.0**        |
 | `createUpdaterArtifacts` | **false**        |
 
+**Prompt 248 (2026-10-28):** AppImage output from this repo is **unsigned**, **`createUpdaterArtifacts`** is **off**, and **`version`** stays **`0.0.0`** until maintainers bump it deliberately. No build artifact is **published** from this repository—only local, unsigned bundles when bundling succeeds.
+
 **AppImage desktop name:** No AppImage on this machine after prompt 218, so the `.desktop` **`Name=`** was not inspected on disk. Tauri derives the Linux desktop entry from `productName`; a successful bundle should show **Lessonbinder** in the menu (same as `app.windows[0].title`).
 
 ## Bundled UI fonts (shipped inside the AppImage)
