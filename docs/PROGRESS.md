@@ -565,10 +565,10 @@ cd ui && npm test       # 59 files; 193 passed
 npm run typecheck       # pass (tsc -p ui/tsconfig.json --noEmit)
 ```
 
-- [ ] 337 — Cancel still works
-- [ ] 338 — Show folder still opens the root
-- [ ] 339 — Shortcuts still match
-- [ ] 340 — Backup
+- [x] 337 — Cancel still works — **pass** (v1.6 pack did not break cancel): `import_cancel.rs` — `cancel_during_scan_leaves_no_course`, `cancel_after_first_lesson_keeps_that_lesson_and_stops_import`, `cancel_after_first_of_two_files_does_not_mark_that_lesson_done_or_broken`, `reimport_after_cancelled_partial_import_finishes_without_duplicating_first_lesson`, `cancel_before_lesson_upsert_leaves_no_half_written_row`; `rescan_cancel.rs` — `cancel_rescan_leaves_lesson_order_and_notes_unchanged`; `Library.test.tsx` — `cancel folder scan calls command layer while import is in flight`, `Escape during folder import does not call cancelImportFolder`; `Course.test.tsx` — `cancel rescan calls command layer while rescan is in flight`; `libraryImportError.test.ts` — `maps import_cancelled to one library sentence` (**6** Rust + **4** Vitest).
+- [x] 338 — Show folder still opens the root — **pass**: `Course.test.tsx` — `Show folder calls open command with course id and stubbed opener receives course root` (`openCourseFolderInFileManager("course-1")`; outline icon did **not** replace course id with a typed path — `CourseScreen` still passes `course.course_id`); `lesson_file_directory_open.rs` — `rejects_lesson_media_that_escapes_course_root_via_symlink`.
+- [x] 339 — Shortcuts still match — **pass**: `implementedShortcuts.test.ts` — `matches key modules (fails when the list drifts)`; `Settings.test.tsx` — `renders keyboard shortcut rows from the implemented list` (icon pack did not change shortcut modules).
+- [x] 340 — Backup — **pass**: `lessonbinder_tauri::restore::backup_restore_round_trip_preserves_study_days_and_pack_settings` (streak, theme, speed, volume); commit **339–340**.
 - [ ] 341 — Note and card boundaries
 - [ ] 342 — OCR still local
 - [ ] 343 — No extra kit files
