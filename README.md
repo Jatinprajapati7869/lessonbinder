@@ -1,5 +1,16 @@
 # Lessonbinder
 
+**An offline desktop course tracker for the courses you keep on disk, with built-in Anki flashcards.**
+
+![License: AGPL-3.0](https://img.shields.io/badge/license-AGPL--3.0-blue)
+![Built with Tauri](https://img.shields.io/badge/Tauri-24C8DB?logo=tauri&logoColor=white)
+![Rust](https://img.shields.io/badge/Rust-000000?logo=rust&logoColor=white)
+![React](https://img.shields.io/badge/React-20232A?logo=react&logoColor=61DAFB)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)
+![Platform: Linux](https://img.shields.io/badge/platform-Linux-FCC624?logo=linux&logoColor=black)
+
+Point it at a folder of videos, PDFs, audio or markdown, and Lessonbinder turns it into a course: keep lessons in your order, resume where you left off, take notes, search subtitles, and make Anki cards straight from a paused video frame. No account, no cloud, everything stays on your machine.
+
 Lessonbinder is an offline desktop app (Tauri, React, and TypeScript) for course folders you keep on disk. You import those paths, track lesson progress yourself, and review flashcards in a private Anki collection the app opens in-process through Anki’s Rust library (`rslib`). There is no account or cloud sync. Development and release bundling in this repository target **Linux** AppImage output only (`tauri.conf.json` `bundle.targets`).
 
 ## What it does
@@ -49,8 +60,6 @@ npm run tauri:build:appimage
 ```
 
 When bundling succeeds, the file appears under `target/release/bundle/appimage/*.AppImage`. Host dependencies, runtime tools on `PATH`, and AGPL distribution notes are in [`docs/PACKAGE.md`](docs/PACKAGE.md).
-
-**258 (2026-10-28):** `npm run tauri:build:appimage` was **not run** on the reference machine because **`patchelf`** is not installed (`command -v patchelf` fails). Install with `sudo pacman -S patchelf` before retrying. Bundling did not finish; there is no AppImage path until a build completes and `target/release/bundle/appimage/*.AppImage` exists. Details: [`docs/PACKAGE.md`](docs/PACKAGE.md).
 
 ## Develop
 
