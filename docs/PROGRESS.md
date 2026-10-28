@@ -429,8 +429,8 @@ npm run typecheck       # ok
 
 - [x] 243 — Study doc — [`docs/STUDY.md`](STUDY.md): in-app default, Anki Desktop fallback; no “install Anki before Study” requirement; scheduler wording unchanged.
 - [x] 244 — Pin path — [`docs/ANKI_PIN.md`](ANKI_PIN.md) matches `crates/anki-bridge/Cargo.toml` path deps; documents unpublished crates; no vendoring.
-- [ ] 245 — Command failures
-- [ ] 246 — Continue after relaunch
+- [x] 245 — Command failures — failed import: `Library.test.tsx` — `shows one sentence when import rejects a risky folder path`; cancelled import: `libraryImportError.test.ts` — `maps import_cancelled to one library sentence` (library `role="alert"` via same `libraryImportErrorMessage` path as risky import); locked profile: `AnkiProfileInUse.test.tsx` — `shows the profile lock sentence when study bar state fails`.
+- [x] 246 — Continue after relaunch — [`FIRST-COURSE.md`](FIRST-COURSE.md) **Continue** row: resume seek, no auto-play; `LibraryContinue.test.tsx` — `shows course, lesson, and watched percent and opens at resume position`; `Player.test.tsx` — `seeks to initialSeekMs when the lesson loads (search hit navigation)` (`play` not called).
 - [ ] 247 — No network font in the image
 - [ ] 248 — Unsigned, on purpose
 - [ ] 249 — Waiting list
