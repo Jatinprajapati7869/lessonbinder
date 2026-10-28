@@ -474,8 +474,8 @@ Repo: `/home/xingzi/Documents/lessonbinder`. Full text: `~/Documents/auravault-c
 - [x] 274 — Cue seek stays local — **`ui/Player.test.tsx`** — **`clicking a cue seeks local playback and saves resume without opening a URL or marking complete`**.
 - [x] 275 — Source offer — [`SOURCE-OFFER.txt`](../SOURCE-OFFER.txt) at repo root (AGPL via `anki` link; source = build commit).
 - [x] 276 — No analytics host — `docs/SITTING.md` § Prompt 276 ripgrep audit; removed fixture `example.com` URL + block off-localhost `fetch`; `noPhoneHomeHosts.test.ts`.
-- [ ] 277 — Show folder only with a course
-- [ ] 278 — Show folder waits for the scan
+- [x] 277 — Show folder only with a course — `LibraryEmpty.test.tsx` — empty library has no **Show folder**; `Library.test.tsx` — `course row list does not show Show folder`; `Course.test.tsx` — `folder course screen shows Show folder`.
+- [x] 278 — Show folder waits for the scan — `CourseScreen` disables **Show folder** when `rescanningFolder`; `Course.test.tsx` — cancel rescan test asserts disabled **Show folder** + enabled **Cancel rescan**; `Library.test.tsx` — import in flight has no **Show folder**, **Cancel import** enabled.
 - [ ] 279 — Complete stays manual
 - [ ] 280 — Cancel still wins
 - [ ] 281 — Deslop

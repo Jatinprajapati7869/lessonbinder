@@ -76,6 +76,22 @@ function baseCommands(
 }
 
 describe("CourseScreen", () => {
+  it("folder course screen shows Show folder", async () => {
+    render(
+      <CourseCommandsProvider commands={baseCommands()}>
+        <CourseScreen
+          course={courseRow}
+          onBack={() => {}}
+          onPlayLesson={() => {}}
+        />
+      </CourseCommandsProvider>
+    );
+
+    expect(
+      await screen.findByRole("button", { name: "Show folder" })
+    ).toBeInTheDocument();
+  });
+
   it("Show folder calls open command with course id and stubbed opener receives course root", async () => {
     const user = userEvent.setup();
     const courseRoot = "/tmp/lessonbinder-demo-course";
@@ -199,6 +215,9 @@ describe("CourseScreen", () => {
       expect(screen.getByRole("status")).toHaveTextContent("Rescanning folder");
       expect(rescanCourse).toHaveBeenCalledWith("course-1");
     });
+
+    expect(screen.getByRole("button", { name: "Show folder" })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "Cancel rescan" })).toBeEnabled();
 
     await user.click(screen.getByRole("button", { name: "Cancel rescan" }));
 

@@ -143,6 +143,23 @@ describe("LibraryScreen", () => {
     expect(screen.queryByRole("img")).not.toBeInTheDocument();
   });
 
+  it("course row list does not show Show folder", async () => {
+    renderLibrary(
+      libraryCommands({
+        listCourses: vi.fn().mockResolvedValue([sampleCourse]),
+      })
+    );
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole("button", { name: "Linear Algebra" })
+      ).toBeInTheDocument();
+    });
+    expect(
+      screen.queryByRole("button", { name: "Show folder" })
+    ).not.toBeInTheDocument();
+  });
+
   it("import folder triggers command after picker returns path", async () => {
     const user = userEvent.setup();
     const commands = libraryCommands({
@@ -263,6 +280,11 @@ describe("LibraryScreen", () => {
       expect(screen.getByRole("status")).toHaveTextContent("Scanning folder");
       expect(importFolder).toHaveBeenCalledWith("/tmp/course");
     });
+
+    expect(
+      screen.queryByRole("button", { name: "Show folder" })
+    ).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Cancel import" })).toBeEnabled();
 
     await user.click(screen.getByRole("button", { name: "Cancel import" }));
 

@@ -60,6 +60,9 @@ describe("Library empty state", () => {
       screen.getByRole("button", { name: "Add folder" })
     ).toBeInTheDocument();
     expect(
+      screen.queryByRole("button", { name: "Show folder" })
+    ).not.toBeInTheDocument();
+    expect(
       screen.queryByRole("button", { name: "Add playlist JSON" })
     ).not.toBeInTheDocument();
     expect(

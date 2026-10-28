@@ -413,7 +413,7 @@ export function CourseScreen({
             <button
               type="button"
               className="library-button-secondary"
-              disabled={busy}
+              disabled={busy || rescanningFolder}
               aria-label="Show folder"
               onClick={() => void handleShowFolder()}
             >
@@ -424,7 +424,7 @@ export function CourseScreen({
             <button
               type="button"
               className="library-button-secondary"
-              disabled={busy}
+              disabled={busy || rescanningFolder}
               onClick={() => void handleRescanCourse()}
             >
               Rescan folder
