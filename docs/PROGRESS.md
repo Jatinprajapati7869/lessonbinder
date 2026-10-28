@@ -577,6 +577,12 @@ npm run typecheck       # pass (tsc -p ui/tsconfig.json --noEmit)
 - [x] 346 — Lint — `npm run lint` (`eslint .`): **pass**; no fixes in pack-touched files; commit **345–346**.
 - [x] 347 — Unsigned — [`PACKAGE.md`](PACKAGE.md) **Bundle identity** + prompt **248**: **unsigned**, `createUpdaterArtifacts` **false**, `version` **0.0.0**; § **Platform scope**: **Windows** / **macOS** bundles **not produced** here (**328** commands **unrun**); **not published** from this repo.
 - [x] 348 — Icons paragraph — [`ICONS.md`](ICONS.md) disk audit (**348**): six repo PNGs match table; FlutKit / ProKit remainder **unused**; README § Test lists same filenames; commit **347–348**.
-- [ ] 349 — Checklist evidence
-- [ ] 350 — Tests before freeze
+- [x] 349 — Checklist evidence — [`V1.6.md`](V1.6.md) **pass** rows cite tests or [`SITTING-RUN.md`](SITTING-RUN.md) / [`PACKAGE.md`](PACKAGE.md) / [`ICONS.md`](ICONS.md) only; **9** **unproven** (README-only, PROGRESS-only, SCOPE-only, **Continue**/**Launch** blocked); summary **29** / **38**.
+- [x] 350 — Tests before freeze — `cargo test --workspace`: **241 passed** (77 suites); `cd ui && npm test`: **193 passed** (59 files); commit **349–350**.
+
+```bash
+cargo test --workspace   # 241 passed (77 suites); 0 failed
+cd ui && npm test       # 59 files; 193 passed
+```
+
 - [ ] 351 — Freeze
