@@ -73,7 +73,26 @@ npm run tauri:build:appimage
 
 Bundling failed with `failed to bundle project: timeout: global` while downloading Tauri’s `linuxdeploy-x86_64.AppImage` from GitHub (after starting `AppRun-x86_64`). `target/release/bundle/appimage/` was not created.
 
-**Missing system package:** **`patchelf`** is not installed on this host (`command -v patchelf` fails). Install with `sudo pacman -S patchelf` before retrying. Do not claim an AppImage exists until a bundle completes and `target/release/bundle/appimage/*.AppImage` is present.
+**Missing system package (prompt 218):** **`patchelf`** was not installed on this host when prompt **218** ran (`command -v patchelf` failed). Prompt **313** (2026-10-28) found **`/usr/bin/patchelf`**; prompt **314** still did not produce an AppImage (AppRun download timeout below). Install with `sudo pacman -S patchelf` on hosts where it is missing. Do not claim an AppImage exists until a bundle completes and `target/release/bundle/appimage/*.AppImage` is present.
+
+## AppImage build (prompt 314, 2026-10-28)
+
+From the repository root:
+
+```bash
+npm run tauri:build:appimage
+```
+
+**`patchelf` (prompt 313):** **`/usr/bin/patchelf`**
+
+**Result:** **No AppImage was produced.** The Vite UI build and release binary succeeded; Tauri bundling did not finish.
+
+| Artifact               | Path                          | Byte size     |
+| ---------------------- | ----------------------------- | ------------- |
+| Release binary (built) | `target/release/lessonbinder` | 34 158 352    |
+| AppImage               | —                             | **not built** |
+
+**Error:** `failed to bundle project: \`timeout: global\``while downloading`https://github.com/tauri-apps/binary-releases/releases/download/apprun-old/AppRun-x86_64` (after `Info Patching …/target/release/lessonbinder with bundle type information: appimage`). `target/release/bundle/appimage/` was not created. **Not retried** (prompt **314**).
 
 ## Development (no bundle)
 
@@ -104,13 +123,14 @@ sudo pacman -S --needed base-devel curl wget file openssl pkgconf \
 
 Tauri downloads **AppRun** from GitHub during the bundle step. A slow or blocked network can fail with a download **timeout** (observed here: `failed to bundle project: timeout: global` after the release binary already built).
 
-**Missing on the reference machine (2026-10-28):**
+**Reference machine (updated prompt 314, 2026-10-28):**
 
-| Package        | Role                                                                                                                                            |
-| -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| **`patchelf`** | Required to patch the release binary when assembling the AppImage. Install with `sudo pacman -S patchelf`, then re-run the build command above. |
+| Gap            | Status                                                                                                                                                        |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **`patchelf`** | **Present** — `/usr/bin/patchelf` (prompt **313**). Pacman install line above still applies on other hosts.                                                   |
+| **AppRun CDN** | **Blocked this run** — `timeout: global` downloading AppRun during prompt **314** (see [AppImage build (prompt 314)](#appimage-build-prompt-314-2026-10-28)). |
 
-Until `patchelf` is installed (and AppRun download succeeds), treat **`target/release/lessonbinder`** as the working local build output.
+Until an AppRun download succeeds, treat **`target/release/lessonbinder`** as the working local build output.
 
 ## Runtime dependencies (not inside the AppImage)
 
@@ -147,7 +167,7 @@ Not configured. Linux AppImages from this project are unsigned.
 - No `*.AppImage` under the repository (`find` / glob over repo root).
 - `target/release/lessonbinder` **does** exist (~28 MB release binary from a successful `cargo`/Tauri compile step before bundling failed).
 
-Bundling failed earlier because **`patchelf`** was not installed and the AppRun download hit a **network timeout** (see above). There is nothing to run as an AppImage; the smoke test below was **not** executed.
+Bundling failed on prompt **218** (**`patchelf`** missing) and again on prompt **314** (**`patchelf`** present; AppRun download **`timeout: global`**). There is nothing to run as an AppImage; the smoke test below was **not** executed.
 
 **Command to use when an AppImage exists** (isolated app data via temp `HOME`; adjust the glob if the filename differs):
 

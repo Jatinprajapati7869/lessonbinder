@@ -534,8 +534,8 @@ Repo: `/home/xingzi/Documents/lessonbinder`. Full text: `~/Documents/auravault-c
 - [x] 310 — Theme in the app — [`SITTING-RUN.md`](SITTING-RUN.md) **Theme** **pass** (dark/light save + contrast sentence); commit 309–310.
 - [x] 311 — Quit and relaunch — [`SITTING-RUN.md`](SITTING-RUN.md) **Quit** / **Relaunch** **pass** (sitting `vault.db` + `anki-profile` after `pkill`).
 - [x] 312 — Sitting page — [`SITTING.md`](SITTING.md) links [`SITTING-RUN.md`](SITTING-RUN.md); **sat** rows **305–311** dated **2026-10-28**; purchased-folder import not **sat**; commit 311–312.
-- [ ] 313 — patchelf again
-- [ ] 314 — Bundle once
+- [x] 313 — patchelf again — **`/usr/bin/patchelf`** (`command -v patchelf`, 2026-10-28).
+- [x] 314 — Bundle once — **not built**; `npm run tauri:build:appimage` → `failed to bundle project: \`timeout: global\`` (AppRun download); release binary **34 158 352** B; [`PACKAGE.md`](PACKAGE.md) prompt **314**; commit **313–314**.
 - [ ] 315 — Launch the image
 - [ ] 316 — Install stays true
 - [ ] 317 — Image identity
