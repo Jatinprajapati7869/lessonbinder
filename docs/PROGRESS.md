@@ -553,7 +553,7 @@ Repo: `/home/xingzi/Documents/lessonbinder`. Full text: `~/Documents/auravault-c
 - [x] 329 — Linux target stays — [`src-tauri/tauri.conf.json`](../src-tauri/tauri.conf.json) `bundle.targets` **`["appimage"]`** only (no **nsis** / **msi** / **dmg** added on reference machine).
 - [x] 330 — Signing stays off — [`PACKAGE.md`](PACKAGE.md) § **Code signing**: not configured for Linux / Windows / macOS; commit **329–330**.
 - [x] 331 — Deslop — icon pack UI: dropped dead `course-header__show-folder` / `nav-item--with-icon` / `library-search__icon`; one search a11y assert.
-- [ ] 332 — Doctor
+- [x] 332 — Doctor — `npx react-doctor@latest --verbose` on `ui/`: **64 / 100** (36 warnings). No crash, dead icon-pack control, or missing accessible name on icon additions; complexity warnings unchanged; commit **331–332**.
 - [ ] 333 — README
 - [ ] 334 — Scope
 - [ ] 335 — Checklist
