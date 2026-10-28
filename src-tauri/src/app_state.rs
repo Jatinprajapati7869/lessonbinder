@@ -11,6 +11,7 @@ pub struct AppState {
     pub vault_open_error: Mutex<String>,
     pub app_data_dir: PathBuf,
     pub import_folder_cancel: AtomicBool,
+    pub(crate) folder_scan_active: AtomicBool,
 }
 
 impl AppState {
@@ -21,12 +22,14 @@ impl AppState {
                 vault_open_error: Mutex::new(String::new()),
                 app_data_dir,
                 import_folder_cancel: AtomicBool::new(false),
+                folder_scan_active: AtomicBool::new(false),
             },
             Err(error) => Self {
                 vault: Mutex::new(None),
                 vault_open_error: Mutex::new(error.to_string()),
                 app_data_dir,
                 import_folder_cancel: AtomicBool::new(false),
+                folder_scan_active: AtomicBool::new(false),
             },
         }
     }

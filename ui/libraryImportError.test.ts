@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  FOLDER_SCAN_BUSY_MESSAGE,
   LIBRARY_DROP_FILE_MESSAGE,
   libraryImportErrorMessage,
   RISKY_IMPORT_PATH_MESSAGE,
@@ -44,5 +45,18 @@ describe("libraryImportErrorMessage", () => {
       "Import folder failed."
     );
     expect(message).toBeNull();
+  });
+
+  it("maps folder_scan_in_progress to one sentence", () => {
+    const message = libraryImportErrorMessage(
+      new Error(
+        JSON.stringify({
+          code: "folder_scan_in_progress",
+          message: "A folder scan is already running.",
+        })
+      ),
+      "Import folder failed."
+    );
+    expect(message).toBe(FOLDER_SCAN_BUSY_MESSAGE);
   });
 });

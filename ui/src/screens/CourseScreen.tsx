@@ -6,6 +6,8 @@ import type { CourseDetail, LessonRow } from "../api/courseTypes";
 import { CourseLessonTitleCell } from "../course/CourseLessonTitleCell";
 import { libraryImportErrorMessage } from "../library/libraryImportError";
 import { LibraryFolderScan } from "../library/LibraryFolderScan";
+import { folderScanStatusLine } from "../library/folderScanProgress";
+import { useFolderScanProgress } from "../library/useFolderScanProgress";
 import type { CourseRow } from "../api/libraryTypes";
 import { useCourseCommands } from "../course/useCourseCommands";
 import {
@@ -42,6 +44,7 @@ export function CourseScreen({
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [rescanningFolder, setRescanningFolder] = useState(false);
+  const folderScanProgress = useFolderScanProgress(rescanningFolder);
   const [archiveConfirmOpen, setArchiveConfirmOpen] = useState(false);
 
   const refresh = useCallback(async () => {
@@ -350,7 +353,11 @@ export function CourseScreen({
   return (
     <div className="course-screen">
       {rescanningFolder ? (
-        <LibraryFolderScan mode="rescan" onCancel={handleCancelFolderRescan} />
+        <LibraryFolderScan
+          mode="rescan"
+          statusLine={folderScanStatusLine("rescan", folderScanProgress)}
+          onCancel={handleCancelFolderRescan}
+        />
       ) : null}
       <button
         type="button"

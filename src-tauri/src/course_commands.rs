@@ -11,7 +11,7 @@ use vault_core::course::LessonKind;
 use vault_core::course_archive::{archive_course, unarchive_course};
 use vault_core::cues::list_player_cues;
 use vault_core::extract::ExtractorEnv;
-use vault_core::import::rescan_with_cancel;
+use vault_core::import::{rescan_with_cancel, FolderScanProgress};
 use vault_core::lesson_note::{self as lesson_notes, LessonNoteError};
 use vault_core::lesson_note_export::{course_notes_markdown, lesson_notes_markdown};
 use vault_core::lesson_resource::list_lesson_resources;
@@ -32,6 +32,7 @@ use lessonbinder_tauri::command_error::{from_rescan_error, from_thumbnail_error}
 use lessonbinder_tauri::command_log::log_command_error;
 
 use crate::app_state::AppState;
+use crate::folder_scan_progress::emit_folder_scan_progress;
 use crate::vault_paths::thumbnails_dir;
 
 #[derive(Debug, Clone, Serialize)]
@@ -139,12 +140,24 @@ pub fn mark_lesson_broken(state: State<AppState>, lesson_id: String) -> Result<(
 }
 
 #[tauri::command(async)]
-pub fn rescan_course(state: State<AppState>, course_id: String) -> Result<(), String> {
-    state.import_folder_cancel.store(false, Ordering::Relaxed);
+pub fn rescan_course(
+    app: AppHandle,
+    state: State<AppState>,
+    course_id: String,
+) -> Result<(), String> {
+    let _scan_guard = state.try_begin_folder_scan()?;
     state.with_vault(|vault| {
         let cancel = &state.import_folder_cancel;
-        rescan_with_cancel(vault, &course_id, &|| cancel.load(Ordering::Relaxed))
-            .map_err(|err| map_rescan_failure(&state, &course_id, err))?;
+        let on_progress = |progress: FolderScanProgress| {
+            emit_folder_scan_progress(&app, progress);
+        };
+        rescan_with_cancel(
+            vault,
+            &course_id,
+            &|| cancel.load(Ordering::Relaxed),
+            Some(&on_progress),
+        )
+        .map_err(|err| map_rescan_failure(&state, &course_id, err))?;
         Ok(())
     })
 }

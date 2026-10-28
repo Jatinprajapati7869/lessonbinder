@@ -22,6 +22,8 @@ import {
 import { LibraryCourseTitleCell } from "../library/LibraryCourseTitleCell";
 import { LibraryFirstRunEmpty } from "../library/LibraryFirstRunEmpty";
 import { LibraryFolderScan } from "../library/LibraryFolderScan";
+import { folderScanStatusLine } from "../library/folderScanProgress";
+import { useFolderScanProgress } from "../library/useFolderScanProgress";
 import { LibraryPastePlaylistPanel } from "../library/LibraryPastePlaylistPanel";
 import { LibraryStreak } from "../library/LibraryStreak";
 import { LibraryStudyHeatmap } from "../library/LibraryStudyHeatmap";
@@ -49,6 +51,7 @@ export function LibraryScreen({
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [scanningFolder, setScanningFolder] = useState(false);
+  const folderScanProgress = useFolderScanProgress(scanningFolder);
   const [searchQuery, setSearchQuery] = useState("");
   const debouncedSearch = useDebouncedValue(
     searchQuery,
@@ -301,7 +304,11 @@ export function LibraryScreen({
   );
 
   const folderScanStatus = scanningFolder ? (
-    <LibraryFolderScan mode="import" onCancel={handleCancelFolderScan} />
+    <LibraryFolderScan
+      mode="import"
+      statusLine={folderScanStatusLine("import", folderScanProgress)}
+      onCancel={handleCancelFolderScan}
+    />
   ) : null;
 
   if (courses.length === 0 && visibility === "active") {

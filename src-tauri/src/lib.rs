@@ -4,6 +4,8 @@ mod card_commands;
 mod command_failure;
 mod commands;
 mod course_commands;
+mod folder_scan_guard;
+mod folder_scan_progress;
 mod library_commands;
 mod report_commands;
 mod roadmap_commands;

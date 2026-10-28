@@ -11,6 +11,8 @@ export const LIBRARY_DROP_FILE_MESSAGE = "Drop a folder, not a single file.";
 export const RISKY_IMPORT_PATH_MESSAGE =
   "That folder is too broad; pick the course directory itself.";
 
+export const FOLDER_SCAN_BUSY_MESSAGE = "A folder scan is already running.";
+
 export function libraryImportErrorMessage(
   raw: unknown,
   fallback: string
@@ -25,6 +27,9 @@ export function libraryImportErrorMessage(
     }
     if (parsed?.code === "import_cancelled") {
       return null;
+    }
+    if (parsed?.code === "folder_scan_in_progress") {
+      return FOLDER_SCAN_BUSY_MESSAGE;
     }
     return invokeErrorMessage(raw, fallback);
   }

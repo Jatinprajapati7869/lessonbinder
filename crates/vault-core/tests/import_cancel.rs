@@ -31,7 +31,7 @@ fn cancel_during_scan_leaves_no_course() {
     let should_cancel = || entry_checks.fetch_add(1, Ordering::Relaxed) > 0;
 
     let db = VaultDb::open_in_memory().unwrap();
-    let err = import_folder_with_cancel(&db, root, &should_cancel).unwrap_err();
+    let err = import_folder_with_cancel(&db, root, &should_cancel, None).unwrap_err();
     assert!(matches!(err, ImportError::Cancelled));
 
     assert!(list_courses(&db, None, CourseLibraryVisibility::Active)
@@ -50,7 +50,7 @@ fn cancel_after_first_lesson_keeps_that_lesson_and_stops_import() {
     let db = VaultDb::open_in_memory().unwrap();
     let should_cancel = || total_lesson_count(&db) >= 1;
 
-    let err = import_folder_with_cancel(&db, root, &should_cancel).unwrap_err();
+    let err = import_folder_with_cancel(&db, root, &should_cancel, None).unwrap_err();
     assert!(matches!(err, ImportError::Cancelled));
 
     let courses = list_courses(&db, None, CourseLibraryVisibility::Active).unwrap();
@@ -71,7 +71,7 @@ fn cancel_after_first_of_two_files_does_not_mark_that_lesson_done_or_broken() {
     let db = VaultDb::open_in_memory().unwrap();
     let should_cancel = || total_lesson_count(&db) >= 1;
 
-    let err = import_folder_with_cancel(&db, root, &should_cancel).unwrap_err();
+    let err = import_folder_with_cancel(&db, root, &should_cancel, None).unwrap_err();
     assert!(matches!(err, ImportError::Cancelled));
 
     let courses = list_courses(&db, None, CourseLibraryVisibility::Active).unwrap();

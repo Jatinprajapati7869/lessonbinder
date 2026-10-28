@@ -34,6 +34,13 @@ pub struct ImportReport {
     pub lesson_ids: Vec<String>,
 }
 
+/// Lesson-file progress during folder scan and upsert (`seen` / `planned`).
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct FolderScanProgress {
+    pub seen: u32,
+    pub planned: u32,
+}
+
 #[derive(Debug, thiserror::Error)]
 pub enum ImportError {
     #[error(transparent)]
@@ -77,7 +84,7 @@ impl PartialEq for RescanError {
 
 /// Rescan a local folder course from disk: upsert current files, mark missing lessons broken.
 pub fn rescan(db: &VaultDb, course_id: &str) -> Result<ImportReport, RescanError> {
-    rescan_with_cancel(db, course_id, &|| false)
+    rescan_with_cancel(db, course_id, &|| false, None)
 }
 
 /// Like [`rescan`], but checks `should_cancel` while scanning and before each vault write.
@@ -85,6 +92,7 @@ pub fn rescan_with_cancel(
     db: &VaultDb,
     course_id: &str,
     should_cancel: &dyn Fn() -> bool,
+    on_progress: Option<&dyn Fn(FolderScanProgress)>,
 ) -> Result<ImportReport, RescanError> {
     let source_kind = db.course_source_kind(course_id)?;
     if source_kind != "folder" {
@@ -94,7 +102,7 @@ pub fn rescan_with_cancel(
         return Err(RescanError::CourseNotFound);
     };
     let root = PathBuf::from(&root_path);
-    let lessons = scan_folder_with_cancel(&root, should_cancel)?;
+    let lessons = scan_folder_with_cancel(&root, should_cancel, on_progress)?;
     if should_cancel() {
         return Err(RescanError::Import(ImportError::Cancelled));
     }
@@ -108,12 +116,7 @@ pub fn rescan_with_cancel(
         .collect();
 
     let existing = db.local_file_lessons_for_course(course_id)?;
-    for lesson in &lessons {
-        if should_cancel() {
-            return Err(RescanError::Import(ImportError::Cancelled));
-        }
-        db.upsert_single_scanned_lesson(course_id, &root, lesson)?;
-    }
+    upsert_scanned_lessons_with_cancel(db, course_id, &root, &lessons, should_cancel, on_progress)?;
 
     for lesson in existing {
         if !scanned_keys.contains(&lesson.stable_key) {
@@ -140,7 +143,7 @@ pub fn validate_import_folder_path(picked: &Path) -> Result<(), ImportError> {
 
 /// Import or re-import a folder as one course (idempotent on `root_path`).
 pub fn import_folder(db: &VaultDb, picked: &Path) -> Result<ImportReport, ImportError> {
-    import_folder_with_cancel(db, picked, &|| false)
+    import_folder_with_cancel(db, picked, &|| false, None)
 }
 
 /// Import a folder, checking `should_cancel` between directory entries while scanning
@@ -149,9 +152,10 @@ pub fn import_folder_with_cancel(
     db: &VaultDb,
     picked: &Path,
     should_cancel: &dyn Fn() -> bool,
+    on_progress: Option<&dyn Fn(FolderScanProgress)>,
 ) -> Result<ImportReport, ImportError> {
     let root = resolve_import_root(picked)?;
-    let lessons = scan_folder_with_cancel(&root, should_cancel)?;
+    let lessons = scan_folder_with_cancel(&root, should_cancel, on_progress)?;
     let title = root
         .file_name()
         .and_then(OsStr::to_str)
@@ -161,37 +165,66 @@ pub fn import_folder_with_cancel(
     let course_id = db
         .ensure_folder_course(&root_path, &title)
         .map_err(ImportError::from)?;
-    let mut lesson_ids = Vec::with_capacity(lessons.len());
-    for lesson in &lessons {
-        if should_cancel() {
-            return Err(ImportError::Cancelled);
-        }
-        let lesson_id = db
-            .upsert_single_scanned_lesson(&course_id, &root, lesson)
-            .map_err(ImportError::from)?;
-        lesson_ids.push(lesson_id);
-    }
+    let lesson_ids = upsert_scanned_lessons_with_cancel(
+        db,
+        &course_id,
+        &root,
+        &lessons,
+        should_cancel,
+        on_progress,
+    )?;
     Ok(ImportReport {
         course_id,
         lesson_ids,
     })
 }
 
+fn upsert_scanned_lessons_with_cancel(
+    db: &VaultDb,
+    course_id: &str,
+    course_root: &Path,
+    lessons: &[ScannedLesson],
+    should_cancel: &dyn Fn() -> bool,
+    on_progress: Option<&dyn Fn(FolderScanProgress)>,
+) -> Result<Vec<String>, ImportError> {
+    let planned = u32::try_from(lessons.len()).unwrap_or(u32::MAX);
+    if let Some(report) = on_progress {
+        report(FolderScanProgress { seen: 0, planned });
+    }
+    let mut lesson_ids = Vec::with_capacity(lessons.len());
+    for (index, lesson) in lessons.iter().enumerate() {
+        if should_cancel() {
+            return Err(ImportError::Cancelled);
+        }
+        let lesson_id = db
+            .upsert_single_scanned_lesson(course_id, course_root, lesson)
+            .map_err(ImportError::from)?;
+        lesson_ids.push(lesson_id);
+        if let Some(report) = on_progress {
+            let seen = u32::try_from(index + 1).unwrap_or(u32::MAX);
+            report(FolderScanProgress { seen, planned });
+        }
+    }
+    Ok(lesson_ids)
+}
+
 /// Discover lesson and subtitle files under `root` (pure; no database).
 pub fn scan_folder(root: &Path) -> Result<Vec<ScannedLesson>, ImportError> {
-    scan_folder_with_cancel(root, &|| false)
+    scan_folder_with_cancel(root, &|| false, None)
 }
 
 /// Like [`scan_folder`], but aborts when `should_cancel` returns true between entries.
 pub fn scan_folder_with_cancel(
     root: &Path,
     should_cancel: &dyn Fn() -> bool,
+    on_progress: Option<&dyn Fn(FolderScanProgress)>,
 ) -> Result<Vec<ScannedLesson>, ImportError> {
     let root = fs::canonicalize(root)?;
     let ignore = LessonbinderIgnore::load_from_course_root(&root).map_err(ImportError::from)?;
     let mut primary_media_files: Vec<PathBuf> = Vec::new();
     let mut subtitle_files: Vec<PathBuf> = Vec::new();
     let mut sidecar_files: Vec<PathBuf> = Vec::new();
+    let mut lesson_files_seen = 0u32;
     collect_files(
         &root,
         &root,
@@ -200,6 +233,8 @@ pub fn scan_folder_with_cancel(
         &mut subtitle_files,
         &mut sidecar_files,
         should_cancel,
+        &mut lesson_files_seen,
+        on_progress,
     )?;
 
     let mut subtitles_by_stem: HashMap<(String, String), String> = HashMap::new();
@@ -275,6 +310,15 @@ pub fn scan_folder_with_cancel(
     }
 
     lessons.sort_by(|a, b| a.relative_path.cmp(&b.relative_path));
+    let planned = u32::try_from(lessons.len()).unwrap_or(u32::MAX);
+    if planned > 0 {
+        if let Some(report) = on_progress {
+            report(FolderScanProgress {
+                seen: planned,
+                planned,
+            });
+        }
+    }
     Ok(lessons)
 }
 
@@ -314,6 +358,7 @@ pub(crate) fn lesson_resource_kind(ext: &str) -> &'static str {
     }
 }
 
+#[allow(clippy::too_many_arguments)]
 fn collect_files(
     root: &Path,
     dir: &Path,
@@ -322,6 +367,8 @@ fn collect_files(
     subtitle_out: &mut Vec<PathBuf>,
     sidecar_out: &mut Vec<PathBuf>,
     should_cancel: &dyn Fn() -> bool,
+    lesson_files_seen: &mut u32,
+    on_progress: Option<&dyn Fn(FolderScanProgress)>,
 ) -> Result<(), ImportError> {
     for entry in fs::read_dir(dir)? {
         if should_cancel() {
@@ -348,6 +395,8 @@ fn collect_files(
                 subtitle_out,
                 sidecar_out,
                 should_cancel,
+                lesson_files_seen,
+                on_progress,
             )?;
             continue;
         }
@@ -363,11 +412,26 @@ fn collect_files(
             subtitle_out.push(path);
         } else if PRIMARY_MEDIA_EXTENSIONS.contains(&ext.as_str()) {
             primary_media_out.push(path);
+            report_lesson_file_seen(lesson_files_seen, on_progress);
         } else if STANDALONE_LESSON_EXTENSIONS.contains(&ext.as_str()) {
             sidecar_out.push(path);
+            report_lesson_file_seen(lesson_files_seen, on_progress);
         }
     }
     Ok(())
+}
+
+fn report_lesson_file_seen(
+    lesson_files_seen: &mut u32,
+    on_progress: Option<&dyn Fn(FolderScanProgress)>,
+) {
+    *lesson_files_seen = lesson_files_seen.saturating_add(1);
+    if let Some(report) = on_progress {
+        report(FolderScanProgress {
+            seen: *lesson_files_seen,
+            planned: 0,
+        });
+    }
 }
 
 fn path_has_ignored_segment(path: &Path, root: &Path) -> bool {

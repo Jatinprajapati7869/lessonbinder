@@ -5,21 +5,9 @@ export type LibraryFolderScanMode = "import" | "rescan";
 
 export type LibraryFolderScanProps = {
   mode: LibraryFolderScanMode;
+  statusLine: string;
   onCancel: () => void;
 };
-
-function scanStatusLabel(mode: LibraryFolderScanMode): string {
-  switch (mode) {
-    case "import":
-      return "Scanning folder…";
-    case "rescan":
-      return "Rescanning folder…";
-    default: {
-      const unreachable: never = mode;
-      return unreachable;
-    }
-  }
-}
 
 function cancelLabel(mode: LibraryFolderScanMode): string {
   switch (mode) {
@@ -34,11 +22,15 @@ function cancelLabel(mode: LibraryFolderScanMode): string {
   }
 }
 
-export function LibraryFolderScan({ mode, onCancel }: LibraryFolderScanProps) {
+export function LibraryFolderScan({
+  mode,
+  statusLine,
+  onCancel,
+}: LibraryFolderScanProps) {
   const cancelText = cancelLabel(mode);
   return (
     <div className="library-scan" role="status" aria-live="polite">
-      <p className="library-scan__label">{scanStatusLabel(mode)}</p>
+      <p className="library-scan__label">{statusLine}</p>
       <button
         type="button"
         className="library-button-secondary"

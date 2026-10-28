@@ -35,7 +35,7 @@ fn cancel_rescan_leaves_lesson_order_and_notes_unchanged() {
     let entry_checks = AtomicUsize::new(0);
     let should_cancel = || entry_checks.fetch_add(1, Ordering::Relaxed) > 0;
 
-    let err = rescan_with_cancel(&db, &report.course_id, &should_cancel).unwrap_err();
+    let err = rescan_with_cancel(&db, &report.course_id, &should_cancel, None).unwrap_err();
     assert!(matches!(err, RescanError::Import(ImportError::Cancelled)));
 
     assert_eq!(

@@ -3,9 +3,9 @@ use std::sync::atomic::Ordering;
 
 use serde::Deserialize;
 use serde::Serialize;
-use tauri::State;
+use tauri::{AppHandle, State};
 use vault_core::continue_learning::library_continue_row;
-use vault_core::import::import_folder_with_cancel;
+use vault_core::import::{import_folder_with_cancel, FolderScanProgress};
 use vault_core::library::{list_courses, CourseLibraryVisibility, CourseSourceKind};
 use vault_core::playlist::{import_playlist_definition, import_playlist_from_pasted_lines};
 use vault_core::search::{lesson_note_body, search, SearchMatchKind};
@@ -18,6 +18,7 @@ use vault_core::VaultDb;
 use lessonbinder_tauri::command_error::from_import_error;
 
 use crate::app_state::AppState;
+use crate::folder_scan_progress::emit_folder_scan_progress;
 
 #[derive(Debug, Clone, Serialize)]
 #[serde(rename_all = "snake_case")]
@@ -263,12 +264,24 @@ pub fn validate_import_folder_path(path: String) -> Result<(), String> {
 }
 
 #[tauri::command(async)]
-pub fn import_course_folder(state: State<AppState>, path: String) -> Result<(), String> {
-    state.import_folder_cancel.store(false, Ordering::Relaxed);
+pub fn import_course_folder(
+    app: AppHandle,
+    state: State<AppState>,
+    path: String,
+) -> Result<(), String> {
+    let _scan_guard = state.try_begin_folder_scan()?;
     state.with_vault(|vault| {
         let cancel = &state.import_folder_cancel;
-        import_folder_with_cancel(vault, Path::new(&path), &|| cancel.load(Ordering::Relaxed))
-            .map_err(|e| from_import_error(e).to_invoke_string())?;
+        let on_progress = |progress: FolderScanProgress| {
+            emit_folder_scan_progress(&app, progress);
+        };
+        import_folder_with_cancel(
+            vault,
+            Path::new(&path),
+            &|| cancel.load(Ordering::Relaxed),
+            Some(&on_progress),
+        )
+        .map_err(|e| from_import_error(e).to_invoke_string())?;
         Ok(())
     })
 }

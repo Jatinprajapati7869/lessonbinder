@@ -74,7 +74,7 @@ pub use extract::{
 };
 pub use import::{
     import_folder, import_folder_with_cancel, rescan, rescan_with_cancel,
-    validate_import_folder_path, ImportError, ImportReport, RescanError,
+    validate_import_folder_path, FolderScanProgress, ImportError, ImportReport, RescanError,
 };
 pub use lesson_note::{
     create_lesson_note, delete_lesson_note, list_lesson_notes, update_lesson_note, LessonNote,
