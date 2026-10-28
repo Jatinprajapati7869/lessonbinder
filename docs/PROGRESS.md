@@ -433,6 +433,14 @@ npm run typecheck       # ok
 - [x] 246 — Continue after relaunch — [`FIRST-COURSE.md`](FIRST-COURSE.md) **Continue** row: resume seek, no auto-play; `LibraryContinue.test.tsx` — `shows course, lesson, and watched percent and opens at resume position`; `Player.test.tsx` — `seeks to initialSeekMs when the lesson loads (search hit navigation)` (`play` not called).
 - [x] 247 — No network font in the image — [`docs/FONTS.md`](FONTS.md) § Release bundle scan: no AppImage from 218 (not a pass); `rg` on existing `ui/dist/` → no Google Font hosts.
 - [x] 248 — Unsigned, on purpose — [`docs/PACKAGE.md`](PACKAGE.md): unsigned AppImage, `createUpdaterArtifacts: false`, `version: 0.0.0`; no published-artifact claims.
-- [ ] 249 — Waiting list
-- [ ] 250 — Tests again
+- [x] 249 — Waiting list — [`SCOPE-v1.4.md`](SCOPE-v1.4.md): FlutKit/ProKit icons unused; Google Sans + Andina `.ttf` shipped from kit fonts only.
+- [x] 250 — Tests again — `cargo test --workspace`: **232 passed** (74 suites); `cd ui && npm test`: **175 passed** (55 files).
+
+**Prompt 250 — verification (2026-10-28):**
+
+```bash
+cargo test --workspace   # 232 passed (74 suites); 0 failed
+cd ui && npm test       # 55 files; 175 passed
+```
+
 - [ ] 251 — Freeze

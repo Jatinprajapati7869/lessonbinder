@@ -72,6 +72,8 @@ v1.4 does **not** change manual `done` semantics, the two-database rule, or Anki
 
 Also still out of scope: Windows and macOS shipping targets from this repository, mobile clients, playlist media download, and downloading Whisper weights.
 
+**UI kits (prompt 249):** FlutKit and ProKit **icon** sets remain on the waiting list—this pack does **not** import or ship those illustration assets. The only ProKit-derived files in the product are the four licensed **Google Sans** and **Andina** `.ttf` files under `ui/src/theme/fonts/` (see [`FONTS.md`](FONTS.md)); typography only, not kit icons.
+
 ---
 
 ## Relationship to prompts 203–240
