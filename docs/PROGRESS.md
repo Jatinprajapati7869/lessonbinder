@@ -392,8 +392,8 @@ Repo: `/home/xingzi/Documents/lessonbinder`. Full text: `~/Documents/auravault-c
 - [x] 230 — Import again after cancel — `import_cancel.rs`: `reimport_after_cancelled_partial_import_finishes_without_duplicating_first_lesson`.
 - [x] 231 — Ignore file still applies — `import_ignore.rs`: `import_skips_secret_mp4_and_keeps_lecture` also uses `import_folder_with_cancel`.
 - [x] 232 — Risky root — `risky_import_path.rs`: `validate_import_folder_path_guard_blocks_drop_on_risky_root` (`import_folder_with_cancel` on `/` returns `RiskyImportPath` before scan).
-- [ ] 233 — Done stays manual
-- [ ] 234 — Backup still round-trips
+- [x] 233 — Done stays manual — `watched.rs`: `union_full_watch_does_not_auto_done`; `import_progress.rs`: `cancellable_import_finish_does_not_mark_lessons_done` (finished `import_folder_with_cancel` does not mark done).
+- [x] 234 — Backup still round-trips — `crates/tauri/tests/restore.rs`: `backup_restore_round_trip_preserves_study_days_and_pack_settings` (passes unchanged after cancellable import work).
 - [ ] 235 — Notes and search
 - [ ] 236 — First-course page
 - [ ] 237 — Deslop
