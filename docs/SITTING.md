@@ -53,5 +53,28 @@ rg 'https?://' ui/src src-tauri/src
 ## How to use this doc
 
 - Run `cargo test -p vault-core first_course_sitting` for the vault sitting integration, or the named slice tests in CI or locally (`cargo test`, `npm test`) without repeating the full folder walkthrough.
-- Rows marked **human-only** (or with human-only cells) still require [`FIRST-COURSE.md`](FIRST-COURSE.md) on a real course folder and persistent profile.
+- Rows with **human-only** cells still require [`FIRST-COURSE.md`](FIRST-COURSE.md) on a real course folder and persistent profile.
 - Related: [`FIRST-TEST.md`](FIRST-TEST.md) (fixture and slice checklist), [`STUDY.md`](STUDY.md) (in-app review flow).
+
+---
+
+## Human-only rows (still open)
+
+Nothing below is marked **pass** by automation or this document. Keep these open on the manual checklist.
+
+| Row / topic                               | Still open because                                                                                                                                                                           |
+| ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Boot**                                  | Dev or AppImage launch, window, empty Library — manual only ([`FIRST-COURSE.md`](FIRST-COURSE.md) § Boot).                                                                                   |
+| **Import (your folder)**                  | Choosing **your** purchased or local **course directory** and confirming the Library row in a running app (tests use temp folders, not your disk tree).                                      |
+| **Cancel import**                         | Large real folder + **Cancel import** in the UI (not **Escape**).                                                                                                                            |
+| **Resume**                                | Playable file, seek/watch, **Back**, reopen the same lesson in the running app.                                                                                                              |
+| **A note**                                | Notes column on a real lesson in the app.                                                                                                                                                    |
+| **One card — lesson note → Save to Anki** | Successful commit from a saved lesson note in the player UI (tests stop at “do not commit until Save to Anki”).                                                                              |
+| **One card — OCR capture**                | **Capture card** after real **Tesseract** OCR on a paused frame — **not pass**; `ui/CaptureCard.test.tsx` — `shows tesseract missing when OCR is unavailable` is the missing-tool path only. |
+| **One card — audio clip**                 | Attaching an **audio clip** when **ffmpeg** is required.                                                                                                                                     |
+| **Whisper transcription**                 | Local **Whisper** model + CLI on real lesson media in Settings — **not pass**; not covered by sitting automation.                                                                            |
+| **A review**                              | Top-bar due counts and **Study** after a card committed during the sitting.                                                                                                                  |
+| **Theme switch**                          | **Library** and **player** readability after save in the running app.                                                                                                                        |
+| **Quit**                                  | Closing the app process.                                                                                                                                                                     |
+| **Relaunch**                              | Same persistent profile after quit: course, note, card link, theme still present.                                                                                                            |
+| **Continue**                              | **Continue** row on **Library** with real prior resume from the sitting.                                                                                                                     |

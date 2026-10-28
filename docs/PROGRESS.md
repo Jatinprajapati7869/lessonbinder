@@ -497,8 +497,14 @@ npm run typecheck       # tsc -p ui/tsconfig.json --noEmit; pass
 - [x] 290 — Backup — `lessonbinder_tauri::restore::backup_restore_round_trip_preserves_study_days_and_pack_settings` (pass; streak, theme, speed, volume unchanged).
 - [x] 291 — Profile lock — `ui/AnkiProfileInUse.test.tsx` — `shows the profile lock sentence when study bar state fails`; sentence matches `anki_bridge` — **Lessonbinder Anki profile is in use (close Anki or wait for another operation to finish)**.
 - [x] 292 — Missing file — `vault_core::missing_media_on_resume::missing_file_on_resume_marks_broken_not_done` (pass; **Broken**, resume kept, not **done**).
-- [ ] 293 — Human rows
-- [ ] 294 — Counts again
+- [x] 293 — Human rows — [`SITTING.md`](SITTING.md) ends with **Human-only rows (still open)**; OCR, Whisper, and **your course folder** import stay **not pass**.
+- [x] 294 — Counts again — `cargo test --workspace`: **241 passed** (77 suites); `cd ui && npm test`: **192 passed** (59 files).
+
+```bash
+cargo test --workspace   # 241 passed (77 suites); 0 failed
+cd ui && npm test       # 59 files; 192 passed
+```
+
 - [ ] 295 — Checklist evidence
 - [ ] 296 — Unsigned
 - [ ] 297 — Typecheck
