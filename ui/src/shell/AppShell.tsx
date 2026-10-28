@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 
 import type { AnkiLaunchStatus, DueSummary } from "../api/types";
+import settingsOutline from "../theme/icons/setting-outline.png";
 
 export type AppRoute = "library" | "roadmap" | "report" | "review" | "settings";
 
@@ -95,11 +96,19 @@ export function AppShell({
           <button
             type="button"
             className={
-              route === "settings" ? "nav-item nav-item--active" : "nav-item"
+              route === "settings"
+                ? "nav-item nav-item--active nav-item--with-icon theme-icon-label"
+                : "nav-item nav-item--with-icon theme-icon-label"
             }
             aria-current={route === "settings" ? "page" : undefined}
             onClick={() => onNavigate("settings")}
           >
+            <img
+              src={settingsOutline}
+              alt=""
+              aria-hidden
+              className="theme-icon-label__icon"
+            />
             Settings
           </button>
         </nav>

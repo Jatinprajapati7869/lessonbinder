@@ -26,3 +26,9 @@ Copied into `ui/src/theme/icons/` with the same filenames as the table above (Fl
 **Show folder (prompt 321):** `file-tray-full-outline.png` beside the **Show folder** label on the folder course screen (`CourseScreen`); accessible name remains **Show folder** (`aria-label`).
 
 **Search library (prompt 322):** `search-outline.png` inside the library search field beside the input; visible label **Search library** and `htmlFor` / `id` association unchanged.
+
+**Settings (prompt 323):** `setting-outline.png` beside the side-nav **Settings** label; accessible name remains **Settings** (visible button text).
+
+**Reader and list (prompt 324):** `reader-outline.png` beside **Show lesson file** (`PlayerScreen`) and beside the **Notes** heading (`LessonNotesColumn`); `list-outline.png` beside the **Lessons** heading above the course lesson table (`CourseScreen`). Text labels stay; icons are decorative (`aria-hidden`).
+
+**School:** `school-outline.png` is **unused**—no side-nav or toolbar control is named **School** (or equivalent) in the app; the **Study** button keeps text only.

@@ -65,6 +65,7 @@ import { LessonNotesColumn } from "../lesson/LessonNotesColumn";
 import { CaptureCardPanel } from "./CaptureCardPanel";
 import { AudioClipCardPanel } from "./AudioClipCardPanel";
 import { SubtitleCueCardPanel } from "./SubtitleCueCardPanel";
+import readerOutline from "../theme/icons/reader-outline.png";
 
 export const RESUME_SAVE_INTERVAL_MS = 3000;
 
@@ -1032,10 +1033,16 @@ export function PlayerScreen({
           {lesson.kind === "local_file" && lesson.local_media_path ? (
             <button
               type="button"
-              className="library-button-secondary"
+              className="library-button-secondary theme-icon-label"
               aria-label="Show lesson file"
               onClick={() => void handleShowLessonFileDirectory()}
             >
+              <img
+                src={readerOutline}
+                alt=""
+                aria-hidden
+                className="theme-icon-label__icon"
+              />
               Show lesson file
             </button>
           ) : null}

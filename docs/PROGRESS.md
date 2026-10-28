@@ -544,8 +544,8 @@ Repo: `/home/xingzi/Documents/lessonbinder`. Full text: `~/Documents/auravault-c
 - [x] 320 — Copy the outlines — six PNGs under `ui/src/theme/icons/` per [`ICONS.md`](ICONS.md); commit **319–320**.
 - [x] 321 — Show folder icon — `file-tray-full-outline.png` beside **Show folder** on `CourseScreen`; `aria-label` unchanged.
 - [x] 322 — Search icon — `search-outline.png` in library search field; **Search library** label unchanged; commit **321–322**.
-- [ ] 323 — Settings icon
-- [ ] 324 — Reader and list
+- [x] 323 — Settings icon — `setting-outline.png` beside side-nav **Settings**; accessible name unchanged.
+- [x] 324 — Reader and list — reader on **Show lesson file** + **Notes**; list on **Lessons** heading; **school-outline** unused; commit **323–324**.
 - [ ] 325 — Names survive the icons
 - [ ] 326 — Icons are local
 - [ ] 327 — Other operating systems

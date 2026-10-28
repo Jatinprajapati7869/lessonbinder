@@ -34,6 +34,18 @@ button {
   outline-offset: var(--focus-ring-offset);
 }
 
+.theme-icon-label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.theme-icon-label__icon {
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

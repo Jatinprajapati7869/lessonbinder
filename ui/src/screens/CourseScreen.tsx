@@ -18,6 +18,7 @@ import {
 } from "../library/format";
 import { OrderProposalPanel } from "./OrderProposalPanel";
 import showFolderOutline from "../theme/icons/file-tray-full-outline.png";
+import listOutline from "../theme/icons/list-outline.png";
 
 export type CourseScreenProps = {
   course: CourseRow;
@@ -413,7 +414,7 @@ export function CourseScreen({
           {isFolderCourse ? (
             <button
               type="button"
-              className="library-button-secondary course-header__show-folder"
+              className="library-button-secondary course-header__show-folder theme-icon-label"
               disabled={busy || rescanningFolder}
               aria-label="Show folder"
               onClick={() => void handleShowFolder()}
@@ -422,7 +423,7 @@ export function CourseScreen({
                 src={showFolderOutline}
                 alt=""
                 aria-hidden
-                className="course-header__show-folder-icon"
+                className="theme-icon-label__icon"
               />
               Show folder
             </button>
@@ -542,6 +543,15 @@ export function CourseScreen({
         </div>
       ) : (
         <div className="library-table-panel">
+          <h2 className="course-lessons__heading theme-icon-label">
+            <img
+              src={listOutline}
+              alt=""
+              aria-hidden
+              className="theme-icon-label__icon"
+            />
+            Lessons
+          </h2>
           <table
             className="library-table course-lesson-table"
             onKeyDown={(event) =>

@@ -5,6 +5,7 @@ import { useCourseCommands } from "../course/useCourseCommands";
 import { formatDurationMs } from "../library/format";
 import { handleLessonNotesArrowKeys } from "../player/playerSidePanelKeyboard";
 import { LessonNoteCardPanel } from "../screens/LessonNoteCardPanel";
+import readerOutline from "../theme/icons/reader-outline.png";
 
 export type LessonNotesPlaybackContext = {
   currentMs: number;
@@ -138,7 +139,15 @@ export function LessonNotesColumn({
   return (
     <aside className="lesson-notes" role="region" aria-label="Lesson notes">
       <div className="lesson-notes__header">
-        <h2 className="lesson-notes__title">Notes</h2>
+        <h2 className="lesson-notes__title theme-icon-label">
+          <img
+            src={readerOutline}
+            alt=""
+            aria-hidden
+            className="theme-icon-label__icon"
+          />
+          Notes
+        </h2>
         <div className="lesson-notes__header-actions">
           <button
             type="button"
