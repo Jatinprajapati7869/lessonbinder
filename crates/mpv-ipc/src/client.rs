@@ -76,10 +76,20 @@ impl<S: Read + Write> MpvIpcClient<S> {
         self.set_property("speed", json!(speed))
     }
 
+    /// Window geometry string (`WxH+X+Y`) when embedding with `--wid`.
+    pub fn set_geometry(&mut self, geometry: &str) -> Result<(), MpvIpcError> {
+        self.set_property("geometry", Value::from(geometry))
+    }
+
     /// Current playback time in seconds (`time-pos`); `None` when mpv returns null data.
     pub fn get_time_pos(&mut self) -> Result<Option<f64>, MpvIpcError> {
         let response = self.run_command(&[Value::from("get_property"), Value::from("time-pos")])?;
         Ok(response.data.and_then(|v| v.as_f64()))
+    }
+
+    pub fn quit(&mut self) -> Result<(), MpvIpcError> {
+        self.run_command(&[Value::from("quit")])?;
+        Ok(())
     }
 
     fn set_property(&mut self, name: &str, value: Value) -> Result<(), MpvIpcError> {

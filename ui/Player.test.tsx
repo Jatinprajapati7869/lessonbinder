@@ -1025,14 +1025,14 @@ describe("PlayerScreen", () => {
 
     await waitFor(() => {
       expect(screen.getByTestId("player-bar")).toHaveClass(
-        "player-bar--theater-hidden"
+        "player-bar--overlay-hidden"
       );
     });
 
     await user.keyboard("{ArrowDown}");
 
     expect(screen.getByTestId("player-bar")).not.toHaveClass(
-      "player-bar--theater-hidden"
+      "player-bar--overlay-hidden"
     );
   });
 
@@ -1111,7 +1111,7 @@ describe("PlayerScreen", () => {
     await user.click(screen.getByRole("button", { name: "Zen" }));
 
     expect(screen.getByTestId("player-zen-screen")).toBeInTheDocument();
-    expect(screen.queryByTestId("player-bar")).not.toBeInTheDocument();
+    expect(screen.getByTestId("player-bar")).toBeInTheDocument();
     expect(
       screen.queryByRole("region", { name: "Lesson notes" })
     ).not.toBeInTheDocument();
@@ -1167,7 +1167,7 @@ describe("PlayerScreen", () => {
     await user.click(screen.getByRole("button", { name: "Zen" }));
 
     expect(screen.getByTestId("player-zen-screen")).toBeInTheDocument();
-    expect(screen.queryByTestId("player-bar")).not.toBeInTheDocument();
+    expect(screen.getByTestId("player-bar")).toBeInTheDocument();
   });
 
   it("loads persisted playback speed and saves changes to vault settings", async () => {

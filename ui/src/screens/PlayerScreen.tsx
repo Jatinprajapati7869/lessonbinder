@@ -9,6 +9,12 @@ import type {
 } from "../api/courseTypes";
 import type { VaultSettings } from "../api/settingsTypes";
 import { invokeErrorMessage } from "../api/invokeError";
+import {
+  startMpvLessonHandoff,
+  stopMpvLessonHandoff,
+  updateMpvLessonEmbedRect,
+  videoEmbedRect,
+} from "../api/mpvCommands";
 import { useCourseCommands } from "../course/useCourseCommands";
 import { formatDurationMs, watchedPercent } from "../library/format";
 import { isDocumentLessonPath } from "../lesson/lessonDocument";
@@ -29,7 +35,7 @@ import {
 } from "../player/playerZen";
 import {
   PLAYER_THEATER_CONTROLS_HIDE_MS,
-  playerTheaterBarClassName,
+  playerFrameBarClassName,
 } from "../player/playerTheater";
 import {
   playerMarkCompleteAccessibleName,
@@ -59,6 +65,7 @@ import {
   applyPlayerVolumeToVideo,
   PlayerVolumeControl,
 } from "../player/PlayerVolumeControl";
+import { MPV_NOT_ON_PATH_MESSAGE } from "../player/mpvHandoffMessage";
 import { normalizePlayerVolume } from "../player/playerVolume";
 import { LessonCardLinksList } from "../lesson/LessonCardLinksList";
 import { LessonNotesColumn } from "../lesson/LessonNotesColumn";
@@ -161,6 +168,12 @@ export function PlayerScreen({
   const [mediaSrc, setMediaSrc] = useState<string | null>(null);
   const [playing, setPlaying] = useState(false);
   const [loadFailed, setLoadFailed] = useState(false);
+  const [mpvActive, setMpvActive] = useState(false);
+  const [mpvHandoffMessage, setMpvHandoffMessage] = useState<string | null>(
+    null
+  );
+  const mpvHandoffAttemptedRef = useRef(false);
+  const previousLessonIdRef = useRef(lesson.lesson_id);
   const [captureOpen, setCaptureOpen] = useState(false);
   const [audioClipOpen, setAudioClipOpen] = useState(false);
   const [captureFrame, setCaptureFrame] = useState<string | null>(null);
@@ -184,7 +197,7 @@ export function PlayerScreen({
     null
   );
   const [theaterMode, setTheaterMode] = useState(false);
-  const [theaterControlsVisible, setTheaterControlsVisible] = useState(true);
+  const [frameBarVisible, setFrameBarVisible] = useState(true);
   const [zenMode, setZenMode] = useState(false);
   const [playbackSpeed, setPlaybackSpeed] = useState<PlaybackSpeedChoice>(1);
   const [playerVolume, setPlayerVolume] = useState(1);
@@ -195,7 +208,7 @@ export function PlayerScreen({
   const pendingSeekMsRef = useRef<number | null>(initialSeekMs);
   const theaterModeRef = useRef(theaterMode);
   const zenModeRef = useRef(zenMode);
-  const theaterControlsHideRef = useRef<number | null>(null);
+  const frameBarHideRef = useRef<number | null>(null);
 
   useEffect(() => {
     pendingSeekMsRef.current = initialSeekMs;
@@ -236,15 +249,30 @@ export function PlayerScreen({
     setZenMode(false);
   }, []);
 
+  const scheduleFrameBarHide = useCallback(() => {
+    if (frameBarHideRef.current !== null) {
+      window.clearTimeout(frameBarHideRef.current);
+    }
+    frameBarHideRef.current = window.setTimeout(() => {
+      setFrameBarVisible(false);
+    }, PLAYER_THEATER_CONTROLS_HIDE_MS);
+  }, []);
+
+  const revealFrameBar = useCallback(() => {
+    setFrameBarVisible(true);
+    scheduleFrameBarHide();
+  }, [scheduleFrameBarHide]);
+
   const enterZenMode = useCallback(() => {
     setTheaterMode(false);
-    setTheaterControlsVisible(true);
-    if (theaterControlsHideRef.current !== null) {
-      window.clearTimeout(theaterControlsHideRef.current);
-      theaterControlsHideRef.current = null;
+    setFrameBarVisible(true);
+    if (frameBarHideRef.current !== null) {
+      window.clearTimeout(frameBarHideRef.current);
+      frameBarHideRef.current = null;
     }
     setZenMode(true);
-  }, []);
+    scheduleFrameBarHide();
+  }, [scheduleFrameBarHide]);
 
   const toggleZenMode = useCallback(() => {
     if (zenModeRef.current) {
@@ -254,29 +282,16 @@ export function PlayerScreen({
     enterZenMode();
   }, [enterZenMode, exitZenMode]);
 
-  const scheduleTheaterControlsHide = useCallback(() => {
-    if (theaterControlsHideRef.current !== null) {
-      window.clearTimeout(theaterControlsHideRef.current);
-    }
-    theaterControlsHideRef.current = window.setTimeout(() => {
-      setTheaterControlsVisible(false);
-    }, PLAYER_THEATER_CONTROLS_HIDE_MS);
-  }, []);
-
   const revealTheaterControls = useCallback(() => {
-    if (!theaterModeRef.current) {
-      return;
-    }
-    setTheaterControlsVisible(true);
-    scheduleTheaterControlsHide();
-  }, [scheduleTheaterControlsHide]);
+    revealFrameBar();
+  }, [revealFrameBar]);
 
   const exitTheaterMode = useCallback(() => {
     setTheaterMode(false);
-    setTheaterControlsVisible(true);
-    if (theaterControlsHideRef.current !== null) {
-      window.clearTimeout(theaterControlsHideRef.current);
-      theaterControlsHideRef.current = null;
+    setFrameBarVisible(true);
+    if (frameBarHideRef.current !== null) {
+      window.clearTimeout(frameBarHideRef.current);
+      frameBarHideRef.current = null;
     }
   }, []);
 
@@ -287,17 +302,29 @@ export function PlayerScreen({
     }
     setZenMode(false);
     setTheaterMode(true);
-    setTheaterControlsVisible(true);
-    scheduleTheaterControlsHide();
-  }, [exitTheaterMode, scheduleTheaterControlsHide]);
+    setFrameBarVisible(true);
+    scheduleFrameBarHide();
+  }, [exitTheaterMode, scheduleFrameBarHide]);
 
   useEffect(() => {
     return () => {
-      if (theaterControlsHideRef.current !== null) {
-        window.clearTimeout(theaterControlsHideRef.current);
+      if (frameBarHideRef.current !== null) {
+        window.clearTimeout(frameBarHideRef.current);
       }
     };
   }, []);
+
+  useEffect(() => {
+    if (
+      !mediaReady ||
+      !lesson.local_media_path ||
+      playbackStatus === "broken"
+    ) {
+      return;
+    }
+    setFrameBarVisible(true);
+    scheduleFrameBarHide();
+  }, [lesson.lesson_id, mediaReady, playbackStatus, scheduleFrameBarHide]);
 
   useEffect(() => {
     function onTheaterKeyDown(event: KeyboardEvent) {
@@ -348,6 +375,43 @@ export function PlayerScreen({
 
   const unplayable =
     playbackStatus === "broken" || !lesson.local_media_path || loadFailed;
+
+  useEffect(() => {
+    if (previousLessonIdRef.current === lesson.lesson_id) {
+      return;
+    }
+    previousLessonIdRef.current = lesson.lesson_id;
+    mpvHandoffAttemptedRef.current = false;
+    setMpvActive(false);
+    setMpvHandoffMessage(null);
+    void stopMpvLessonHandoff();
+  }, [lesson.lesson_id]);
+
+  useEffect(() => {
+    return () => {
+      void stopMpvLessonHandoff();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!mpvActive) {
+      return;
+    }
+    const video = videoRef.current;
+    if (!video) {
+      return;
+    }
+    const syncRect = () => {
+      void updateMpvLessonEmbedRect(videoEmbedRect(video));
+    };
+    const observer = new ResizeObserver(syncRect);
+    observer.observe(video);
+    window.addEventListener("resize", syncRect);
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("resize", syncRect);
+    };
+  }, [mpvActive]);
 
   useEffect(() => {
     if (
@@ -568,6 +632,33 @@ export function PlayerScreen({
       lastWatchTickMsRef.current = watchTickAnchorAfterSeek(seekMs);
     }
   }
+
+  const handleVideoError = useCallback(() => {
+    if (mpvHandoffAttemptedRef.current || !lesson.local_media_path) {
+      return;
+    }
+    mpvHandoffAttemptedRef.current = true;
+    const video = videoRef.current;
+    if (!video) {
+      return;
+    }
+    const resumeMs = pendingSeekMsRef.current ?? lesson.resume_position_ms ?? 0;
+    void startMpvLessonHandoff(
+      lesson.local_media_path,
+      videoEmbedRect(video),
+      resumeMs / 1000
+    )
+      .then(() => {
+        setMpvActive(true);
+        setMpvHandoffMessage(null);
+        setPlaying(true);
+      })
+      .catch((error: unknown) => {
+        setMpvHandoffMessage(
+          invokeErrorMessage(error, MPV_NOT_ON_PATH_MESSAGE)
+        );
+      });
+  }, [lesson.local_media_path, lesson.resume_position_ms]);
 
   function handleTimeUpdate() {
     const video = videoRef.current;
@@ -860,32 +951,118 @@ export function PlayerScreen({
       ) : null}
       <div
         className={playerMainClassName(zenMode, theaterMode)}
-        onMouseMove={
-          theaterMode && !zenMode ? revealTheaterControls : undefined
-        }
+        onMouseMove={revealFrameBar}
       >
-        <video
-          ref={videoRef}
-          className="player-video"
-          src={mediaSrc ?? undefined}
-          controls={false}
-          aria-label={`Lesson video: ${lesson.title}`}
-          onLoadedMetadata={handleLoadedMetadata}
-          onTimeUpdate={handleTimeUpdate}
-          onPause={() => {
-            flushWatchTick();
-            setPlaying(false);
-          }}
-          onPlay={() => {
-            const video = videoRef.current;
-            if (video) {
-              lastWatchTickMsRef.current = watchTickAnchorAfterSeek(
-                Math.floor(video.currentTime * 1000)
-              );
+        <div className="player-frame">
+          {mpvHandoffMessage ? (
+            <p
+              className="player-mpv-handoff-message"
+              role="alert"
+              data-testid="player-mpv-handoff-message"
+            >
+              {mpvHandoffMessage}
+            </p>
+          ) : null}
+          <video
+            ref={videoRef}
+            className={
+              mpvActive
+                ? "player-video player-video--mpv-handoff"
+                : "player-video"
             }
-            setPlaying(true);
-          }}
-        />
+            src={mediaSrc ?? undefined}
+            controls={false}
+            aria-label={`Lesson video: ${lesson.title}`}
+            onError={handleVideoError}
+            onLoadedMetadata={handleLoadedMetadata}
+            onTimeUpdate={handleTimeUpdate}
+            onPause={() => {
+              flushWatchTick();
+              setPlaying(false);
+            }}
+            onPlay={() => {
+              const video = videoRef.current;
+              if (video) {
+                lastWatchTickMsRef.current = watchTickAnchorAfterSeek(
+                  Math.floor(video.currentTime * 1000)
+                );
+              }
+              setPlaying(true);
+            }}
+          />
+          <div
+            className={playerFrameBarClassName(frameBarVisible)}
+            data-testid="player-bar"
+          >
+            <button
+              type="button"
+              className="library-button-secondary"
+              data-testid="player-theater-toggle"
+              onClick={toggleTheaterMode}
+            >
+              {theaterMode ? "Exit theater" : "Theater"}
+            </button>
+            <button
+              type="button"
+              className="library-button-secondary"
+              data-testid="player-zen-toggle"
+              onClick={toggleZenMode}
+            >
+              Zen
+            </button>
+            <button
+              type="button"
+              className="library-button-primary"
+              onClick={togglePlay}
+            >
+              {playing ? "Pause" : "Play"}
+            </button>
+            <PlayerPlaybackSpeedSelect
+              value={playbackSpeed}
+              onChange={handlePlaybackSpeedChange}
+            />
+            <PlayerVolumeControl
+              volume={playerVolume}
+              muted={playerMuted}
+              onVolumeChange={handlePlayerVolumeChange}
+              onMutedChange={handlePlayerMutedChange}
+            />
+            <span className="player-bar__time">
+              {formatDurationMs(playbackMs)} / {formatDurationMs(durationMs)}
+            </span>
+            <div className="player-scrubber">
+              <div className="player-scrubber__track" aria-hidden="true">
+                <div className="player-scrubber__watched-ranges">
+                  {watchedRanges.map((range) => (
+                    <div
+                      key={`${range.start_ms}-${range.end_ms}`}
+                      className="player-scrubber__watched-segment"
+                      style={{
+                        left: `${(range.start_ms / scrubMax) * 100}%`,
+                        width: `${((range.end_ms - range.start_ms) / scrubMax) * 100}%`,
+                      }}
+                    />
+                  ))}
+                </div>
+              </div>
+              <input
+                type="range"
+                className="player-scrubber__input"
+                min={0}
+                max={scrubMax}
+                step={PLAYER_SEEK_STEP_MS}
+                value={Math.min(playbackMs, scrubMax)}
+                aria-label="Playback position"
+                onChange={handleScrubChange}
+              />
+              {watchedPct !== null ? (
+                <span className="player-bar__watched">
+                  Watched {watchedPct}%
+                </span>
+              ) : null}
+            </div>
+          </div>
+        </div>
         {!zenMode && !theaterMode ? (
           <>
             <PlayerChapterList chapters={chapters} onChapterClick={seekToMs} />
@@ -908,6 +1085,82 @@ export function PlayerScreen({
       </div>
       {!zenMode && !theaterMode ? (
         <>
+          <div className="player-actions">
+            {pipSupported ? (
+              <button
+                type="button"
+                className="library-button-secondary"
+                data-testid="player-pip-button"
+                onClick={() => void handlePictureInPicture()}
+              >
+                Picture in picture
+              </button>
+            ) : null}
+            <button
+              type="button"
+              className="library-button-secondary"
+              aria-label={playerMarkCompleteAccessibleName()}
+              onClick={() => void handleMarkComplete()}
+            >
+              Mark complete
+            </button>
+            {upNext && onPlayUpNext ? (
+              <button
+                type="button"
+                className="library-button-secondary"
+                data-testid="player-up-next-button"
+                onClick={() => onPlayUpNext(upNext)}
+              >
+                Up next: {upNext.title}
+              </button>
+            ) : null}
+            <button
+              ref={captureButtonRef}
+              type="button"
+              className="library-button-secondary"
+              data-testid="player-capture-button"
+              onClick={openCapture}
+            >
+              Capture card
+            </button>
+            {lesson.kind === "local_file" && lesson.local_media_path ? (
+              <button
+                type="button"
+                className="library-button-secondary theme-icon-label"
+                aria-label="Show lesson file"
+                onClick={() => void handleShowLessonFileDirectory()}
+              >
+                <img
+                  src={readerOutline}
+                  alt=""
+                  aria-hidden
+                  className="theme-icon-label__icon"
+                />
+                Show lesson file
+              </button>
+            ) : null}
+            {lesson.kind === "local_file" ? (
+              <button
+                type="button"
+                className="library-button-secondary"
+                data-testid="player-audio-card-button"
+                onClick={openAudioClipCard}
+              >
+                Add audio to card
+              </button>
+            ) : null}
+            {lesson.kind === "local_file" ? (
+              <button
+                type="button"
+                className="library-button-secondary"
+                disabled={thumbnailBusy}
+                data-testid="player-thumbnail-button"
+                onClick={() => void handleUseFrameAsThumbnail()}
+              >
+                Use this frame as thumbnail
+              </button>
+            ) : null}
+          </div>
           <PlayerLessonResources lessonId={lesson.lesson_id} />
           <LessonCardLinksList lessonId={lesson.lesson_id} />
           {showTranscribe ? (
@@ -919,155 +1172,6 @@ export function PlayerScreen({
             />
           ) : null}
         </>
-      ) : null}
-      {!zenMode ? (
-        <div
-          className={playerTheaterBarClassName(
-            theaterMode,
-            theaterControlsVisible
-          )}
-          data-testid="player-bar"
-        >
-          <button
-            type="button"
-            className="library-button-secondary"
-            data-testid="player-theater-toggle"
-            onClick={toggleTheaterMode}
-          >
-            {theaterMode ? "Exit theater" : "Theater"}
-          </button>
-          <button
-            type="button"
-            className="library-button-secondary"
-            data-testid="player-zen-toggle"
-            onClick={toggleZenMode}
-          >
-            Zen
-          </button>
-          <button
-            type="button"
-            className="library-button-primary"
-            onClick={togglePlay}
-          >
-            {playing ? "Pause" : "Play"}
-          </button>
-          <PlayerPlaybackSpeedSelect
-            value={playbackSpeed}
-            onChange={handlePlaybackSpeedChange}
-          />
-          <PlayerVolumeControl
-            volume={playerVolume}
-            muted={playerMuted}
-            onVolumeChange={handlePlayerVolumeChange}
-            onMutedChange={handlePlayerMutedChange}
-          />
-          {pipSupported ? (
-            <button
-              type="button"
-              className="library-button-secondary"
-              data-testid="player-pip-button"
-              onClick={() => void handlePictureInPicture()}
-            >
-              Picture in picture
-            </button>
-          ) : null}
-          <span className="player-bar__time">
-            {formatDurationMs(playbackMs)} / {formatDurationMs(durationMs)}
-          </span>
-          <div className="player-scrubber">
-            <div className="player-scrubber__track" aria-hidden="true">
-              <div className="player-scrubber__watched-ranges">
-                {watchedRanges.map((range) => (
-                  <div
-                    key={`${range.start_ms}-${range.end_ms}`}
-                    className="player-scrubber__watched-segment"
-                    style={{
-                      left: `${(range.start_ms / scrubMax) * 100}%`,
-                      width: `${((range.end_ms - range.start_ms) / scrubMax) * 100}%`,
-                    }}
-                  />
-                ))}
-              </div>
-            </div>
-            <input
-              type="range"
-              className="player-scrubber__input"
-              min={0}
-              max={scrubMax}
-              step={PLAYER_SEEK_STEP_MS}
-              value={Math.min(playbackMs, scrubMax)}
-              aria-label="Playback position"
-              onChange={handleScrubChange}
-            />
-            {watchedPct !== null ? (
-              <span className="player-bar__watched">Watched {watchedPct}%</span>
-            ) : null}
-          </div>
-          <button
-            type="button"
-            className="library-button-secondary"
-            aria-label={playerMarkCompleteAccessibleName()}
-            onClick={() => void handleMarkComplete()}
-          >
-            Mark complete
-          </button>
-          {upNext && onPlayUpNext ? (
-            <button
-              type="button"
-              className="library-button-secondary"
-              data-testid="player-up-next-button"
-              onClick={() => onPlayUpNext(upNext)}
-            >
-              Up next: {upNext.title}
-            </button>
-          ) : null}
-          <button
-            ref={captureButtonRef}
-            type="button"
-            className="library-button-secondary"
-            data-testid="player-capture-button"
-            onClick={openCapture}
-          >
-            Capture card
-          </button>
-          {lesson.kind === "local_file" && lesson.local_media_path ? (
-            <button
-              type="button"
-              className="library-button-secondary theme-icon-label"
-              aria-label="Show lesson file"
-              onClick={() => void handleShowLessonFileDirectory()}
-            >
-              <img
-                src={readerOutline}
-                alt=""
-                aria-hidden
-                className="theme-icon-label__icon"
-              />
-              Show lesson file
-            </button>
-          ) : null}
-          {lesson.kind === "local_file" ? (
-            <button
-              type="button"
-              className="library-button-secondary"
-              data-testid="player-audio-card-button"
-              onClick={openAudioClipCard}
-            >
-              Add audio to card
-            </button>
-          ) : null}
-          {lesson.kind === "local_file" ? (
-            <button
-              type="button"
-              className="library-button-secondary"
-              disabled={thumbnailBusy}
-              data-testid="player-thumbnail-button"
-              onClick={() => void handleUseFrameAsThumbnail()}
-            >
-              Use this frame as thumbnail
-            </button>
-          ) : null}
-        </div>
       ) : null}
       {!zenMode && thumbnailError ? (
         <p className="library-error" role="alert">

@@ -1,14 +1,14 @@
 import { describe, expect, it } from "vitest";
 
-import { playerTheaterBarClassName } from "./src/player/playerTheater";
+import { playerFrameBarClassName } from "./src/player/playerTheater";
 
-describe("playerTheaterBarClassName", () => {
-  it("hides the theater bar until controls are revealed", () => {
-    expect(playerTheaterBarClassName(true, false)).toBe(
-      "player-bar player-bar--theater player-bar--theater-hidden"
+describe("playerFrameBarClassName", () => {
+  it("hides the frame overlay bar until controls are revealed", () => {
+    expect(playerFrameBarClassName(false)).toBe(
+      "player-bar player-bar--overlay player-bar--overlay-hidden"
     );
-    expect(playerTheaterBarClassName(true, true)).toBe(
-      "player-bar player-bar--theater"
+    expect(playerFrameBarClassName(true)).toBe(
+      "player-bar player-bar--overlay"
     );
   });
 });

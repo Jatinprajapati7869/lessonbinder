@@ -594,8 +594,8 @@ Repo: `/home/xingzi/Documents/lessonbinder`. Full text: `~/Documents/auravault-c
 - [x] 352 — Why the first video fails — [`PLAYBACK.md`](PLAYBACK.md) prompt **352**: Dandadan first row **`[EMBER] Dandadan - 13.mkv`** (HEVC); `convertFileSrc` **asset** URL recorded; `<video>` stuck **`networkState` 2**, **`error` null**; sitting **`intro.mp4`** control plays in WebKit; commit **352** (tree was dirty with **352–363** PROGRESS section only).
 - [x] 353 — Engine rule — [`PLAYBACK.md`](PLAYBACK.md) § **Engine rule**: webview `<video>` first; on **`error`**, same **`local_media_path`** → **`mpv`** JSON IPC; Lessonbinder controls only; no mpv source tree, no OSC; no player code yet.
 - [x] 354 — IPC client — `crates/mpv-ipc`: `MpvIpcClient` (`loadfile`, `seek_absolute_seconds`, `set_pause`, `set_volume`, `set_speed`, `get_time_pos`); `tests/fake_socket.rs` (**2** tests, no mpv binary); commit **353–354**.
-- [ ] 355 — Hand off when video errors
-- [ ] 356 — One bar on the frame
+- [x] 355 — Hand off when video errors — `<video>` **`onError`** → `start_mpv_lesson_handoff` (embedded **`mpv`**, JSON IPC **`loadfile`**); missing **`mpv`** → one sentence; webview success → no **mpv**; stop on leave.
+- [x] 356 — Overlay bar — transport controls on **`player-bar--overlay`** over **`player-frame`**; auto-hide on idle (all modes); **`player-actions`** row for capture / complete / PiP; commit **355–356**.
 - [ ] 357 — Dark surfaces that ignore the theme
 - [ ] 358 — Dark tokens everywhere
 - [ ] 359 — The frame stays dark

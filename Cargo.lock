@@ -2718,6 +2718,8 @@ version = "0.0.0"
 dependencies = [
  "anki-bridge",
  "lessonbinder-tauri",
+ "mpv-ipc",
+ "raw-window-handle",
  "serde",
  "serde_json",
  "tauri",

@@ -3,4 +3,5 @@
 pub mod backup;
 pub mod command_error;
 pub mod command_log;
+pub mod mpv;
 pub mod study;

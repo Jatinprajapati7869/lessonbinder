@@ -7,6 +7,7 @@ mod course_commands;
 mod folder_scan_guard;
 mod folder_scan_progress;
 mod library_commands;
+mod mpv_commands;
 mod report_commands;
 mod roadmap_commands;
 mod settings_commands;
@@ -106,6 +107,9 @@ pub fn run() {
             card_commands::build_audio_clip_draft,
             card_commands::commit_audio_clip_card,
             card_commands::commit_capture_card,
+            mpv_commands::start_mpv_lesson_handoff,
+            mpv_commands::update_mpv_lesson_embed_rect,
+            mpv_commands::stop_mpv_lesson_handoff,
         ])
         .run(tauri::generate_context!())
         .expect("error while running Lessonbinder");

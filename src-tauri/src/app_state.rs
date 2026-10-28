@@ -4,6 +4,7 @@ use std::sync::Mutex;
 
 use vault_core::VaultDb;
 
+use crate::mpv_commands::MpvPlaybackState;
 use crate::vault_paths::{open_or_create_vault_db, vault_db_path};
 
 pub struct AppState {
@@ -12,6 +13,7 @@ pub struct AppState {
     pub app_data_dir: PathBuf,
     pub import_folder_cancel: AtomicBool,
     pub(crate) folder_scan_active: AtomicBool,
+    pub mpv: MpvPlaybackState,
 }
 
 impl AppState {
@@ -23,6 +25,7 @@ impl AppState {
                 app_data_dir,
                 import_folder_cancel: AtomicBool::new(false),
                 folder_scan_active: AtomicBool::new(false),
+                mpv: MpvPlaybackState::new(),
             },
             Err(error) => Self {
                 vault: Mutex::new(None),
@@ -30,6 +33,7 @@ impl AppState {
                 app_data_dir,
                 import_folder_cancel: AtomicBool::new(false),
                 folder_scan_active: AtomicBool::new(false),
+                mpv: MpvPlaybackState::new(),
             },
         }
     }

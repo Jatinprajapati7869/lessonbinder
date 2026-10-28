@@ -43,5 +43,7 @@ The **first lesson in this course is a video** (`.mkv`), not markdown or PDF—n
 ## Implementation notes
 
 - **Prompt 354:** Rust JSON IPC client in `crates/mpv-ipc` (`MpvIpcClient`: `loadfile`, `seek`, `pause`, `volume`, `speed`, `time-pos`). Integration tests use a **fake Unix socket** (`UnixStream::pair`); **mpv** binary not required for those tests.
+- **Prompt 355:** On `<video>` **`error`**, the UI invokes `start_mpv_lesson_handoff` with the same **`local_media_path`** (not the asset URL). Rust spawns **`mpv`** on **`PATH`** with **`--force-window=embed`**, **`--wid`** (host window handle), **`--geometry`**, **`--osc=no`**, and **`--input-ipc-server`**, then **`loadfile`** over JSON IPC. If **`mpv`** is missing, one sentence is shown and the lesson stays not **done**. Successful webview playback never starts **mpv**. `stop_mpv_lesson_handoff` runs when leaving the player.
+- **Prompt 356:** Play, scrubber, time, speed, volume, mute, theater, and zen sit on **`player-bar--overlay`** at the bottom of **`player-frame`** (the video area). Pointer movement reveals the bar; **`PLAYER_THEATER_CONTROLS_HIDE_MS`** idle hides it in normal, theater, and zen modes. Capture, mark complete, PiP, and related actions stay in **`player-actions`** below the frame.
 
 ---
