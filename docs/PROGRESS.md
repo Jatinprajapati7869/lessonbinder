@@ -480,8 +480,8 @@ Repo: `/home/xingzi/Documents/lessonbinder`. Full text: `~/Documents/auravault-c
 - [x] 280 — Cancel still wins — `Library.test.tsx` — `cancel folder scan calls command layer while import is in flight`; `Course.test.tsx` — `cancel rescan calls command layer while rescan is in flight` (Show folder / shortcut list unchanged).
 - [x] 281 — Deslop
 - [x] 282 — Doctor — `npx react-doctor@latest --verbose` on `ui/`: **64/100** (36 issues). No crash, dead Show folder/Shortcuts control, or missing pack control label; complexity warnings left as-is.
-- [ ] 283 — README
-- [ ] 284 — Scope
+- [x] 283 — README — [`README.md`](../README.md) mentions **Show folder**, **Show lesson file**, and Settings **keyboard shortcuts**; **Install** unchanged from **260** (no published AppImage claim).
+- [x] 284 — Scope — [`docs/SCOPE-v1.5.md`](SCOPE-v1.5.md): sitting test, AppImage retry docs, cancel-before-upsert, show folder, show lesson file, shortcut list, last-20 errors; out table on accounts/cloud/kits/signing/Windows/macOS/auto-done.
 - [ ] 285 — Checklist
 - [ ] 286 — Tests
 - [ ] 287 — Icons stay waiting

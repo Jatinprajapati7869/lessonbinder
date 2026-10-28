@@ -11,6 +11,9 @@ Lessonbinder is an offline desktop app (Tauri, React, and TypeScript) for course
 - Read duration and similar metadata when tools such as ffprobe are on `PATH`; otherwise store unknown values with a reason.
 - Resume video or document position, record watched intervals for a percentage display, and mark lessons complete or incomplete yourself.
 - Move lessons up or down within a course; accept or reject order proposals where the UI exposes them.
+- On a folder **course** screen, **Show folder** opens that course’s root in your file manager (the control is disabled while a folder rescan is in progress).
+- In the **player**, **Show lesson file** opens the lesson media’s directory in your file manager.
+- **Settings** lists player and review **keyboard shortcuts** wired in the app (seek, mark complete, exit theater/zen, grade digits).
 - Show roadmaps whose step status is derived from linked course progress.
 - Create playlist courses from JSON or pasted lines (`title`, tab, URL) without fetching media.
 - Search the library locally: lesson titles, paths, subtitle cues, and vault lesson-note text. Opening a hit can seek the player when the match has a timestamp.
