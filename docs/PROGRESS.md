@@ -551,7 +551,7 @@ Repo: `/home/xingzi/Documents/lessonbinder`. Full text: `~/Documents/auravault-c
 - [x] 327 — Other operating systems — [`PACKAGE.md`](PACKAGE.md) § **Platform scope**: Linux build only; no Windows/macOS bundles; no download link.
 - [x] 328 — Commands for those machines — [`PACKAGE.md`](PACKAGE.md) § **Platform scope**: Tauri 2 **`msi`** (Windows) / **`dmg`** (macOS) commands **unrun**; commit **327–328**.
 - [x] 329 — Linux target stays — [`src-tauri/tauri.conf.json`](../src-tauri/tauri.conf.json) `bundle.targets` **`["appimage"]`** only (no **nsis** / **msi** / **dmg** added on reference machine).
-- [ ] 330 — Signing stays off
+- [x] 330 — Signing stays off — [`PACKAGE.md`](PACKAGE.md) § **Code signing**: not configured for Linux / Windows / macOS; commit **329–330**.
 - [ ] 331 — Deslop
 - [ ] 332 — Doctor
 - [ ] 333 — README

@@ -1,6 +1,6 @@
 # Packaging (Linux AppImage)
 
-Lessonbinder is **not published** to an app store or update channel from this repository. Builds are for local distribution and testing only. **No code signing** is configured.
+Lessonbinder is **not published** to an app store or update channel from this repository. Builds are for local distribution and testing only. **Code signing is not configured** for **Linux**, **Windows**, or **macOS** in this repository (prompt **330**).
 
 ## Platform scope (prompt 327–328)
 
@@ -177,9 +177,17 @@ If you distribute an Lessonbinder AppImage or binary to others, you must comply 
 
 This repository does **not** automate publishing or signing; maintainers are responsible for any distribution they make outside their own machine.
 
-## Code signing
+## Code signing (prompt 330)
 
-Not configured. Linux AppImages from this project are unsigned.
+**Not configured** on the reference machine for any platform:
+
+| Platform                                    | Status in this repo                                                          |
+| ------------------------------------------- | ---------------------------------------------------------------------------- |
+| **Linux** (AppImage)                        | Unsigned; no signing hooks in `tauri.conf.json`                              |
+| **Windows** (MSI / NSIS if built elsewhere) | No Authenticode certificate or signing identity checked in                   |
+| **macOS** (DMG / app if built elsewhere)    | No Apple signing identity, notarization, or hardened-runtime flags in config |
+
+This tree does **not** add certificates, notarization settings, or `bundle > … > signing` identities. Local bundles remain unsigned unless a maintainer configures signing outside this repository.
 
 ## AppImage smoke test (post-build)
 
