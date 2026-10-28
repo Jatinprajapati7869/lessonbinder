@@ -540,8 +540,8 @@ Repo: `/home/xingzi/Documents/lessonbinder`. Full text: `~/Documents/auravault-c
 - [x] 316 — Install stays true — [`README.md`](../README.md) **Install** matches **314**/**315** (unsigned, **0.0.0**, no Windows/macOS); commit **315–316**.
 - [x] 317 — Image identity — no AppImage after **314** (`.desktop` **`Name=`** not inspected on disk; Tauri would derive **Lessonbinder** from `productName`); [`src-tauri/tauri.conf.json`](../src-tauri/tauri.conf.json) unchanged: **`productName`** **Lessonbinder**, **`version`** **0.0.0**, **`createUpdaterArtifacts`** **false** (2026-10-28).
 - [x] 318 — Fonts in the image build — [`FONTS.md`](FONTS.md) § prompt **318**: `rg` on **`ui/dist/`** from **314** → no Google Font hosts; commit **317–318**.
-- [ ] 319 — Which icons
-- [ ] 320 — Copy the outlines
+- [x] 319 — Which icons — [`ICONS.md`](ICONS.md): six FlutKit outline PNGs mapped to controls; kit illustrations unused; no files copied.
+- [x] 320 — Copy the outlines — six PNGs under `ui/src/theme/icons/` per [`ICONS.md`](ICONS.md); commit **319–320**.
 - [ ] 321 — Show folder icon
 - [ ] 322 — Search icon
 - [ ] 323 — Settings icon
