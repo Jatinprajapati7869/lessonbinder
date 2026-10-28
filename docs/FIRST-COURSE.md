@@ -6,6 +6,8 @@ Run a dev or packaged build the way you normally open Lessonbinder. Prefer your 
 
 **Optional tools** (only where a row says so): **Tesseract** (OCR capture), **ffmpeg** / **ffprobe** (media tooling on `PATH`), a local **Whisper** model path plus CLI (transcription only), **Anki Desktop** on `PATH` when using the external fallback—not required for in-app **Study**.
 
+Scripted rows are in [`SITTING.md`](SITTING.md); the remaining rows wait for a person and a real folder. Do not check those rows pass.
+
 ---
 
 ## Boot
@@ -54,4 +56,4 @@ npm run tauri:dev
 
 All ten rows match **Expected**, or you record an explicit **Blocked if** reason (missing optional tool), not a crash, silent wrong import, or empty **Study** when a card was committed.
 
-Related: automated and slice checklists in [`FIRST-TEST.md`](FIRST-TEST.md); v1.3 product rows in [`V1.3.md`](V1.3.md).
+Related: automated and slice checklists in [`FIRST-TEST.md`](FIRST-TEST.md); scripted vs human rows in [`SITTING.md`](SITTING.md); v1.3 product rows in [`V1.3.md`](V1.3.md).

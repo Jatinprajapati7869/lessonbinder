@@ -452,8 +452,8 @@ Repo: `/home/xingzi/Documents/lessonbinder`. Full text: `~/Documents/auravault-c
 - [x] 252 — Clean tree — **clean** on `origin/master` for v1.4 (`9eecaea`). Local dirty file is unrelated: `docs/PROGRESS.md` adds the prompts **252–301** section (+55 lines)—not committed (do not mix with freeze).
 - [x] 253 — What the sitting already proves — `docs/SITTING.md` maps each `FIRST-COURSE.md` checklist row to test names or **human-only**; no product code.
 - [x] 254 — One sitting test — `vault_core::first_course_sitting::first_course_sitting` (temp folder: import, resume, note, manual done, rescan; watch percent ≠ done).
-- [ ] 255 — Checklist matches the test
-- [ ] 256 — Do not fake the human rows
+- [x] 255 — Checklist matches the test — `docs/SITTING.md` Import, Resume, and A note rows point at `first_course_sitting`; human-only rows unchanged.
+- [x] 256 — Do not fake the human rows — `docs/FIRST-COURSE.md` points at `SITTING.md` and says not to check human-only rows pass.
 - [ ] 257 — patchelf, no install
 - [ ] 258 — One bundle attempt
 - [ ] 259 — Launch only a real image
