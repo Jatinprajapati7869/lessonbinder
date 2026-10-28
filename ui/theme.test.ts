@@ -5,6 +5,7 @@ import { describe, expect, it } from "vitest";
 
 import {
   DESIGN_COLOR_TOKENS,
+  DESIGN_DARK_COLOR_TOKENS,
   DESIGN_FOCUS_TOKENS,
   DESIGN_FONT_TOKENS,
   DESIGN_RADIUS_TOKENS,
@@ -49,6 +50,19 @@ describe("DESIGN.md CSS tokens", () => {
   it("declares color tokens in tokens.css", () => {
     for (const [name, value] of Object.entries(DESIGN_COLOR_TOKENS)) {
       expectTokenInCss(name, normalizeHex(value));
+    }
+  });
+
+  it("declares dark color tokens in tokens.css", () => {
+    const darkBlock = tokensCss.slice(
+      tokensCss.indexOf(':root[data-theme="dark"]')
+    );
+    for (const [name, value] of Object.entries(DESIGN_DARK_COLOR_TOKENS)) {
+      const pattern = new RegExp(
+        `${name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}:\\s*${normalizeHex(value).replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}`,
+        "i"
+      );
+      expect(darkBlock).toMatch(pattern);
     }
   });
 

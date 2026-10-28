@@ -47,3 +47,67 @@ The **first lesson in this course is a video** (`.mkv`), not markdown or PDF—n
 - **Prompt 356:** Play, scrubber, time, speed, volume, mute, theater, and zen sit on **`player-bar--overlay`** at the bottom of **`player-frame`** (the video area). Pointer movement reveals the bar; **`PLAYER_THEATER_CONTROLS_HIDE_MS`** idle hides it in normal, theater, and zen modes. Capture, mark complete, PiP, and related actions stay in **`player-actions`** below the frame.
 
 ---
+
+## Dark gaps (prompt 357)
+
+**Method:** Ripgrep over `ui/src` for `#…`, `rgb(`, `rgba(`, `hsl(`, and for `background` / `color` values that are not `var(--…)` theme tokens (2026-10-28). **Excluded** (canonical palette, not UI gaps): `ui/src/theme/tokens.css`, `ui/src/theme/tokens.ts`, `ui/src/theme/contrast.ts`.
+
+**Player bar** (`ui/src/theme/course.css`; overlay bar in `ui/src/screens/PlayerScreen.tsx`)
+
+| Selector                                       | Property      | Value (not a theme token)                                                                                 |
+| ---------------------------------------------- | ------------- | --------------------------------------------------------------------------------------------------------- |
+| `.player-frame .player-video`, `.player-video` | `background`  | `var(--text-primary)` (surface uses a **text** token; in dark theme the letterbox reads as a light panel) |
+| `.player-bar--overlay`                         | `background`  | `color-mix(in srgb, var(--bg-elevated) 88%, transparent)`                                                 |
+| `.player-bar`, `.player-bar--overlay`          | (uses tokens) | Bar chrome itself uses `--bg-elevated` / borders; no literal hex                                          |
+
+**Library** (`ui/src/theme/library.css`)
+
+| Selector                  | Property     | Value (not a theme token)                                                    |
+| ------------------------- | ------------ | ---------------------------------------------------------------------------- |
+| `.library-course-link`    | `background` | `none`                                                                       |
+| `.library-continue-row`   | `color`      | `inherit`                                                                    |
+| `.library-search__input`  | `background` | `transparent`                                                                |
+| `.library-search__hit`    | `color`      | `inherit`                                                                    |
+| `.library-status::before` | `background` | `currentColor` (dot follows status `color`, which is tokenized on modifiers) |
+
+**Course** (`ui/src/theme/course.css`; course table / document lesson share this sheet)
+
+| Selector                                       | Property               | Value (not a theme token)                                          |
+| ---------------------------------------------- | ---------------------- | ------------------------------------------------------------------ |
+| `.lesson-notes__timestamp`                     | `background`           | `none`                                                             |
+| `.player-chapter`                              | `background`, `border` | `transparent`                                                      |
+| `.player-cue`                                  | `background`, `border` | `transparent` / `transparent`                                      |
+| `.player-cue--active`                          | `background`           | `color-mix(in srgb, var(--accent) 12%, transparent)`               |
+| `.player-resources__item[aria-pressed="true"]` | `background`           | `color-mix(in srgb, var(--accent-subtle) 50%, var(--bg-elevated))` |
+| `.player-cards__row[aria-pressed="true"]`      | `background`           | `color-mix(in srgb, var(--accent-subtle) 50%, var(--bg-elevated))` |
+| `.document-lesson__text`                       | `color`                | _(unset — inherits from parent, not an explicit `--text-*`)_       |
+| `.document-lesson__page-input`                 | `background`, `color`  | _(unset — browser default field colors)_                           |
+| `.player-chapter__title`                       | `color`                | _(unset)_                                                          |
+| `.library-continue-row__course`                | `color`                | _(unset; parent uses `color: inherit`)_                            |
+
+**Review** (`ui/src/theme/review.css`)
+
+| Selector | Property | Value (not a theme token)                                    |
+| -------- | -------- | ------------------------------------------------------------ |
+| —        | —        | **No entries** — `color` / `background` use `var(--…)` only. |
+
+**Settings** (`ui/src/theme/settings.css`)
+
+| Selector | Property | Value (not a theme token)                                    |
+| -------- | -------- | ------------------------------------------------------------ |
+| —        | —        | **No entries** — `color` / `background` use `var(--…)` only. |
+
+**Roadmap** (`ui/src/theme/roadmap.css`, `ui/src/roadmap/roadmapGraphSvg.ts`)
+
+| File / selector                                                                                                                                                                                                       | Property            | Value (not a theme token)                                                                             |
+| --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------- | ----------------------------------------------------------------------------------------------------- |
+| `roadmapGraphSvg.ts` — `EXPORT_BG_SURFACE`, `EXPORT_BG_ELEVATED`, `EXPORT_BORDER`, `EXPORT_TEXT_PRIMARY`, `EXPORT_TEXT_SECONDARY`, `EXPORT_TEXT_MUTED`, `EXPORT_ACCENT`, `EXPORT_STATUS_BROKEN`, `EXPORT_STATUS_DONE` | SVG fills / strokes | Literal light-theme hex (e.g. `#fafaf9`, `#ffffff`, `#1c1917`) — export ignores `[data-theme="dark"]` |
+| `.roadmap-step-list__item`                                                                                                                                                                                            | `background`        | `transparent`                                                                                         |
+| `.roadmap-node__title`                                                                                                                                                                                                | `fill`              | `var(--text-primary)` _(token OK)_; **`font-size: 12px`** is px, not a color gap                      |
+| `.roadmap-node__status`, `.roadmap-node__remaining`                                                                                                                                                                   | `fill`              | tokens OK; **`font-size: 11px`** is px, not a color gap                                               |
+
+Prompt **358** replaced the rows above with `var(--…)` theme tokens (and roadmap SVG export uses `themeColors.ts` / active `data-theme`). **`theme.contrast.test.ts`** still asserts dark body text ≥ 4.5:1 on app, surface, and elevated backgrounds.
+
+- **Prompt 358:** CSS gaps from § **Dark gaps** use existing light/dark tokens only (`course.css`, `library.css`, `roadmap.css`); `roadmapGraphSvg.ts` reads `DESIGN_*_COLOR_TOKENS` via `themeColors.ts` (matches `[data-theme="dark"]`). No second palette.
+
+---

@@ -282,7 +282,7 @@
 .library-course-link {
   padding: 0;
   border: none;
-  background: none;
+  background: var(--bg-app);
   color: var(--text-primary);
   font-size: var(--text-sm);
   font-weight: 500;
@@ -339,7 +339,7 @@
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   background: var(--bg-elevated);
-  color: inherit;
+  color: var(--text-primary);
   cursor: pointer;
 }
 
@@ -354,6 +354,7 @@
 
 .library-continue-row__course {
   font-weight: 500;
+  color: var(--text-primary);
 }
 
 .library-continue-row__lesson {
@@ -392,7 +393,7 @@
   font-size: var(--text-sm);
   line-height: var(--line-height-row);
   border: none;
-  background: transparent;
+  background: var(--bg-elevated);
   color: var(--text-primary);
 }
 
@@ -441,7 +442,7 @@
   border: none;
   border-bottom: 1px solid var(--border);
   background: var(--bg-elevated);
-  color: inherit;
+  color: var(--text-primary);
   cursor: pointer;
 }
 

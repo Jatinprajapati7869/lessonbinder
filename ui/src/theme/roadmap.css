@@ -244,7 +244,7 @@
   font-size: var(--text-sm);
   text-align: left;
   color: var(--text-primary);
-  background: transparent;
+  background: var(--bg-surface);
   border: none;
   border-bottom: 1px solid var(--border);
   cursor: pointer;

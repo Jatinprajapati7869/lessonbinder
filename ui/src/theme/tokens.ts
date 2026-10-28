@@ -20,6 +20,27 @@ export const DESIGN_COLOR_TOKENS: Record<string, string> = {
   "--focus-ring": "#0D6E6A",
 };
 
+/** Dark values from `:root[data-theme="dark"]` in `tokens.css` (same keys as light). */
+export const DESIGN_DARK_COLOR_TOKENS: Record<string, string> = {
+  "--bg-app": "#1C1917",
+  "--bg-surface": "#292524",
+  "--bg-elevated": "#44403C",
+  "--border": "#57534E",
+  "--border-strong": "#78716C",
+  "--text-primary": "#FAFAF9",
+  "--text-secondary": "#D6D3D1",
+  "--text-muted": "#BDBAB5",
+  "--accent": "#0D6E6A",
+  "--accent-hover": "#0F857F",
+  "--accent-subtle": "#134E4A",
+  "--on-accent": "#FFFFFF",
+  "--progress-track": "#44403C",
+  "--status-broken": "#FBBF24",
+  "--status-done": "#D6D3D1",
+  "--danger": "#F87171",
+  "--focus-ring": "#2DD4BF",
+};
+
 export const DESIGN_SPACE_TOKENS: Record<string, string> = {
   "--space-1": "4px",
   "--space-2": "8px",

@@ -596,8 +596,8 @@ Repo: `/home/xingzi/Documents/lessonbinder`. Full text: `~/Documents/auravault-c
 - [x] 354 — IPC client — `crates/mpv-ipc`: `MpvIpcClient` (`loadfile`, `seek_absolute_seconds`, `set_pause`, `set_volume`, `set_speed`, `get_time_pos`); `tests/fake_socket.rs` (**2** tests, no mpv binary); commit **353–354**.
 - [x] 355 — Hand off when video errors — `<video>` **`onError`** → `start_mpv_lesson_handoff` (embedded **`mpv`**, JSON IPC **`loadfile`**); missing **`mpv`** → one sentence; webview success → no **mpv**; stop on leave.
 - [x] 356 — Overlay bar — transport controls on **`player-bar--overlay`** over **`player-frame`**; auto-hide on idle (all modes); **`player-actions`** row for capture / complete / PiP; commit **355–356**.
-- [ ] 357 — Dark surfaces that ignore the theme
-- [ ] 358 — Dark tokens everywhere
+- [x] 357 — Dark gaps — [`PLAYBACK.md`](PLAYBACK.md) § **Dark gaps**: ripgrep audit of non-token `color` / `background` in player bar, library, course, review, settings, roadmap; no visual edits.
+- [x] 358 — Dark tokens everywhere — § **Dark gaps** remediated in CSS + roadmap SVG export; `DESIGN_DARK_COLOR_TOKENS` mirrors `tokens.css`; contrast tests unchanged; commit **357–358**.
 - [ ] 359 — The frame stays dark
 - [ ] 360 — Tests
 - [ ] 361 — README

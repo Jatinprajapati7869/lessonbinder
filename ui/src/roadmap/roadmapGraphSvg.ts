@@ -1,23 +1,19 @@
 import type { DerivedStatus } from "../api/libraryTypes";
 import type { RoadmapGraph } from "../api/roadmapTypes";
 import { formatStatus } from "../library/format";
+import {
+  activeUiTheme,
+  colorTokenHex,
+  colorTokensForTheme,
+  type UiTheme,
+} from "../theme/themeColors";
 
 const NODE_WIDTH = 148;
 const NODE_HEIGHT = 64;
 const H_GAP = 56;
 const PADDING = 24;
 
-/** Literal hex from `docs/DESIGN.md` / `tokens.css` for standalone SVG export. */
 const EXPORT_FONT = "Google Sans, system-ui, sans-serif";
-const EXPORT_BG_SURFACE = "#fafaf9";
-const EXPORT_BG_ELEVATED = "#ffffff";
-const EXPORT_BORDER = "#e5e4e2";
-const EXPORT_TEXT_PRIMARY = "#1c1917";
-const EXPORT_TEXT_SECONDARY = "#57534e";
-const EXPORT_TEXT_MUTED = "#78716c";
-const EXPORT_ACCENT = "#0d6e6a";
-const EXPORT_STATUS_BROKEN = "#b45309";
-const EXPORT_STATUS_DONE = "#44403c";
 
 function escapeXml(text: string): string {
   return text
@@ -35,16 +31,19 @@ function nodePosition(index: number): { x: number; y: number } {
   };
 }
 
-function exportStatusFill(status: DerivedStatus): string {
+function exportStatusFill(
+  status: DerivedStatus,
+  tokens: Record<string, string>
+): string {
   switch (status) {
     case "in_progress":
-      return EXPORT_ACCENT;
+      return colorTokenHex(tokens, "--accent");
     case "broken":
-      return EXPORT_STATUS_BROKEN;
+      return colorTokenHex(tokens, "--status-broken");
     case "done":
-      return EXPORT_STATUS_DONE;
+      return colorTokenHex(tokens, "--status-done");
     case "not_started":
-      return EXPORT_TEXT_SECONDARY;
+      return colorTokenHex(tokens, "--text-secondary");
     default: {
       const _exhaustive: never = status;
       return _exhaustive;
@@ -52,7 +51,18 @@ function exportStatusFill(status: DerivedStatus): string {
   }
 }
 
-export function buildRoadmapGraphSvg(graph: RoadmapGraph): string {
+export function buildRoadmapGraphSvg(
+  graph: RoadmapGraph,
+  theme: UiTheme = activeUiTheme()
+): string {
+  const tokens = colorTokensForTheme(theme);
+  const bgSurface = colorTokenHex(tokens, "--bg-surface");
+  const bgElevated = colorTokenHex(tokens, "--bg-elevated");
+  const border = colorTokenHex(tokens, "--border");
+  const textPrimary = colorTokenHex(tokens, "--text-primary");
+  const textSecondary = colorTokenHex(tokens, "--text-secondary");
+  const textMuted = colorTokenHex(tokens, "--text-muted");
+
   const layoutById = new Map(
     graph.nodes.map((node, index) => [node.step_id, nodePosition(index)])
   );
@@ -76,7 +86,7 @@ export function buildRoadmapGraphSvg(graph: RoadmapGraph): string {
       const x2 = to.x;
       const y2 = to.y + NODE_HEIGHT / 2;
       const isPrerequisite = edge.kind === "prerequisite";
-      const stroke = isPrerequisite ? EXPORT_TEXT_MUTED : EXPORT_TEXT_SECONDARY;
+      const stroke = isPrerequisite ? textMuted : textSecondary;
       const dash = isPrerequisite ? ' stroke-dasharray="4 3"' : "";
       const marker = isPrerequisite ? "" : ' marker-end="url(#order-arrow)"';
       return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${stroke}" stroke-width="1.5" fill="none"${dash}${marker} />`;
@@ -91,10 +101,10 @@ export function buildRoadmapGraphSvg(graph: RoadmapGraph): string {
       }
       const title = escapeXml(node.course_title);
       const status = escapeXml(formatStatus(node.status));
-      const statusFill = exportStatusFill(node.status);
+      const statusFill = exportStatusFill(node.status, tokens);
       return `<g transform="translate(${layout.x}, ${layout.y})">
-    <rect width="${NODE_WIDTH}" height="${NODE_HEIGHT}" fill="${EXPORT_BG_ELEVATED}" stroke="${EXPORT_BORDER}" />
-    <text x="12" y="22" font-family="${EXPORT_FONT}" font-size="12" font-weight="700" fill="${EXPORT_TEXT_PRIMARY}">${title}</text>
+    <rect width="${NODE_WIDTH}" height="${NODE_HEIGHT}" fill="${bgElevated}" stroke="${border}" />
+    <text x="12" y="22" font-family="${EXPORT_FONT}" font-size="12" font-weight="700" fill="${textPrimary}">${title}</text>
     <text x="12" y="40" font-family="${EXPORT_FONT}" font-size="11" fill="${statusFill}">${status}</text>
   </g>`;
     })
@@ -104,10 +114,10 @@ export function buildRoadmapGraphSvg(graph: RoadmapGraph): string {
 <svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" role="img" aria-label="Roadmap graph">
   <defs>
     <marker id="order-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
-      <path d="M0,0 L8,4 L0,8 Z" fill="${EXPORT_TEXT_MUTED}" />
+      <path d="M0,0 L8,4 L0,8 Z" fill="${textMuted}" />
     </marker>
   </defs>
-  <rect width="${width}" height="${height}" fill="${EXPORT_BG_SURFACE}" />
+  <rect width="${width}" height="${height}" fill="${bgSurface}" />
   ${edgeLines}
   ${nodeGroups}
 </svg>`;

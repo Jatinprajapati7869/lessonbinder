@@ -220,7 +220,7 @@
   width: 100%;
   min-width: 0;
   max-height: 60vh;
-  background: var(--text-primary);
+  background: var(--bg-surface);
 }
 
 .player-video {
@@ -228,7 +228,7 @@
   width: 100%;
   min-width: 0;
   max-height: 60vh;
-  background: var(--text-primary);
+  background: var(--bg-surface);
 }
 
 .player-video--mpv-handoff {
@@ -273,7 +273,7 @@
   z-index: 2;
   margin: 0;
   padding: var(--space-3);
-  background: color-mix(in srgb, var(--bg-elevated) 88%, transparent);
+  background: var(--bg-elevated);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   box-shadow: var(--shadow-elevated-bar);
@@ -442,7 +442,7 @@
 .lesson-notes__timestamp {
   padding: 0;
   border: none;
-  background: none;
+  background: var(--bg-surface);
   font-family: var(--font-family);
   cursor: pointer;
   text-align: left;
@@ -537,6 +537,7 @@
   font-size: var(--text-sm);
   white-space: pre-wrap;
   word-break: break-word;
+  color: var(--text-primary);
 }
 
 .document-lesson__pdf {
@@ -598,7 +599,7 @@
 
 .player-resources__item[aria-pressed="true"] {
   border-color: var(--accent);
-  background: color-mix(in srgb, var(--accent-subtle) 50%, var(--bg-elevated));
+  background: var(--accent-subtle);
 }
 
 .player-resources__kind {
@@ -655,7 +656,7 @@
 }
 
 .player-cards__row[aria-pressed="true"] {
-  background: color-mix(in srgb, var(--accent-subtle) 50%, var(--bg-elevated));
+  background: var(--accent-subtle);
 }
 
 .player-cards__time {
@@ -718,6 +719,8 @@
   font-variant-numeric: tabular-nums;
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
+  background: var(--bg-elevated);
+  color: var(--text-primary);
 }
 
 .player-cues__list {
@@ -757,9 +760,9 @@
   width: 100%;
   padding: var(--space-2);
   text-align: left;
-  border: 1px solid transparent;
+  border: 1px solid var(--border);
   border-radius: var(--radius-sm);
-  background: transparent;
+  background: var(--bg-surface);
   cursor: pointer;
 }
 
@@ -771,6 +774,7 @@
 
 .player-chapter__title {
   font-size: var(--text-sm);
+  color: var(--text-primary);
 }
 
 .player-cue-row {
@@ -812,9 +816,9 @@
   gap: var(--space-1);
   width: 100%;
   padding: var(--space-2);
-  border: 1px solid transparent;
+  border: 1px solid var(--border);
   border-radius: var(--radius-sm);
-  background: transparent;
+  background: var(--bg-surface);
   text-align: left;
   cursor: pointer;
   color: var(--text-primary);
@@ -822,7 +826,7 @@
 
 .player-cue--active {
   border-color: var(--accent);
-  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  background: var(--accent-subtle);
 }
 
 .player-cue__time {

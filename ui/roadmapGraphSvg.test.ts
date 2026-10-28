@@ -43,4 +43,13 @@ describe("buildRoadmapGraphSvg", () => {
     expect(doc.documentElement.tagName.toLowerCase()).toBe("svg");
     expect(doc.querySelectorAll("line").length).toBeGreaterThanOrEqual(1);
   });
+
+  it("uses dark palette hex when exporting under data-theme=dark", () => {
+    document.documentElement.setAttribute("data-theme", "dark");
+    const svg = buildRoadmapGraphSvg(twoNodeGraph);
+    document.documentElement.removeAttribute("data-theme");
+
+    expect(svg).toContain('fill="#292524"');
+    expect(svg).toContain('fill="#fafaf9"');
+  });
 });
