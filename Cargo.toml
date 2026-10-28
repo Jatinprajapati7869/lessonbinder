@@ -1,6 +1,7 @@
 [workspace]
 members = [
     "crates/anki-bridge",
+    "crates/mpv-ipc",
     "crates/tauri",
     "crates/vault-core",
     "src-tauri",

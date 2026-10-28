@@ -1,0 +1,15 @@
+[package]
+name = "mpv-ipc"
+version = "0.0.0"
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+publish = false
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+thiserror = "2.0"
+
+[dev-dependencies]
+tempfile = "3.14"

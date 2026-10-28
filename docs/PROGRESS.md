@@ -592,8 +592,8 @@ cd ui && npm test       # 59 files; 193 passed
 Repo: `/home/xingzi/Documents/lessonbinder`. Full text: `~/Documents/auravault-cursor-prompts.md`. Diagnose the first video, hand decode failures to mpv on PATH, put the controls on the frame, and make dark mode use the dark tokens.
 
 - [x] 352 — Why the first video fails — [`PLAYBACK.md`](PLAYBACK.md) prompt **352**: Dandadan first row **`[EMBER] Dandadan - 13.mkv`** (HEVC); `convertFileSrc` **asset** URL recorded; `<video>` stuck **`networkState` 2**, **`error` null**; sitting **`intro.mp4`** control plays in WebKit; commit **352** (tree was dirty with **352–363** PROGRESS section only).
-- [ ] 353 — Engine rule
-- [ ] 354 — IPC client
+- [x] 353 — Engine rule — [`PLAYBACK.md`](PLAYBACK.md) § **Engine rule**: webview `<video>` first; on **`error`**, same **`local_media_path`** → **`mpv`** JSON IPC; Lessonbinder controls only; no mpv source tree, no OSC; no player code yet.
+- [x] 354 — IPC client — `crates/mpv-ipc`: `MpvIpcClient` (`loadfile`, `seek_absolute_seconds`, `set_pause`, `set_volume`, `set_speed`, `get_time_pos`); `tests/fake_socket.rs` (**2** tests, no mpv binary); commit **353–354**.
 - [ ] 355 — Hand off when video errors
 - [ ] 356 — One bar on the frame
 - [ ] 357 — Dark surfaces that ignore the theme

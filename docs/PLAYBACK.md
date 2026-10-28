@@ -1,6 +1,17 @@
 # Playback diagnosis (prompts 352–363)
 
-Engine and UI rules for later prompts live here. **No mpv integration in prompt 352.**
+Engine and UI rules for later prompts live here. Prompt **353** defines the playback engine rule; implementation follows in **354+**.
+
+---
+
+## Engine rule (prompt 353)
+
+1. **Primary:** The Tauri **webview** `<video>` element in `ui/src/screens/PlayerScreen.tsx` plays the lesson file when WebKit can decode it (`convertFileSrc` / `mediaUrlForPath` on the same **`local_media_path`**).
+2. **Fallback:** On the element’s **`error`** event (and when prompt **355+** defines equivalent “cannot play” cases for stuck loads), hand the **same local filesystem path**—not a remote URL—to the **`mpv`** program on **`PATH`**, driven through **mpv’s JSON IPC** (stdin/stdout or socket per mpv manual). Lessonbinder owns transport and state; **Lessonbinder draws the only on-screen controls** (play, scrubber, speed, volume, theater, zen, etc.).
+3. **Out of bounds for this repo:** Do **not** copy the **mpv** source tree into Lessonbinder. Do **not** enable or ship **mpv’s OSC** (on-screen controller); the embedded UI remains the sole control surface.
+4. **Prompt 353:** Rule documented here only—**no player or IPC code** yet.
+
+Watch percent still does not auto-mark a lesson **done**. Course files stay on disk where imported.
 
 ---
 
@@ -29,7 +40,8 @@ The **first lesson in this course is a video** (`.mkv`), not markdown or PDF—n
 
 ---
 
-## Related code
+## Implementation notes
 
-- Player: `ui/src/screens/PlayerScreen.tsx` — `<video src={mediaSrc}>` with `controls={false}`; `mediaSrc` from `mediaUrlForPath` / `convertFileSrc`.
-- Player bar: `player-bar` below the frame (prompt 352 pack will move controls later).
+- **Prompt 354:** Rust JSON IPC client in `crates/mpv-ipc` (`MpvIpcClient`: `loadfile`, `seek`, `pause`, `volume`, `speed`, `time-pos`). Integration tests use a **fake Unix socket** (`UnixStream::pair`); **mpv** binary not required for those tests.
+
+---
