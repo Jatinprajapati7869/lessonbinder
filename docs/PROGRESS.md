@@ -444,3 +444,58 @@ cd ui && npm test       # 55 files; 175 passed
 ```
 
 - [x] 251 — Freeze — [`docs/V1.4.md`](V1.4.md) ends **READY** (242 + cancel-import test names); prompt 250 counts pasted; no release tag.
+
+## Sitting and week tools (prompts 252–301)
+
+Repo: `/home/xingzi/Documents/lessonbinder`. Full text: `~/Documents/auravault-cursor-prompts.md`. Commit and push on 252 when the tree is dirty, then on every even prompt through 300, and on 301.
+
+- [x] 252 — Clean tree — **clean** on `origin/master` for v1.4 (`9eecaea`). Local dirty file is unrelated: `docs/PROGRESS.md` adds the prompts **252–301** section (+55 lines)—not committed (do not mix with freeze).
+- [x] 253 — What the sitting already proves — `docs/SITTING.md` maps each `FIRST-COURSE.md` checklist row to test names or **human-only**; no product code.
+- [x] 254 — One sitting test — `vault_core::first_course_sitting::first_course_sitting` (temp folder: import, resume, note, manual done, rescan; watch percent ≠ done).
+- [ ] 255 — Checklist matches the test
+- [ ] 256 — Do not fake the human rows
+- [ ] 257 — patchelf, no install
+- [ ] 258 — One bundle attempt
+- [ ] 259 — Launch only a real image
+- [ ] 260 — Install section stays true
+- [ ] 261 — Bundle identity
+- [ ] 262 — Fonts in that build
+- [ ] 263 — Cancel before the row write
+- [ ] 264 — Close that row
+- [ ] 265 — Show the course folder
+- [ ] 266 — Show folder control
+- [ ] 267 — Show the lesson file
+- [ ] 268 — Opener failure
+- [ ] 269 — Shortcut list
+- [ ] 270 — Shortcuts in Settings
+- [ ] 271 — Last errors
+- [ ] 272 — Twenty lines
+- [ ] 273 — Cues that already exist
+- [ ] 274 — Cue seek stays local
+- [ ] 275 — Source offer
+- [ ] 276 — No analytics host
+- [ ] 277 — Show folder only with a course
+- [ ] 278 — Show folder waits for the scan
+- [ ] 279 — Complete stays manual
+- [ ] 280 — Cancel still wins
+- [ ] 281 — Deslop
+- [ ] 282 — Doctor
+- [ ] 283 — README
+- [ ] 284 — Scope
+- [ ] 285 — Checklist
+- [ ] 286 — Tests
+- [ ] 287 — Icons stay waiting
+- [ ] 288 — No other platforms
+- [ ] 289 — Note and search
+- [ ] 290 — Backup
+- [ ] 291 — Profile lock
+- [ ] 292 — Missing file
+- [ ] 293 — Human rows
+- [ ] 294 — Counts again
+- [ ] 295 — Checklist evidence
+- [ ] 296 — Unsigned
+- [ ] 297 — Typecheck
+- [ ] 298 — Lint
+- [ ] 299 — First course page
+- [ ] 300 — Tests before freeze
+- [ ] 301 — Freeze
