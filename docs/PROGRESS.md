@@ -585,4 +585,4 @@ cargo test --workspace   # 241 passed (77 suites); 0 failed
 cd ui && npm test       # 59 files; 193 passed
 ```
 
-- [ ] 351 — Freeze
+- [x] 351 — Freeze — [`V1.6.md`](V1.6.md) ends **READY** (350 counts; sitting **305–311** in [`SITTING-RUN.md`](SITTING-RUN.md); six icon copy rows; AppImage launch **unproven** → [`PACKAGE.md`](PACKAGE.md)); no release tag; commit **351**.
