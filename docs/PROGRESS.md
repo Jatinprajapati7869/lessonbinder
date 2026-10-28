@@ -362,8 +362,8 @@ Repo is `/home/xingzi/Documents/lessonbinder`. Full text: `~/Documents/auravault
 Repo: `/home/xingzi/Documents/lessonbinder`. Full text: `~/Documents/auravault-cursor-prompts.md`. Prompt 202 commits the finished v1.3 tree. After that, every second prompt commits and pushes that pair.
 
 - [x] 202 — Land v1.3 — commit `Ship the v1.3 study loop…` on `master`; migrations 019–024, bundled fonts, study-loop UI + docs.
-- [ ] 203 — First course checklist
-- [ ] 204 — Theme radios
+- [x] 203 — First course checklist — [`docs/FIRST-COURSE.md`](FIRST-COURSE.md): one real folder; import → resume → note → card → review → theme → quit → relaunch → Continue.
+- [x] 204 — Theme radios — `Settings.test.tsx` dark → save → `applyUiTheme`; light → save again (settings command stubs).
 - [ ] 205 — Look of each screen
 - [ ] 206 — Boot
 - [ ] 207 — One blocker

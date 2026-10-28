@@ -8,6 +8,14 @@ import type { VaultSettings } from "./src/api/settingsTypes";
 import { SettingsCommandsProvider } from "./src/settings/SettingsCommandsContext";
 import { SettingsScreen } from "./src/screens/SettingsScreen";
 import { backupRestoreCommandStubs } from "./src/test/settingsCommandStubs";
+import {
+  defaultVaultSettings,
+  settingsCommandStubs,
+} from "./src/test/settingsPlaybackStubs";
+import {
+  applyUiTheme,
+  readUiThemeFromDocument,
+} from "./src/theme/applyUiTheme";
 
 const defaults: VaultSettings = {
   tesseract_language: "eng",
@@ -28,6 +36,49 @@ function renderSettings(commands: SettingsCommandPort) {
 }
 
 describe("SettingsScreen", () => {
+  it("theme radios save dark then light and apply each to the document", async () => {
+    const user = userEvent.setup();
+    applyUiTheme("light");
+    const saveVaultSettings = vi.fn().mockResolvedValue(undefined);
+    const commands: SettingsCommandPort = {
+      ...settingsCommandStubs,
+      getVaultSettings: vi.fn().mockResolvedValue(defaultVaultSettings),
+      saveVaultSettings,
+      getAnkiProfilePath: vi.fn().mockResolvedValue("/data/anki-profile"),
+    };
+
+    renderSettings(commands);
+
+    await waitFor(() => {
+      expect(screen.getByRole("radio", { name: "Light" })).toBeChecked();
+    });
+    expect(
+      screen.getAllByRole("radio", { name: /^(Light|Dark)$/ })
+    ).toHaveLength(2);
+
+    await user.click(screen.getByRole("radio", { name: "Dark" }));
+    await user.click(screen.getByRole("button", { name: "Save" }));
+
+    await waitFor(() => {
+      expect(saveVaultSettings).toHaveBeenCalledWith({
+        ...defaultVaultSettings,
+        ui_theme: "dark",
+      });
+      expect(readUiThemeFromDocument()).toBe("dark");
+    });
+
+    await user.click(screen.getByRole("radio", { name: "Light" }));
+    await user.click(screen.getByRole("button", { name: "Save" }));
+
+    await waitFor(() => {
+      expect(saveVaultSettings).toHaveBeenLastCalledWith({
+        ...defaultVaultSettings,
+        ui_theme: "light",
+      });
+      expect(readUiThemeFromDocument()).toBe("light");
+    });
+  });
+
   it("shows disabled transcription when model path is empty", async () => {
     const commands: SettingsCommandPort = {
       getVaultSettings: vi.fn().mockResolvedValue(defaults),
