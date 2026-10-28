@@ -573,8 +573,8 @@ npm run typecheck       # pass (tsc -p ui/tsconfig.json --noEmit)
 - [x] 342 — OCR still local — **pass**: `ocr.rs` — `ocr_shells_out_to_local_tesseract_binary_opens_no_url` (local `Command::new(tesseract)`; no HTTP in OCR source). Sitting **308** used a **subtitle cue** card, not frame OCR — [`SITTING-RUN.md`](SITTING-RUN.md) **One card (subtitle cue)**; commit **341–342**.
 - [x] 343 — No extra kit files — `ui/src/theme/icons/` (**6** PNGs) matches [`ICONS.md`](ICONS.md) table only: `file-tray-full-outline.png`, `search-outline.png`, `setting-outline.png`, `reader-outline.png`, `school-outline.png`, `list-outline.png`; no extra files; nothing deleted.
 - [x] 344 — Human rows that failed — [`SITTING-RUN.md`](SITTING-RUN.md): **Continue**, AppImage launch, purchased-folder import, OCR capture, **Whisper**, **Cancel import** stay **blocked** (no false **pass**); commit **343–344**.
-- [ ] 345 — Typecheck
-- [ ] 346 — Lint
+- [x] 345 — Typecheck — `npm run typecheck` (`tsc -p ui/tsconfig.json --noEmit`): **pass** (2026-10-28).
+- [x] 346 — Lint — `npm run lint` (`eslint .`): **pass**; no fixes in pack-touched files; commit **345–346**.
 - [ ] 347 — Unsigned
 - [ ] 348 — Icons paragraph
 - [ ] 349 — Checklist evidence
