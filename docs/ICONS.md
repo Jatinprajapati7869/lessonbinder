@@ -32,3 +32,26 @@ Copied into `ui/src/theme/icons/` with the same filenames as the table above (Fl
 **Reader and list (prompt 324):** `reader-outline.png` beside **Show lesson file** (`PlayerScreen`) and beside the **Notes** heading (`LessonNotesColumn`); `list-outline.png` beside the **Lessons** heading above the course lesson table (`CourseScreen`). Text labels stay; icons are decorative (`aria-hidden`).
 
 **School:** `school-outline.png` is **unused**—no side-nav or toolbar control is named **School** (or equivalent) in the app; the **Study** button keeps text only.
+
+## Accessible names (prompt 325)
+
+After outline icons ship beside labels, tests still resolve:
+
+| Control            | Test                                                                                                           |
+| ------------------ | -------------------------------------------------------------------------------------------------------------- |
+| **Show folder**    | `ui/Course.test.tsx` — `getByRole("button", { name: "Show folder" })`                                          |
+| **Search library** | `ui/LibrarySearch.test.tsx` — `keeps Search library as the search field accessible name with the outline icon` |
+| **Settings**       | `ui/shell.test.tsx` — `getByRole("button", { name: "Settings" })`                                              |
+
+## Local icon URLs (prompt 326, 2026-10-28)
+
+UI `<img>` sources use Vite imports from **`ui/src/theme/icons/`** only (bundled at build time). No CSS `url()` references to icon PNGs; no runtime paths into the FlutKit tree or network hosts.
+
+```bash
+cd /home/xingzi/Documents/lessonbinder
+rg 'FlutKit|codecanyon|/home/xingzi/Documents/FlutKit' ui/src ui/src/theme
+rg 'theme/icons' ui/src --glob '*.{tsx,ts,css}'
+rg 'url\(.*icons|https?://.*\.png' ui/src/theme --glob '*.css'
+```
+
+**Result:** no FlutKit path hits in `ui/src` (ripgrep exit **1**). Five wired imports under `../theme/icons/*.png` in `AppShell`, `CourseScreen`, `LibraryScreen`, `LessonNotesColumn`, and `PlayerScreen`; sixth file `school-outline.png` on disk only (unused). Theme CSS: no icon `url()` / no network PNG hosts.

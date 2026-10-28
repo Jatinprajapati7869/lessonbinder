@@ -547,7 +547,7 @@ Repo: `/home/xingzi/Documents/lessonbinder`. Full text: `~/Documents/auravault-c
 - [x] 323 — Settings icon — `setting-outline.png` beside side-nav **Settings**; accessible name unchanged.
 - [x] 324 — Reader and list — reader on **Show lesson file** + **Notes**; list on **Lessons** heading; **school-outline** unused; commit **323–324**.
 - [x] 325 — Names survive the icons — `Course.test.tsx` **Show folder**; `LibrarySearch.test.tsx` **Search library**; `shell.test.tsx` **Settings**.
-- [ ] 326 — Icons are local
+- [x] 326 — Icons are local — [`ICONS.md`](ICONS.md) § prompt **326** (`theme/icons` imports; no FlutKit/network); commit **325–326**.
 - [ ] 327 — Other operating systems
 - [ ] 328 — Commands for those machines
 - [ ] 329 — Linux target stays
