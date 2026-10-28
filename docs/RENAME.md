@@ -6,22 +6,22 @@ Product name is **Lessonbinder** (one word). Spoken: “lesson binder.” Prompt
 
 Use only this table when renaming strings in code, config, and docs (later prompts).
 
-| Old | New |
-| --- | --- |
-| AuraVault | Lessonbinder |
-| auravault | lessonbinder |
-| auravault_lib | lessonbinder_lib |
-| auravault-tauri / auravault_tauri | lessonbinder-tauri / lessonbinder_tauri |
-| AuraVaultApp | LessonbinderApp |
-| AuraVaultProfilePaths | LessonbinderProfilePaths |
-| AURAVAULT_CLIP_NOTETYPE / AuraVaultClip | LESSONBINDER_CLIP_NOTETYPE / LessonbinderClip |
-| AURAVAULT_DECK_PREFIX / AuraVault:: | LESSONBINDER_DECK_PREFIX / Lessonbinder:: |
-| ensure_auravault_clip_notetype | ensure_lessonbinder_clip_notetype |
-| validate_auravault_deck_name | validate_lessonbinder_deck_name |
+| Old                                       | New                                             |
+| ----------------------------------------- | ----------------------------------------------- |
+| AuraVault                                 | Lessonbinder                                    |
+| auravault                                 | lessonbinder                                    |
+| auravault_lib                             | lessonbinder_lib                                |
+| auravault-tauri / auravault_tauri         | lessonbinder-tauri / lessonbinder_tauri         |
+| AuraVaultApp                              | LessonbinderApp                                 |
+| AuraVaultProfilePaths                     | LessonbinderProfilePaths                        |
+| AURAVAULT_CLIP_NOTETYPE / AuraVaultClip   | LESSONBINDER_CLIP_NOTETYPE / LessonbinderClip   |
+| AURAVAULT_DECK_PREFIX / AuraVault::       | LESSONBINDER_DECK_PREFIX / Lessonbinder::       |
+| ensure_auravault_clip_notetype            | ensure_lessonbinder_clip_notetype               |
+| validate_auravault_deck_name              | validate_lessonbinder_deck_name                 |
 | NoAuraVaultDeck / CardNotInAuraVaultDecks | NoLessonbinderDeck / CardNotInLessonbinderDecks |
-| `.auravaultignore` | `.lessonbinderignore` |
-| `dev.auravault.app` | `dev.lessonbinder.app` |
-| `auravault://` | `lessonbinder://` |
+| `.auravaultignore`                        | `.lessonbinderignore`                           |
+| `dev.auravault.app`                       | `dev.lessonbinder.app`                          |
+| `auravault://`                            | `lessonbinder://`                               |
 
 ## Keep list
 

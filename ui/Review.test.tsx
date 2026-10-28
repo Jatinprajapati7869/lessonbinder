@@ -131,6 +131,49 @@ describe("ReviewScreen", () => {
     expect(answerCard).not.toHaveBeenCalled();
   });
 
+  it("does not grade on Escape when focus is outside the review screen", async () => {
+    const user = userEvent.setup();
+    const answerCard = vi.fn();
+    const onBack = vi.fn();
+    const commands = reviewCommands({
+      fetchNextCard: vi.fn().mockResolvedValue({
+        card_id: 1,
+        note_id: 2,
+        front_text: "Front",
+        screenshot_filename: null,
+        buttons: { again: true, hard: true, good: true, easy: true },
+      }),
+      fetchNoteBack: vi.fn().mockResolvedValue("Back"),
+      answerCard,
+    });
+
+    render(
+      <>
+        <nav className="side-nav">
+          <button type="button">Library</button>
+        </nav>
+        <ReviewCommandsProvider commands={commands}>
+          <ReviewScreen
+            onBackToLibrary={onBack}
+            onOpenInAnkiDesktop={() => {}}
+            desktopAnkiAvailable={false}
+          />
+        </ReviewCommandsProvider>
+      </>
+    );
+
+    await screen.findByText("Front");
+    await user.click(screen.getByRole("button", { name: "Show answer" }));
+    expect(await screen.findByText("Back")).toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: "Library" }));
+    await user.keyboard("{Escape}");
+    await user.keyboard("3");
+
+    expect(answerCard).not.toHaveBeenCalled();
+    expect(onBack).not.toHaveBeenCalled();
+  });
+
   it("shows unreadable queue with due counts when next card is missing but dues exist", async () => {
     renderReview(
       reviewCommands({

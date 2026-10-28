@@ -61,6 +61,14 @@ export type CourseCommandPort = {
     timestampMs: number | null
   ): Promise<LessonNote>;
   deleteLessonNote(noteId: string): Promise<void>;
+  exportLessonNotesMarkdown(
+    lessonId: string,
+    lessonTitle: string
+  ): Promise<void>;
+  exportCourseNotesMarkdown(
+    courseId: string,
+    courseTitle: string
+  ): Promise<void>;
 };
 
 export const tauriCourseCommands: CourseCommandPort = {
@@ -147,4 +155,18 @@ export const tauriCourseCommands: CourseCommandPort = {
       timestampMs,
     }),
   deleteLessonNote: (noteId) => invoke("delete_lesson_note_entry", { noteId }),
+  exportLessonNotesMarkdown: (lessonId, lessonTitle) => {
+    const safeName = `${lessonTitle.replace(/[^\w.-]+/g, "-").replace(/^-+|-+$/g, "") || "lesson-notes"}.md`;
+    return invoke("export_lesson_notes_markdown", {
+      lessonId,
+      defaultFileName: safeName,
+    });
+  },
+  exportCourseNotesMarkdown: (courseId, courseTitle) => {
+    const safeName = `${courseTitle.replace(/[^\w.-]+/g, "-").replace(/^-+|-+$/g, "") || "course-notes"}.md`;
+    return invoke("export_course_notes_markdown", {
+      courseId,
+      defaultFileName: safeName,
+    });
+  },
 };

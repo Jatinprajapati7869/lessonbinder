@@ -78,6 +78,30 @@ const MIGRATIONS: &[(&str, &str)] = &[
         "018_lesson_chapter",
         include_str!("../migrations/018_lesson_chapter.sql"),
     ),
+    (
+        "019_ui_theme",
+        include_str!("../migrations/019_ui_theme.sql"),
+    ),
+    (
+        "020_study_day",
+        include_str!("../migrations/020_study_day.sql"),
+    ),
+    (
+        "021_card_grade_event",
+        include_str!("../migrations/021_card_grade_event.sql"),
+    ),
+    (
+        "022_playback_speed",
+        include_str!("../migrations/022_playback_speed.sql"),
+    ),
+    (
+        "023_player_volume",
+        include_str!("../migrations/023_player_volume.sql"),
+    ),
+    (
+        "024_source_file_inode",
+        include_str!("../migrations/024_source_file_inode.sql"),
+    ),
 ];
 
 const DEFAULT_LIBRARY_ID: &str = "00000000-0000-4000-8000-000000000001";
@@ -392,7 +416,10 @@ impl VaultDb {
         Ok(rows)
     }
 
-    fn lesson_note_by_id(&self, note_id: &str) -> Result<Option<LessonNoteRow>, DbError> {
+    pub(crate) fn lesson_note_by_id(
+        &self,
+        note_id: &str,
+    ) -> Result<Option<LessonNoteRow>, DbError> {
         let conn = self.conn.lock().expect("vault db lock");
         conn.query_row(
             "SELECT id, lesson_id, body, timestamp_ms, created_at, updated_at
@@ -511,6 +538,39 @@ impl VaultDb {
              WHERE tc.source = 'transcription'
                AND LOWER(tc.text) LIKE ?1 ESCAPE '\\'
              ORDER BY l.course_id, l.sort_index, tc.sort_index",
+        )?;
+        let rows = stmt
+            .query_map([like_pattern], |row| {
+                Ok((
+                    LessonSearchRow {
+                        lesson_id: row.get(0)?,
+                        course_id: row.get(1)?,
+                        course_title: row.get(2)?,
+                        display_title: row.get(3)?,
+                        relative_path: row.get(4)?,
+                    },
+                    row.get(5)?,
+                    row.get(6)?,
+                ))
+            })?
+            .collect::<Result<Vec<_>, rusqlite::Error>>()?;
+        Ok(rows)
+    }
+
+    pub(crate) fn search_lesson_note_rows(
+        &self,
+        like_pattern: &str,
+    ) -> Result<Vec<(LessonSearchRow, Option<i64>, String)>, DbError> {
+        let conn = self.conn.lock().expect("vault db lock");
+        let mut stmt = conn.prepare(
+            "SELECT l.id, l.course_id, c.title, l.display_title, sf.relative_path,
+                    ln.timestamp_ms, ln.body
+             FROM lesson_note ln
+             INNER JOIN lesson l ON l.id = ln.lesson_id
+             INNER JOIN course c ON c.id = l.course_id
+             LEFT JOIN source_file sf ON sf.id = l.source_file_id
+             WHERE LOWER(ln.body) LIKE ?1 ESCAPE '\\'
+             ORDER BY l.course_id, l.sort_index, ln.timestamp_ms, ln.created_at",
         )?;
         let rows = stmt
             .query_map([like_pattern], |row| {
@@ -679,9 +739,62 @@ impl VaultDb {
         Ok(rows)
     }
 
+    pub(crate) fn lesson_source_inode_identity(
+        &self,
+        lesson_id: &str,
+    ) -> Result<Option<(u64, u64, u64)>, DbError> {
+        let conn = self.conn.lock().expect("vault db lock");
+        let row = conn
+            .query_row(
+                "SELECT sf.file_dev, sf.file_ino, sf.size_bytes
+                 FROM lesson l
+                 INNER JOIN source_file sf ON sf.id = l.source_file_id
+                 WHERE l.id = ?1",
+                [lesson_id],
+                |row| {
+                    Ok((
+                        row.get::<_, Option<i64>>(0)?,
+                        row.get::<_, Option<i64>>(1)?,
+                        row.get::<_, Option<i64>>(2)?,
+                    ))
+                },
+            )
+            .optional()?;
+        Ok(row.and_then(|(dev, ino, size)| {
+            let (dev, ino, size) = (dev?, ino?, size?);
+            if dev < 0 || ino < 0 || size < 0 {
+                return None;
+            }
+            Some((dev as u64, ino as u64, size as u64))
+        }))
+    }
+
+    pub(crate) fn relink_local_file_lesson(
+        &self,
+        lesson_id: &str,
+        new_relative_path: &str,
+    ) -> Result<(), DbError> {
+        let conn = self.conn.lock().expect("vault db lock");
+        let now = now_iso8601();
+        let tx = conn.unchecked_transaction()?;
+        tx.execute(
+            "UPDATE lesson SET lesson_stable_key = ?1 WHERE id = ?2",
+            rusqlite::params![new_relative_path, lesson_id],
+        )?;
+        tx.execute(
+            "UPDATE source_file
+             SET relative_path = ?1, last_seen_at = ?2, missing_since = NULL
+             WHERE id = (SELECT source_file_id FROM lesson WHERE id = ?3)",
+            rusqlite::params![new_relative_path, now, lesson_id],
+        )?;
+        tx.commit()?;
+        Ok(())
+    }
+
     pub fn upsert_scanned_lessons(
         &self,
         course_id: &str,
+        course_root: &Path,
         lessons: &[crate::import::ScannedLesson],
     ) -> Result<Vec<String>, DbError> {
         let existing = self.local_file_lessons_for_course(course_id)?;
@@ -713,7 +826,7 @@ impl VaultDb {
                         next_sort += 1;
                         index
                     });
-                upsert_lesson_from_scan(&tx, course_id, lesson, sort_index, &now)?;
+                upsert_lesson_from_scan(&tx, course_id, course_root, lesson, sort_index, &now)?;
             }
             tx.commit()?;
         }
@@ -1472,7 +1585,7 @@ impl VaultDb {
             }
         };
 
-        let lesson_ids = self.upsert_scanned_lessons(&course_id, lessons)?;
+        let lesson_ids = self.upsert_scanned_lessons(&course_id, Path::new(root_path), lessons)?;
 
         Ok(crate::import::ImportReport {
             course_id,
@@ -1698,7 +1811,7 @@ impl VaultDb {
     ) -> Result<crate::vault_settings::VaultSettings, DbError> {
         let conn = self.conn.lock().expect("vault db lock");
         let settings = conn.query_row(
-            "SELECT tesseract_language, transcription_model_path, anki_desktop_binary_path
+            "SELECT tesseract_language, transcription_model_path, anki_desktop_binary_path, ui_theme, playback_speed, player_volume, player_muted
              FROM vault_settings WHERE id = 1",
             [],
             |row| {
@@ -1706,6 +1819,16 @@ impl VaultDb {
                     tesseract_language: row.get(0)?,
                     transcription_model_path: row.get(1)?,
                     anki_desktop_binary_path: row.get(2)?,
+                    ui_theme: crate::vault_settings::UiTheme::parse(
+                        row.get::<_, String>(3)?.as_str(),
+                    ),
+                    playback_speed: crate::vault_settings::PlaybackSpeed::parse(
+                        row.get::<_, f64>(4)?,
+                    ),
+                    player_volume: crate::vault_settings::normalize_player_volume(
+                        row.get::<_, f64>(5)?,
+                    ),
+                    player_muted: row.get::<_, i64>(6)? != 0,
                 })
             },
         )?;
@@ -1721,18 +1844,107 @@ impl VaultDb {
             "UPDATE vault_settings
              SET tesseract_language = ?1,
                  transcription_model_path = ?2,
-                 anki_desktop_binary_path = ?3
+                 anki_desktop_binary_path = ?3,
+                 ui_theme = ?4,
+                 playback_speed = ?5,
+                 player_volume = ?6,
+                 player_muted = ?7
              WHERE id = 1",
             rusqlite::params![
                 settings.tesseract_language,
                 settings.transcription_model_path,
                 settings.anki_desktop_binary_path,
+                settings.ui_theme.as_str(),
+                settings.playback_speed.value(),
+                settings.player_volume,
+                i64::from(settings.player_muted),
             ],
         )?;
         if updated == 0 {
             return Err(DbError::InvalidData("vault_settings row missing".into()));
         }
         Ok(())
+    }
+
+    pub(crate) fn insert_study_day(&self, local_date: &str) -> Result<(), DbError> {
+        let conn = self.conn.lock().expect("vault db lock");
+        conn.execute(
+            "INSERT OR IGNORE INTO study_day (local_date) VALUES (?1)",
+            [local_date],
+        )?;
+        Ok(())
+    }
+
+    pub(crate) fn study_day_exists(&self, local_date: &str) -> Result<bool, DbError> {
+        let conn = self.conn.lock().expect("vault db lock");
+        let count: i64 = conn.query_row(
+            "SELECT COUNT(*) FROM study_day WHERE local_date = ?1",
+            [local_date],
+            |row| row.get(0),
+        )?;
+        Ok(count > 0)
+    }
+
+    pub(crate) fn list_study_days(&self) -> Result<Vec<String>, DbError> {
+        let conn = self.conn.lock().expect("vault db lock");
+        let mut stmt = conn.prepare("SELECT local_date FROM study_day ORDER BY local_date ASC")?;
+        let rows = stmt.query_map([], |row| row.get(0))?;
+        rows.collect::<Result<Vec<_>, _>>().map_err(DbError::from)
+    }
+
+    pub(crate) fn count_lessons_marked_done_between(
+        &self,
+        start_unix: i64,
+        end_unix: i64,
+    ) -> Result<u32, DbError> {
+        let conn = self.conn.lock().expect("vault db lock");
+        let count: i64 = conn.query_row(
+            "SELECT COUNT(*) FROM progress
+             WHERE marked_done_at IS NOT NULL
+               AND CAST(marked_done_at AS INTEGER) >= ?1
+               AND CAST(marked_done_at AS INTEGER) <= ?2",
+            rusqlite::params![start_unix, end_unix],
+            |row| row.get(0),
+        )?;
+        Ok(u32::try_from(count).unwrap_or(u32::MAX))
+    }
+
+    pub(crate) fn insert_card_grade_event(&self, graded_at: &str) -> Result<(), DbError> {
+        let conn = self.conn.lock().expect("vault db lock");
+        conn.execute(
+            "INSERT INTO card_grade_event (graded_at) VALUES (?1)",
+            [graded_at],
+        )?;
+        Ok(())
+    }
+
+    pub(crate) fn count_card_grades_between(
+        &self,
+        start_unix: i64,
+        end_unix: i64,
+    ) -> Result<u32, DbError> {
+        let conn = self.conn.lock().expect("vault db lock");
+        let count: i64 = conn.query_row(
+            "SELECT COUNT(*) FROM card_grade_event
+             WHERE CAST(graded_at AS INTEGER) >= ?1
+               AND CAST(graded_at AS INTEGER) <= ?2",
+            rusqlite::params![start_unix, end_unix],
+            |row| row.get(0),
+        )?;
+        Ok(u32::try_from(count).unwrap_or(u32::MAX))
+    }
+
+    pub(crate) fn total_watched_ms_all_lessons(&self) -> Result<i64, DbError> {
+        let conn = self.conn.lock().expect("vault db lock");
+        let mut stmt = conn.prepare("SELECT DISTINCT lesson_id FROM watched_range")?;
+        let lesson_ids = stmt
+            .query_map([], |row| row.get::<_, String>(0))?
+            .collect::<Result<Vec<_>, _>>()?;
+        let mut total = 0i64;
+        for lesson_id in lesson_ids {
+            total += self.watched_ms_for_lesson(&lesson_id)?;
+        }
+        Ok(total)
     }
 
     pub fn course_exists(&self, course_id: &str) -> Result<bool, DbError> {
@@ -2370,13 +2582,21 @@ fn upsert_playlist_item(
 fn upsert_lesson_from_scan(
     conn: &Connection,
     course_id: &str,
+    course_root: &Path,
     lesson: &crate::import::ScannedLesson,
     sort_index: i32,
     now: &str,
 ) -> Result<String, DbError> {
-    let source_file_id = upsert_source_file(conn, course_id, &lesson.relative_path, now)?;
+    let source_file_id =
+        upsert_source_file(conn, course_id, course_root, &lesson.relative_path, now)?;
     let subtitle_file_id = if let Some(sub_path) = &lesson.subtitle_relative_path {
-        Some(upsert_source_file(conn, course_id, sub_path, now)?)
+        Some(upsert_source_file(
+            conn,
+            course_id,
+            course_root,
+            sub_path,
+            now,
+        )?)
     } else {
         None
     };
@@ -2401,7 +2621,7 @@ fn upsert_lesson_from_scan(
                 lesson_id
             ],
         )?;
-        sync_lesson_resources(conn, &lesson_id, course_id, lesson, now)?;
+        sync_lesson_resources(conn, &lesson_id, course_id, course_root, lesson, now)?;
         Ok(lesson_id)
     } else {
         let lesson_id = Uuid::new_v4().to_string();
@@ -2420,7 +2640,7 @@ fn upsert_lesson_from_scan(
                 subtitle_file_id
             ],
         )?;
-        sync_lesson_resources(conn, &lesson_id, course_id, lesson, now)?;
+        sync_lesson_resources(conn, &lesson_id, course_id, course_root, lesson, now)?;
         Ok(lesson_id)
     }
 }
@@ -2429,6 +2649,7 @@ fn sync_lesson_resources(
     conn: &Connection,
     lesson_id: &str,
     course_id: &str,
+    course_root: &Path,
     lesson: &crate::import::ScannedLesson,
     now: &str,
 ) -> Result<(), DbError> {
@@ -2457,7 +2678,8 @@ fn sync_lesson_resources(
     }
 
     for resource in &lesson.resources {
-        let source_file_id = upsert_source_file(conn, course_id, &resource.relative_path, now)?;
+        let source_file_id =
+            upsert_source_file(conn, course_id, course_root, &resource.relative_path, now)?;
         let existing_id: Option<String> = conn
             .query_row(
                 "SELECT id FROM lesson_resource WHERE lesson_id = ?1 AND source_file_id = ?2",
@@ -2486,6 +2708,7 @@ fn sync_lesson_resources(
 fn upsert_source_file(
     conn: &Connection,
     course_id: &str,
+    course_root: &Path,
     relative_path: &str,
     now: &str,
 ) -> Result<String, DbError> {
@@ -2495,6 +2718,8 @@ fn upsert_source_file(
         .unwrap_or("")
         .to_ascii_lowercase();
     let kind = source_kind_for_extension(&extension);
+    let disk_path = course_root.join(relative_path);
+    let (size_bytes, file_dev, file_ino) = crate::import::source_file_disk_metadata(&disk_path);
 
     let existing: Option<String> = conn
         .query_row(
@@ -2506,17 +2731,31 @@ fn upsert_source_file(
 
     if let Some(id) = existing {
         conn.execute(
-            "UPDATE source_file SET kind = ?1, extension = ?2, last_seen_at = ?3, missing_since = NULL
-             WHERE id = ?4",
-            rusqlite::params![kind, extension, now, id],
+            "UPDATE source_file
+             SET kind = ?1, extension = ?2, last_seen_at = ?3, missing_since = NULL,
+                 size_bytes = ?4, file_dev = ?5, file_ino = ?6
+             WHERE id = ?7",
+            rusqlite::params![kind, extension, now, size_bytes, file_dev, file_ino, id],
         )?;
         Ok(id)
     } else {
         let id = Uuid::new_v4().to_string();
         conn.execute(
-            "INSERT INTO source_file (id, course_id, relative_path, kind, extension, last_seen_at)
-             VALUES (?1, ?2, ?3, ?4, ?5, ?6)",
-            rusqlite::params![id, course_id, relative_path, kind, extension, now],
+            "INSERT INTO source_file (
+                id, course_id, relative_path, kind, extension, last_seen_at,
+                size_bytes, file_dev, file_ino
+             ) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9)",
+            rusqlite::params![
+                id,
+                course_id,
+                relative_path,
+                kind,
+                extension,
+                now,
+                size_bytes,
+                file_dev,
+                file_ino
+            ],
         )?;
         Ok(id)
     }

@@ -18,11 +18,13 @@ Lessonbinder should feel like **a well-made reference app**: calm surfaces, tigh
 
 ## Typography
 
-**One family everywhere:** **[IBM Plex Sans](https://fonts.google.com/specimen/IBM+Sans)** (weights 400, 500, 600 only).
+**UI text:** **Google Sans** (bundled weights **400**, **500**, **700** only—see [`FONTS.md`](FONTS.md)). CSS: `--font-family: "Google Sans", system-ui, sans-serif`.
 
-- Why: dense UI readability, distinct from Inter/Roboto/system UI, serious study-tool tone, strong at 12–14px table text.
-- No separate display face. Headings use **weight + size**, not a second typeface.
-- **Tabular figures** (`font-feature-settings: "tss" on` or `font-variant-numeric: tabular-nums`) for durations, due counts, percentages.
+**Wordmark:** **Andina** (weight **400**) on the **Lessonbinder** title in the app shell only (`--font-wordmark`). Buttons, table rows, lesson notes, and all other copy use Google Sans.
+
+- Dense UI readability at 12–14px table text; no Inter/Roboto as the primary voice.
+- Headings use **700** (bold file). There is no 600 face—do not request `font-weight: 600`.
+- **Tabular figures** (`font-variant-numeric: tabular-nums`) for durations, due counts, percentages.
 
 ### Type scale (rem, base 16px)
 
@@ -32,7 +34,7 @@ Lessonbinder should feel like **a well-made reference app**: calm surfaces, tigh
 | `--text-sm`   | 0.8125rem (13px) | 400    | Default list rows, lesson titles      |
 | `--text-base` | 0.875rem (14px)  | 400    | Body, player chrome labels            |
 | `--text-md`   | 1rem (16px)      | 500    | Section titles inside a screen        |
-| `--text-lg`   | 1.125rem (18px)  | 600    | Screen title (one per view)           |
+| `--text-lg`   | 1.125rem (18px)  | 700    | Screen title (one per view)           |
 
 - **Line-height:** 1.45 for body/list; 1.25 for single-line rows.
 - **Max line length** for prose notes: ~72ch; lists and tables use full pane width.
@@ -40,13 +42,17 @@ Lessonbinder should feel like **a well-made reference app**: calm surfaces, tigh
 
 ### Font loading (webview)
 
-```css
-@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap");
+Bundled `@font-face` rules in `ui/src/theme/tokens.css` (see [`FONTS.md`](FONTS.md)). No `@import` from `fonts.googleapis.com` or other network font URLs.
 
+```css
 :root {
-  font-family: "IBM Plex Sans", system-ui, sans-serif;
+  --font-family: "Google Sans", system-ui, sans-serif;
+  --font-wordmark: "Andina", serif;
+  --font-weight-heading: 700;
 }
 ```
+
+Shell: `.top-bar__wordmark` uses `--font-wordmark`; `.screen-title` and headings use `--font-weight-heading`.
 
 ---
 
@@ -156,7 +162,7 @@ Dark theme is **out of v1** unless a later prompt adds paired tokens; do not shi
 
 **Layout:** Single primary table (title, lesson count, derived status, last engaged). Optional narrow sidebar for filters later—v1 table only.
 
-**Empty state:** One sentence: “Import a folder on your disk or a playlist JSON file to add courses.” **Two actions:** **Add folder** (primary), **Add playlist JSON** (secondary). No illustration, sample course, or onboarding copy.
+**Empty state:** One sentence: “Add a folder on your disk to import a course.” **One action:** **Add folder** (primary, `--accent`). No illustration, sample course, or onboarding copy. Playlist import stays on the populated library toolbar.
 
 ---
 
@@ -236,7 +242,7 @@ Plain, instructional, sentence case. Errors state what failed and what to do nex
 ## Implementation checklist (for UI prompts)
 
 - [ ] CSS variables from **Color tokens** and **Spacing scale** in one `theme.css`
-- [ ] IBM Plex Sans only
+- [ ] Google Sans for UI; Andina on shell wordmark only ([`FONTS.md`](FONTS.md))
 - [ ] Accent only on progress + primary actions
 - [ ] Five screens match **one job** sentences
 - [ ] Every empty state: instructional copy + primary action (library first-run: **two** import actions)

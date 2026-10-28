@@ -69,7 +69,7 @@ Explicitly **not** part of v1.1 (unchanged from charter / v1):
 | **AI chat tutor** / coaching UI                  | —                                            |
 | **Auto-`done`** from watch percent or thresholds | `done` remains manual                        |
 | **Playlist downloaders** / term-breaking rippers | Metadata-only playlist courses stay as in v1 |
-| **Renaming** the existing OCR **note type**      | Keep `LessonbinderClip` / current fields        |
+| **Renaming** the existing OCR **note type**      | Keep `LessonbinderClip` / current fields     |
 
 Also still out of scope: custom FSRS in Lessonbinder, cloud OCR, bundled weight downloads, and “AI understands the course” summarization.
 

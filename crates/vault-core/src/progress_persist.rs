@@ -11,6 +11,7 @@ use crate::progress::apply_set_resume;
 use crate::progress::apply_source_missing;
 use crate::progress::LessonProgressState;
 use crate::progress::ProgressError;
+use crate::study_day::StudyDayError;
 use crate::watched::union_watched_ranges;
 use crate::watched::PlaybackRangeError;
 use crate::watched::WatchedRange;
@@ -26,6 +27,8 @@ pub enum ProgressPersistenceError {
     },
     #[error("invalid playback range")]
     InvalidPlaybackRange,
+    #[error(transparent)]
+    StudyDay(#[from] StudyDayError),
 }
 
 impl From<ProgressError> for ProgressPersistenceError {
@@ -117,6 +120,23 @@ impl VaultDb {
     }
 
     pub fn mark_complete(&self, lesson_id: &str) -> Result<(), ProgressPersistenceError> {
+        self.persist_mark_complete(lesson_id)?;
+        crate::study_day::record_study_day_today(self)?;
+        Ok(())
+    }
+
+    /// Marks complete and records a study day for `local_date` (tests and explicit dates).
+    pub fn mark_complete_with_local_study_day(
+        &self,
+        lesson_id: &str,
+        local_date: &str,
+    ) -> Result<(), ProgressPersistenceError> {
+        self.persist_mark_complete(lesson_id)?;
+        crate::study_day::record_study_day(self, local_date)?;
+        Ok(())
+    }
+
+    fn persist_mark_complete(&self, lesson_id: &str) -> Result<(), ProgressPersistenceError> {
         let mut state = self.load_progress_state(lesson_id)?;
         apply_mark_complete(&mut state)?;
         self.save_lesson_progress_state(lesson_id, &state)?;

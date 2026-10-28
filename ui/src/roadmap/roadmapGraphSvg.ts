@@ -1,3 +1,4 @@
+import type { DerivedStatus } from "../api/libraryTypes";
 import type { RoadmapGraph } from "../api/roadmapTypes";
 import { formatStatus } from "../library/format";
 
@@ -6,12 +7,17 @@ const NODE_HEIGHT = 64;
 const H_GAP = 56;
 const PADDING = 24;
 
-const EXPORT_FONT = "IBM Plex Sans, system-ui, sans-serif";
+/** Literal hex from `docs/DESIGN.md` / `tokens.css` for standalone SVG export. */
+const EXPORT_FONT = "Google Sans, system-ui, sans-serif";
+const EXPORT_BG_SURFACE = "#fafaf9";
 const EXPORT_BG_ELEVATED = "#ffffff";
 const EXPORT_BORDER = "#e5e4e2";
 const EXPORT_TEXT_PRIMARY = "#1c1917";
 const EXPORT_TEXT_SECONDARY = "#57534e";
 const EXPORT_TEXT_MUTED = "#78716c";
+const EXPORT_ACCENT = "#0d6e6a";
+const EXPORT_STATUS_BROKEN = "#b45309";
+const EXPORT_STATUS_DONE = "#44403c";
 
 function escapeXml(text: string): string {
   return text
@@ -27,6 +33,23 @@ function nodePosition(index: number): { x: number; y: number } {
     x: PADDING + index * (NODE_WIDTH + H_GAP),
     y: PADDING,
   };
+}
+
+function exportStatusFill(status: DerivedStatus): string {
+  switch (status) {
+    case "in_progress":
+      return EXPORT_ACCENT;
+    case "broken":
+      return EXPORT_STATUS_BROKEN;
+    case "done":
+      return EXPORT_STATUS_DONE;
+    case "not_started":
+      return EXPORT_TEXT_SECONDARY;
+    default: {
+      const _exhaustive: never = status;
+      return _exhaustive;
+    }
+  }
 }
 
 export function buildRoadmapGraphSvg(graph: RoadmapGraph): string {
@@ -68,10 +91,11 @@ export function buildRoadmapGraphSvg(graph: RoadmapGraph): string {
       }
       const title = escapeXml(node.course_title);
       const status = escapeXml(formatStatus(node.status));
+      const statusFill = exportStatusFill(node.status);
       return `<g transform="translate(${layout.x}, ${layout.y})">
-    <rect width="${NODE_WIDTH}" height="${NODE_HEIGHT}" rx="4" fill="${EXPORT_BG_ELEVATED}" stroke="${EXPORT_BORDER}" />
-    <text x="12" y="22" font-family="${EXPORT_FONT}" font-size="12" font-weight="600" fill="${EXPORT_TEXT_PRIMARY}">${title}</text>
-    <text x="12" y="40" font-family="${EXPORT_FONT}" font-size="11" fill="${EXPORT_TEXT_SECONDARY}">${status}</text>
+    <rect width="${NODE_WIDTH}" height="${NODE_HEIGHT}" fill="${EXPORT_BG_ELEVATED}" stroke="${EXPORT_BORDER}" />
+    <text x="12" y="22" font-family="${EXPORT_FONT}" font-size="12" font-weight="700" fill="${EXPORT_TEXT_PRIMARY}">${title}</text>
+    <text x="12" y="40" font-family="${EXPORT_FONT}" font-size="11" fill="${statusFill}">${status}</text>
   </g>`;
     })
     .join("\n  ");
@@ -83,6 +107,7 @@ export function buildRoadmapGraphSvg(graph: RoadmapGraph): string {
       <path d="M0,0 L8,4 L0,8 Z" fill="${EXPORT_TEXT_MUTED}" />
     </marker>
   </defs>
+  <rect width="${width}" height="${height}" fill="${EXPORT_BG_SURFACE}" />
   ${edgeLines}
   ${nodeGroups}
 </svg>`;

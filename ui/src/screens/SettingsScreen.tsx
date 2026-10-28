@@ -3,11 +3,16 @@ import { useCallback, useEffect, useState, type FormEvent } from "react";
 import type { VaultSettings } from "../api/settingsTypes";
 import { invokeErrorMessage } from "../api/invokeError";
 import { useSettingsCommands } from "../settings/useSettingsCommands";
+import { applyUiTheme } from "../theme/applyUiTheme";
 
 const defaultSettings: VaultSettings = {
   tesseract_language: "eng",
   transcription_model_path: "",
   anki_desktop_binary_path: "anki",
+  ui_theme: "light",
+  playback_speed: 1,
+  player_volume: 1,
+  player_muted: false,
 };
 
 export function SettingsScreen() {
@@ -30,6 +35,7 @@ export function SettingsScreen() {
       ]);
       setSettings(loaded);
       setAnkiProfilePath(profilePath);
+      applyUiTheme(loaded.ui_theme);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Could not load settings.");
     }
@@ -46,6 +52,7 @@ export function SettingsScreen() {
     setSaved(false);
     try {
       await commands.saveVaultSettings(settings);
+      applyUiTheme(settings.ui_theme);
       setSaved(true);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Could not save settings.");
@@ -176,6 +183,60 @@ export function SettingsScreen() {
               }))
             }
           />
+        </div>
+
+        <fieldset className="settings-field">
+          <legend className="settings-field__label">Appearance</legend>
+          <label className="settings-theme-option">
+            <input
+              type="radio"
+              name="settings-ui-theme"
+              value="light"
+              checked={settings.ui_theme === "light"}
+              onChange={() =>
+                setSettings((prev) => ({ ...prev, ui_theme: "light" }))
+              }
+            />
+            Light
+          </label>
+          <label className="settings-theme-option">
+            <input
+              type="radio"
+              name="settings-ui-theme"
+              value="dark"
+              checked={settings.ui_theme === "dark"}
+              onChange={() =>
+                setSettings((prev) => ({ ...prev, ui_theme: "dark" }))
+              }
+            />
+            Dark
+          </label>
+        </fieldset>
+
+        <div className="settings-field">
+          <label
+            className="settings-field__label"
+            htmlFor="settings-playback-speed"
+          >
+            Playback speed
+          </label>
+          <select
+            id="settings-playback-speed"
+            className="settings-field__input"
+            value={String(settings.playback_speed)}
+            onChange={(event) =>
+              setSettings((prev) => ({
+                ...prev,
+                playback_speed: Number(event.target.value),
+              }))
+            }
+          >
+            <option value="0.75">0.75×</option>
+            <option value="1">1×</option>
+            <option value="1.25">1.25×</option>
+            <option value="1.5">1.5×</option>
+            <option value="2">2×</option>
+          </select>
         </div>
 
         <div className="settings-field settings-field--readonly">

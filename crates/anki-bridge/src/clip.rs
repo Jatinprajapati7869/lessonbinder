@@ -51,7 +51,9 @@ pub fn validate_lessonbinder_deck_name(name: &str) -> Result<()> {
     if !name.starts_with(LESSONBINDER_DECK_PREFIX) {
         invalid_input!("deck name must start with `{LESSONBINDER_DECK_PREFIX}`");
     }
-    let title = name.strip_prefix(LESSONBINDER_DECK_PREFIX).unwrap_or_default();
+    let title = name
+        .strip_prefix(LESSONBINDER_DECK_PREFIX)
+        .unwrap_or_default();
     if title.is_empty() {
         invalid_input!("deck name must include a course title after `{LESSONBINDER_DECK_PREFIX}`");
     }

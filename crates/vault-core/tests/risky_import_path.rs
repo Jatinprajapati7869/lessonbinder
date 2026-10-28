@@ -5,14 +5,15 @@ use std::fs;
 use std::path::Path;
 
 use tempfile::tempdir;
-use vault_core::import::{import_folder, ImportError};
+use vault_core::import::{import_folder, validate_import_folder_path, ImportError};
 use vault_core::VaultDb;
 
 #[test]
-fn rejects_filesystem_root() {
+fn validate_import_folder_path_guard_blocks_drop_on_risky_root() {
     let db = VaultDb::open_in_memory().unwrap();
-    let err = import_folder(&db, Path::new("/")).unwrap_err();
+    let err = validate_import_folder_path(Path::new("/")).unwrap_err();
     assert!(matches!(err, ImportError::RiskyImportPath));
+    assert!(import_folder(&db, Path::new("/")).is_err());
 }
 
 #[test]
@@ -32,6 +33,16 @@ fn allows_normal_course_folder() {
     let report = import_folder(&db, dir.path()).unwrap();
 
     assert_eq!(db.lesson_count_for_course(&report.course_id).unwrap(), 1);
+}
+
+#[test]
+fn rejects_file_as_import_root() {
+    let dir = tempdir().unwrap();
+    let file = dir.path().join("lesson.mp4");
+    fs::write(&file, b"").unwrap();
+    let db = VaultDb::open_in_memory().unwrap();
+    let err = import_folder(&db, &file).unwrap_err();
+    assert!(matches!(err, ImportError::InvalidPath(_)));
 }
 
 #[cfg(unix)]

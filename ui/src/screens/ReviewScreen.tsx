@@ -243,7 +243,7 @@ export function ReviewScreen({
       <div className="review-screen__fallback">
         <button
           type="button"
-          className="review-fallback-button"
+          className="library-button-secondary"
           disabled={!desktopAnkiAvailable || desktopLaunchBusy}
           onClick={() => onOpenInAnkiDesktop()}
         >
@@ -282,7 +282,7 @@ export function ReviewScreen({
             <ReviewDueCounts due={dueSummary!} />
             <button
               type="button"
-              className="review-back-button"
+              className="library-button-primary"
               onClick={onBackToLibrary}
             >
               Back to Library
@@ -293,7 +293,7 @@ export function ReviewScreen({
             <p className="review-empty__message">The review queue is empty.</p>
             <button
               type="button"
-              className="review-back-button"
+              className="library-button-primary"
               onClick={onBackToLibrary}
             >
               Back to Library
@@ -318,7 +318,7 @@ export function ReviewScreen({
           {!revealed ? (
             <button
               type="button"
-              className="review-reveal-button"
+              className="library-button-primary"
               onClick={() => void handleReveal()}
             >
               Show answer

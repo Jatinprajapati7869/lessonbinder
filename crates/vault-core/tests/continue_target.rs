@@ -65,6 +65,31 @@ fn returns_none_when_no_in_progress_or_not_started() {
 }
 
 #[test]
+fn continue_row_after_vault_reopen_reflects_last_playback() {
+    let data = tempdir().unwrap();
+    let db_path = data.path().join("vault.db");
+    let course_dir = tempdir().unwrap();
+    fs::write(course_dir.path().join("a.mp4"), b"").unwrap();
+    fs::write(course_dir.path().join("b.mp4"), b"").unwrap();
+
+    let lesson_b = {
+        let db = VaultDb::open(&db_path).unwrap();
+        let report = import_folder(&db, course_dir.path()).unwrap();
+        let lesson_a = report.lesson_ids[0].clone();
+        let lesson_b = report.lesson_ids[1].clone();
+        db.set_resume_position(&lesson_a, 1_000).unwrap();
+        db.set_progress_last_engaged_at(&lesson_a, "100").unwrap();
+        db.record_playback_position(&lesson_b, 5_000).unwrap();
+        lesson_b
+    };
+
+    let db = VaultDb::open(&db_path).unwrap();
+    let row = library_continue_row(&db).unwrap().expect("continue row");
+    assert_eq!(row.lesson_id, lesson_b);
+    assert_eq!(row.resume_position_ms, 5_000);
+}
+
+#[test]
 fn skips_broken_and_done_when_finding_not_started() {
     let db = VaultDb::open_in_memory().unwrap();
     let dir = tempdir().unwrap();

@@ -119,18 +119,18 @@ v1 proposals are **deterministic** (relative path order). No ML (Decision 8). ML
 
 ### OCR selection → Anki note
 
-| ID   | Actor   | Trigger                                             | Result                                                                                    | Failure                            | Evidence                                            |
-| ---- | ------- | --------------------------------------------------- | ----------------------------------------------------------------------------------------- | ---------------------------------- | --------------------------------------------------- |
+| ID   | Actor   | Trigger                                             | Result                                                                                          | Failure                            | Evidence                                            |
+| ---- | ------- | --------------------------------------------------- | ----------------------------------------------------------------------------------------------- | ---------------------------------- | --------------------------------------------------- |
 | A-01 | Learner | OCR capture on frame at `t_ms` with local Tesseract | `OcrSelection` stored; `AnkiCardLink` with note in deck `Lessonbinder`, type `Lessonbinder OCR` | Cloud OCR endpoint called          | `anki_bridge::ocr::creates_note_local_tesseract`    |
-| A-02 | System  | Note created                                        | Front = OCR text; Back contains lesson title, course name, timestamp                      | Card body stored only in vault SQL | `anki_bridge::ocr::card_fields_shape`               |
-| A-03 | Learner | Delete course                                       | `AnkiCardLink.link_status == broken`; note id still in collection                         | Note deleted from collection       | `vault_core::course_delete::breaks_links_not_notes` |
+| A-02 | System  | Note created                                        | Front = OCR text; Back contains lesson title, course name, timestamp                            | Card body stored only in vault SQL | `anki_bridge::ocr::card_fields_shape`               |
+| A-03 | Learner | Delete course                                       | `AnkiCardLink.link_status == broken`; note id still in collection                               | Note deleted from collection       | `vault_core::course_delete::breaks_links_not_notes` |
 
 ### Due-count read
 
-| ID   | Actor  | Trigger                                 | Result                                       | Failure                   | Evidence                                            |
-| ---- | ------ | --------------------------------------- | -------------------------------------------- | ------------------------- | --------------------------------------------------- |
+| ID   | Actor  | Trigger                                    | Result                                       | Failure                   | Evidence                                            |
+| ---- | ------ | ------------------------------------------ | -------------------------------------------- | ------------------------- | --------------------------------------------------- |
 | K-01 | System | Open Lessonbinder profile with N due cards | `due_counts()` returns N matching collection | Custom FSRS in vault-core | `anki_bridge::study::due_counts_matches_collection` |
-| K-02 | System | Empty new profile                       | Due counts zero                              | Panic or wrong profile    | `anki_bridge::study::due_counts_empty_profile`      |
+| K-02 | System | Empty new profile                          | Due counts zero                              | Panic or wrong profile    | `anki_bridge::study::due_counts_empty_profile`      |
 
 ### Study session (shipped Anki stack—not separate Desktop install)
 
@@ -138,7 +138,7 @@ Charter Decision 16 replaces “install Anki Desktop first.” v1 **study** open
 
 | ID   | Actor   | Trigger                                | Result                                                | Failure                                 | Evidence                                              |
 | ---- | ------- | -------------------------------------- | ----------------------------------------------------- | --------------------------------------- | ----------------------------------------------------- |
-| S-01 | Learner | `start_study_session()`                | Session uses Lessonbinder Anki profile path only         | Reads user’s default Anki profile       | `anki_bridge::study::uses_lessonbinder_profile_only`     |
+| S-01 | Learner | `start_study_session()`                | Session uses Lessonbinder Anki profile path only      | Reads user’s default Anki profile       | `anki_bridge::study::uses_lessonbinder_profile_only`  |
 | S-02 | Learner | `start_study_session()` with due cards | At least one card reachable via `rslib` review APIs   | Requires external `anki` binary on PATH | `anki_bridge::study::in_process_review_entry`         |
 | S-03 | System  | Profile missing / corrupt              | Structured error; no silent fallback to other profile | Opens wrong collection                  | `anki_bridge::study::errors_when_profile_unavailable` |
 

@@ -273,8 +273,8 @@ export function CaptureCardPanel({
 
       {committed?.duplicate ? (
         <p className="capture-card__duplicate" role="status">
-          This card already exists in your Lessonbinder profile. Showing the saved
-          note.
+          This card already exists in your Lessonbinder profile. Showing the
+          saved note.
         </p>
       ) : null}
 

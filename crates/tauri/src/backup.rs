@@ -1,4 +1,7 @@
 //! Local backup of `vault.db` and the Lessonbinder Anki profile (no cloud).
+//!
+//! `vault.db` is copied whole, so streak rows (`study_day`), UI theme, playback speed,
+//! volume/mute, and other vault settings round-trip with backup and restore.
 
 use std::fs;
 use std::io;

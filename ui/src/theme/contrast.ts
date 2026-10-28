@@ -27,6 +27,8 @@ export function contrastRatio(foreground: string, background: string): number {
 
 export const DESIGN_BODY_CONTRAST_MIN = 4.5;
 
+export const DESIGN_ACCENT_HEX = "#0D6E6A";
+
 export const DESIGN_BODY_TEXT_PAIRS: ReadonlyArray<{
   label: string;
   foreground: string;
@@ -53,3 +55,68 @@ export const DESIGN_BODY_TEXT_PAIRS: ReadonlyArray<{
     background: "#0D6E6A",
   },
 ];
+
+export const DESIGN_DARK_BODY_TEXT_PAIRS: ReadonlyArray<{
+  label: string;
+  foreground: string;
+  background: string;
+}> = [
+  {
+    label: "dark primary on app",
+    foreground: "#FAFAF9",
+    background: "#1C1917",
+  },
+  {
+    label: "dark primary on surface",
+    foreground: "#FAFAF9",
+    background: "#292524",
+  },
+  {
+    label: "dark secondary on app",
+    foreground: "#D6D3D1",
+    background: "#1C1917",
+  },
+  {
+    label: "dark secondary on surface",
+    foreground: "#D6D3D1",
+    background: "#292524",
+  },
+  {
+    label: "dark muted on surface",
+    foreground: "#BDBAB5",
+    background: "#292524",
+  },
+  {
+    label: "dark muted on elevated",
+    foreground: "#BDBAB5",
+    background: "#44403C",
+  },
+  {
+    label: "dark in_progress status on app",
+    foreground: "#2DD4BF",
+    background: "#1C1917",
+  },
+  {
+    label: "dark on-accent on accent",
+    foreground: "#FFFFFF",
+    background: "#0D6E6A",
+  },
+  {
+    label: "dark primary on elevated",
+    foreground: "#FAFAF9",
+    background: "#44403C",
+  },
+  {
+    label: "dark secondary on elevated",
+    foreground: "#D6D3D1",
+    background: "#44403C",
+  },
+];
+
+export const DESIGN_DARK_PLAYER_CONTROL_PAIRS: ReadonlyArray<{
+  label: string;
+  foreground: string;
+  background: string;
+}> = DESIGN_DARK_BODY_TEXT_PAIRS.filter((pair) =>
+  pair.label.includes("on elevated")
+);

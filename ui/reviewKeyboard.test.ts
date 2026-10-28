@@ -106,4 +106,17 @@ describe("shouldHandleReviewKeyboardEvent", () => {
     expect(shouldHandleReviewKeyboardEvent(document.body, " ")).toBe(true);
     expect(shouldHandleReviewKeyboardEvent(document.body, "3")).toBe(true);
   });
+
+  it("ignores shortcuts when focus is in app chrome", () => {
+    const nav = document.createElement("nav");
+    nav.className = "side-nav";
+    const button = document.createElement("button");
+    nav.appendChild(button);
+    document.body.appendChild(nav);
+
+    expect(shouldHandleReviewKeyboardEvent(button, "Escape")).toBe(false);
+    expect(shouldHandleReviewKeyboardEvent(button, "3")).toBe(false);
+
+    nav.remove();
+  });
 });

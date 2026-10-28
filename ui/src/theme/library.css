@@ -1,3 +1,66 @@
+.library {
+  font-family: var(--font-family);
+  font-size: var(--text-base);
+  line-height: var(--line-height-body);
+  color: var(--text-primary);
+}
+
+.library-streak {
+  margin: 0;
+  font-size: var(--text-base);
+  font-weight: 500;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.library-study-stats {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
+}
+
+.library-heatmap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  max-width: 100%;
+}
+
+.library-heatmap__grid {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 2px;
+  overflow-x: auto;
+  padding-bottom: var(--space-1);
+}
+
+.library-heatmap__week {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 0 0 auto;
+}
+
+.library-heatmap__day {
+  display: block;
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  background: var(--progress-track);
+}
+
+.library-heatmap__day--counted {
+  background: var(--accent);
+}
+
+.library-heatmap__summary {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+}
+
 .library-header {
   display: flex;
   align-items: center;
@@ -34,6 +97,15 @@
   cursor: not-allowed;
 }
 
+.library-button-secondary:focus-visible,
+.library-button-primary:focus-visible,
+.library-search__input:focus-visible,
+.library-paste-playlist__input:focus-visible,
+.library-paste-playlist__textarea:focus-visible {
+  outline: var(--focus-ring-width) solid var(--focus-ring);
+  outline-offset: var(--focus-ring-offset);
+}
+
 .library-button-primary {
   padding: var(--space-2) var(--space-3);
   min-height: 32px;
@@ -62,18 +134,23 @@
 .library-empty {
   margin-top: var(--space-5);
   max-width: 36rem;
+  padding: var(--space-5);
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
 }
 
 .library-empty__lead {
   margin: 0 0 var(--space-2);
   font-size: var(--text-md);
-  font-weight: 500;
+  font-weight: var(--font-weight-heading);
   color: var(--text-primary);
+  line-height: var(--line-height-row);
 }
 
 .library-empty__hint {
   margin: 0 0 var(--space-4);
   font-size: var(--text-base);
+  font-weight: 400;
   color: var(--text-secondary);
   line-height: var(--line-height-body);
 }
@@ -131,18 +208,29 @@
   align-items: center;
   gap: var(--space-2);
   margin-bottom: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  background: var(--accent-subtle);
+  border: 1px solid var(--border);
 }
 
 .library-scan__label {
   margin: 0;
   font-size: var(--text-sm);
-  color: var(--text-secondary);
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.library-table-panel {
+  border: 1px solid var(--border);
+  background: var(--bg-surface);
+  overflow-x: auto;
 }
 
 .library-table {
   width: 100%;
   border-collapse: collapse;
   font-size: var(--text-sm);
+  line-height: var(--line-height-row);
 }
 
 .library-table th,
@@ -151,6 +239,11 @@
   border-bottom: 1px solid var(--border);
   text-align: left;
   vertical-align: middle;
+  min-height: 36px;
+}
+
+.library-table tbody tr:last-child td {
+  border-bottom: none;
 }
 
 .library-course-title-cell,
@@ -173,6 +266,8 @@
   font-size: var(--text-xs);
   font-weight: 500;
   color: var(--text-secondary);
+  background: var(--bg-elevated);
+  border-bottom: 1px solid var(--border-strong);
 }
 
 .library-table tbody tr:hover {
@@ -232,10 +327,6 @@
   color: var(--text-secondary);
 }
 
-.course-screen .library-button-secondary {
-  margin-bottom: var(--space-3);
-}
-
 .library-continue-row {
   display: grid;
   grid-template-columns: auto 1fr auto auto;
@@ -257,12 +348,12 @@
 }
 
 .library-continue-row__label {
-  font-weight: 600;
+  font-weight: 500;
   color: var(--accent);
 }
 
 .library-continue-row__course {
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .library-continue-row__lesson {
@@ -289,10 +380,32 @@
 .library-search__input {
   width: 100%;
   padding: var(--space-2) var(--space-3);
+  font-size: var(--text-sm);
+  line-height: var(--line-height-row);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   background: var(--bg-elevated);
   color: var(--text-primary);
+}
+
+.library-visibility-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+}
+
+.library-visibility-filter__option {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  cursor: pointer;
+  line-height: var(--line-height-row);
+}
+
+.library-visibility-filter__option input {
+  accent-color: var(--accent);
 }
 
 .library-search__empty {
@@ -333,7 +446,7 @@
 }
 
 .library-search__hit-lesson {
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .library-search__hit-course {

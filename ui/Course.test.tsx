@@ -477,4 +477,33 @@ describe("CourseScreen", () => {
       ).toBeInTheDocument();
     });
   });
+
+  it("export notes calls the command layer with course id and title", async () => {
+    const user = userEvent.setup();
+    const exportCourseNotesMarkdown = vi.fn().mockResolvedValue(undefined);
+    const commands = baseCommands({ exportCourseNotesMarkdown });
+
+    render(
+      <CourseCommandsProvider commands={commands}>
+        <CourseScreen
+          course={courseRow}
+          onBack={() => {}}
+          onPlayLesson={() => {}}
+        />
+      </CourseCommandsProvider>
+    );
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole("button", { name: "Export notes" })
+      ).toBeInTheDocument();
+    });
+
+    await user.click(screen.getByRole("button", { name: "Export notes" }));
+
+    expect(exportCourseNotesMarkdown).toHaveBeenCalledWith(
+      "course-1",
+      "Demo Course"
+    );
+  });
 });

@@ -1,5 +1,5 @@
 import React from "react";
-import { render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 
@@ -36,6 +36,7 @@ function noteCommands(
     createLessonNote: vi.fn(),
     updateLessonNote: vi.fn(),
     deleteLessonNote: vi.fn(),
+    exportLessonNotesMarkdown: vi.fn().mockResolvedValue(undefined),
     saveDocumentPosition: vi.fn().mockResolvedValue(undefined),
     ...overrides,
   };
@@ -62,7 +63,7 @@ describe("LessonNotesColumn", () => {
       <CourseCommandsProvider
         commands={noteCommands({ listLessonNotes, createLessonNote })}
       >
-        <LessonNotesColumn lessonId="lesson-1" />
+        <LessonNotesColumn lessonId="lesson-1" lessonTitle="Intro clip" />
       </CourseCommandsProvider>
     );
 
@@ -112,6 +113,7 @@ describe("LessonNotesColumn", () => {
       >
         <LessonNotesColumn
           lessonId="lesson-1"
+          lessonTitle="Intro clip"
           playbackContext={{ currentMs: 0, onSeek }}
         />
       </CourseCommandsProvider>
@@ -123,5 +125,175 @@ describe("LessonNotesColumn", () => {
 
     await user.click(screen.getByRole("button", { name: "Seek to 0:42" }));
     expect(onSeek).toHaveBeenCalledWith(42_000);
+  });
+
+  it("export notes calls the command layer with lesson id and title", async () => {
+    const user = userEvent.setup();
+    const exportLessonNotesMarkdown = vi.fn().mockResolvedValue(undefined);
+
+    render(
+      <CourseCommandsProvider
+        commands={noteCommands({ exportLessonNotesMarkdown })}
+      >
+        <LessonNotesColumn lessonId="lesson-1" lessonTitle="Eigenvalues" />
+      </CourseCommandsProvider>
+    );
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole("button", { name: "Export notes" })
+      ).toBeInTheDocument();
+    });
+
+    await user.click(screen.getByRole("button", { name: "Export notes" }));
+
+    expect(exportLessonNotesMarkdown).toHaveBeenCalledWith(
+      "lesson-1",
+      "Eigenvalues"
+    );
+  });
+
+  it("saves an edited note when the field blurs", async () => {
+    const user = userEvent.setup();
+    const existing: LessonNote = {
+      note_id: "note-1",
+      lesson_id: "lesson-1",
+      text: "Before",
+      timestamp_ms: null,
+      created_at: "1",
+      updated_at: "1",
+    };
+    const updated: LessonNote = {
+      ...existing,
+      text: "After blur",
+      updated_at: "2",
+    };
+    const updateLessonNote = vi.fn().mockResolvedValue(updated);
+    const listLessonNotes = vi
+      .fn()
+      .mockResolvedValueOnce([existing])
+      .mockResolvedValueOnce([updated]);
+
+    render(
+      <CourseCommandsProvider
+        commands={noteCommands({ listLessonNotes, updateLessonNote })}
+      >
+        <LessonNotesColumn lessonId="lesson-1" lessonTitle="Intro clip" />
+      </CourseCommandsProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText("Before")).toBeInTheDocument();
+    });
+
+    await user.click(screen.getByRole("button", { name: "Edit" }));
+    const field = screen.getByRole("textbox", { name: "Note text" });
+    await user.clear(field);
+    await user.type(field, "After blur");
+    fireEvent.blur(field);
+
+    await waitFor(() => {
+      expect(updateLessonNote).toHaveBeenCalledWith(
+        "note-1",
+        "After blur",
+        null
+      );
+      expect(screen.getByText("After blur")).toBeInTheDocument();
+    });
+  });
+
+  it("reload keeps saved note text after blur save", async () => {
+    const user = userEvent.setup();
+    const existing: LessonNote = {
+      note_id: "note-1",
+      lesson_id: "lesson-1",
+      text: "Before",
+      timestamp_ms: null,
+      created_at: "1",
+      updated_at: "1",
+    };
+    const updated: LessonNote = {
+      ...existing,
+      text: "Persists after reload",
+      updated_at: "2",
+    };
+    const updateLessonNote = vi.fn().mockResolvedValue(updated);
+    let notesOnDisk: LessonNote[] = [existing];
+    const listLessonNotes = vi.fn().mockImplementation(async () => notesOnDisk);
+
+    const view = ({ key }: { key: string }) => (
+      <CourseCommandsProvider
+        commands={noteCommands({ listLessonNotes, updateLessonNote })}
+      >
+        <LessonNotesColumn
+          key={key}
+          lessonId="lesson-1"
+          lessonTitle="Intro clip"
+        />
+      </CourseCommandsProvider>
+    );
+
+    const { unmount } = render(view({ key: "first" }));
+
+    await waitFor(() => {
+      expect(screen.getByText("Before")).toBeInTheDocument();
+    });
+
+    await user.click(screen.getByRole("button", { name: "Edit" }));
+    const field = screen.getByRole("textbox", { name: "Note text" });
+    await user.clear(field);
+    await user.type(field, "Persists after reload");
+    notesOnDisk = [updated];
+    fireEvent.blur(field);
+
+    await waitFor(() => {
+      expect(updateLessonNote).toHaveBeenCalled();
+    });
+
+    unmount();
+    render(view({ key: "reload" }));
+
+    await waitFor(() => {
+      expect(screen.getByText("Persists after reload")).toBeInTheDocument();
+    });
+    expect(screen.queryByText("Before")).not.toBeInTheDocument();
+  });
+
+  it("cancel does not save when the field blurs", async () => {
+    const user = userEvent.setup();
+    const existing: LessonNote = {
+      note_id: "note-1",
+      lesson_id: "lesson-1",
+      text: "Keep me",
+      timestamp_ms: null,
+      created_at: "1",
+      updated_at: "1",
+    };
+    const updateLessonNote = vi.fn();
+
+    render(
+      <CourseCommandsProvider
+        commands={noteCommands({
+          listLessonNotes: vi.fn().mockResolvedValue([existing]),
+          updateLessonNote,
+        })}
+      >
+        <LessonNotesColumn lessonId="lesson-1" lessonTitle="Intro clip" />
+      </CourseCommandsProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText("Keep me")).toBeInTheDocument();
+    });
+
+    await user.click(screen.getByRole("button", { name: "Edit" }));
+    await user.type(
+      screen.getByRole("textbox", { name: "Note text" }),
+      " changed"
+    );
+    await user.click(screen.getByRole("button", { name: "Cancel" }));
+
+    expect(updateLessonNote).not.toHaveBeenCalled();
+    expect(screen.getByText("Keep me")).toBeInTheDocument();
   });
 });

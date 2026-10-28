@@ -9,10 +9,10 @@ Desktop **Tauri 2** app with **React + TypeScript** UI. Domain logic lives in **
 
 ## Two databases (never mix)
 
-| Store                  | Path (under app data)                      | Owner                                            | Contents                                                                                                                                                                     |
-| ---------------------- | ------------------------------------------ | ------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Store                     | Path (under app data)                      | Owner                                            | Contents                                                                                                                                                                     |
+| ------------------------- | ------------------------------------------ | ------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Lessonbinder vault DB** | `{app_data}/vault.db`                      | `vault-core` (+ `src-tauri` persistence adapter) | `Library`, `Course`, `Lesson`, `Progress`, `Roadmap`, `SourceFile`, `PlaylistItem`, `TranscriptSegment`, `OcrSelection`, `AnkiCardLink`, order proposals, job queue metadata |
-| **Anki collection**    | `{app_data}/anki-profile/collection.anki2` | `anki` / `rslib` via `anki-bridge`               | Notes, cards, revlog, decks, notetypes—**Anki’s schema only**                                                                                                                |
+| **Anki collection**       | `{app_data}/anki-profile/collection.anki2` | `anki` / `rslib` via `anki-bridge`               | Notes, cards, revlog, decks, notetypes—**Anki’s schema only**                                                                                                                |
 
 **Rules**
 
@@ -199,10 +199,10 @@ Long work must not block the webview thread. **`src-tauri`** schedules jobs; han
 
 ## v1 review: due counts + Anki launch boundary
 
-| Concern                    | Where it runs      | Mechanism                                                 |
-| -------------------------- | ------------------ | --------------------------------------------------------- |
+| Concern                    | Where it runs      | Mechanism                                                    |
+| -------------------------- | ------------------ | ------------------------------------------------------------ |
 | **Due counts**             | In-process         | `anki-bridge::due_counts()` on Lessonbinder `Collection`     |
-| **OCR → note**             | In-process         | `anki-bridge::create_ocr_note()`                          |
+| **OCR → note**             | In-process         | `anki-bridge::create_ocr_note()`                             |
 | **Full review / study UI** | **Out-of-process** | **Installed Anki binary** launched with Lessonbinder profile |
 
 **Launch boundary (v1):** `src-tauri` spawns the **system Anki executable** (discover via `PATH`, platform defaults, or user setting) with arguments/environment so Anki opens **`{app_data}/anki-profile/`**—not the user’s everyday profile. Lessonbinder does **not** embed Anki’s Qt UI; it **delegates** review to Anki Desktop while keeping vault state in `vault.db`.

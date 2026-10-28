@@ -48,6 +48,10 @@ fn empty_model_path_engine_is_disabled() {
         tesseract_language: "eng".into(),
         transcription_model_path: String::new(),
         anki_desktop_binary_path: "anki".into(),
+        ui_theme: vault_core::vault_settings::UiTheme::Light,
+        playback_speed: vault_core::vault_settings::PlaybackSpeed::default(),
+        player_volume: vault_core::vault_settings::DEFAULT_PLAYER_VOLUME,
+        player_muted: false,
     };
     let engine = transcription_engine_from_settings(&settings, None);
     let dir = tempdir().unwrap();

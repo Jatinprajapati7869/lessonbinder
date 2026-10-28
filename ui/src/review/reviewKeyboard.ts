@@ -65,6 +65,9 @@ export function shouldHandleReviewKeyboardEvent(
   if (!(target instanceof HTMLElement)) {
     return true;
   }
+  if (target.closest(".side-nav") || target.closest(".top-bar")) {
+    return false;
+  }
   const tag = target.tagName;
   if (tag === "TEXTAREA" || tag === "INPUT" || tag === "SELECT") {
     return false;

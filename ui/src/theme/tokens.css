@@ -1,6 +1,36 @@
 /* Lessonbinder design tokens — sole source of literal colors and font family (docs/DESIGN.md). */
 
-@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap");
+@font-face {
+  font-family: "Google Sans";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("./fonts/googlesans-regular.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Google Sans";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("./fonts/googlesans-medium.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Google Sans";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("./fonts/googlesans-bold.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Andina";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("./fonts/andina.ttf") format("truetype");
+}
 
 :root {
   --bg-app: #f4f4f3;
@@ -21,7 +51,9 @@
   --danger: #b91c1c;
   --focus-ring: #0d6e6a;
 
-  --font-family: "IBM Plex Sans", system-ui, sans-serif;
+  --font-family: "Google Sans", system-ui, sans-serif;
+  --font-wordmark: "Andina", serif;
+  --font-weight-heading: 700;
   --font-size-root: 16px;
   --line-height-body: 1.45;
   --line-height-row: 1.25;
@@ -50,4 +82,25 @@
   --shell-due-count-min: 3.5rem;
   --shell-status-max-width: 20rem;
   --shadow-elevated-bar: 0 1px 0 var(--border);
+}
+
+:root[data-theme="dark"] {
+  --bg-app: #1c1917;
+  --bg-surface: #292524;
+  --bg-elevated: #44403c;
+  --border: #57534e;
+  --border-strong: #78716c;
+  --text-primary: #fafaf9;
+  --text-secondary: #d6d3d1;
+  --text-muted: #bdbab5;
+  --accent: #0d6e6a;
+  --accent-hover: #0f857f;
+  --accent-subtle: #134e4a;
+  --on-accent: #ffffff;
+  --progress-track: #44403c;
+  --status-broken: #fbbf24;
+  --status-done: #d6d3d1;
+  --danger: #f87171;
+  --focus-ring: #2dd4bf;
+  --shadow-elevated-bar: 0 1px 0 var(--border-strong);
 }

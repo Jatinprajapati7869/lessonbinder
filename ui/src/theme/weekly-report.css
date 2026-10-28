@@ -1,0 +1,50 @@
+.weekly-report {
+  font-family: var(--font-family);
+  font-size: var(--text-base);
+  line-height: var(--line-height-body);
+  color: var(--text-primary);
+  max-width: 32rem;
+}
+
+.weekly-report__week {
+  margin: 0 0 var(--space-3);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.weekly-report__metrics {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.weekly-report__metric {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: var(--space-2) var(--space-4);
+  align-items: baseline;
+}
+
+.weekly-report__metric-label {
+  margin: 0;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.weekly-report__metric-value {
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.weekly-report__error {
+  margin: 0;
+  color: var(--danger);
+}
+
+.weekly-report__loading {
+  margin: 0;
+  color: var(--text-secondary);
+}

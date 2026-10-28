@@ -18,12 +18,29 @@
   box-shadow: var(--shadow-elevated-bar);
 }
 
-.top-bar__title {
-  margin: 0;
+.top-bar__brand {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+  min-width: 0;
+  flex: 1;
+}
+
+.top-bar__wordmark {
+  flex-shrink: 0;
+  font-family: var(--font-wordmark);
   font-size: var(--text-lg);
-  font-weight: 600;
+  font-weight: 400;
   line-height: var(--line-height-row);
   color: var(--text-primary);
+}
+
+.top-bar__title {
+  margin: 0;
+  font-size: var(--text-md);
+  font-weight: var(--font-weight-heading);
+  line-height: var(--line-height-row);
+  color: var(--text-secondary);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -52,7 +69,7 @@
 
 .due-count__value {
   font-size: var(--text-base);
-  font-weight: 600;
+  font-weight: 500;
   line-height: var(--line-height-row);
   color: var(--text-primary);
 }
@@ -160,7 +177,7 @@
 .screen-title {
   margin: 0;
   font-size: var(--text-lg);
-  font-weight: 600;
+  font-weight: var(--font-weight-heading);
   line-height: var(--line-height-row);
   color: var(--text-primary);
 }

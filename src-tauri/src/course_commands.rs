@@ -1,5 +1,6 @@
 use serde::Serialize;
-use tauri::State;
+use tauri::{AppHandle, State};
+use tauri_plugin_dialog::{DialogExt, FilePath};
 use vault_core::chapters::{
     list_chapters as load_lesson_chapters, refresh_lesson_chapters, ChapterError,
 };
@@ -10,6 +11,7 @@ use vault_core::cues::list_player_cues;
 use vault_core::extract::ExtractorEnv;
 use vault_core::import::rescan;
 use vault_core::lesson_note::{self as lesson_notes, LessonNoteError};
+use vault_core::lesson_note_export::{course_notes_markdown, lesson_notes_markdown};
 use vault_core::lesson_resource::list_lesson_resources;
 use vault_core::list_lesson_card_links;
 use vault_core::order::{accept_proposal, reject_proposal, reorder_lessons};
@@ -230,6 +232,59 @@ pub fn delete_lesson_note_entry(state: State<AppState>, note_id: String) -> Resu
         lesson_notes::delete_lesson_note(vault, &note_id).map_err(map_lesson_note_err)?;
         Ok(())
     })
+}
+
+#[tauri::command]
+pub fn export_lesson_notes_markdown(
+    app: AppHandle,
+    state: State<AppState>,
+    lesson_id: String,
+    default_file_name: String,
+) -> Result<(), String> {
+    let markdown = state.with_vault(|vault| {
+        lesson_notes_markdown(vault, &lesson_id).map_err(map_lesson_note_err)
+    })?;
+    let picked = app
+        .dialog()
+        .file()
+        .add_filter("Markdown", &["md"])
+        .set_file_name(&default_file_name)
+        .blocking_save_file();
+    let Some(file_path) = picked else {
+        return Ok(());
+    };
+    let path = match file_path {
+        FilePath::Path(path) => path,
+        FilePath::Url(url) => return Err(format!("unsupported save location: {url}")),
+    };
+    std::fs::write(&path, markdown.as_bytes()).map_err(|e| e.to_string())?;
+    Ok(())
+}
+
+#[tauri::command]
+pub fn export_course_notes_markdown(
+    app: AppHandle,
+    state: State<AppState>,
+    course_id: String,
+    default_file_name: String,
+) -> Result<(), String> {
+    let markdown = state
+        .with_vault(|vault| course_notes_markdown(vault, &course_id).map_err(|e| e.to_string()))?;
+    let picked = app
+        .dialog()
+        .file()
+        .add_filter("Markdown", &["md"])
+        .set_file_name(&default_file_name)
+        .blocking_save_file();
+    let Some(file_path) = picked else {
+        return Ok(());
+    };
+    let path = match file_path {
+        FilePath::Path(path) => path,
+        FilePath::Url(url) => return Err(format!("unsupported save location: {url}")),
+    };
+    std::fs::write(&path, markdown.as_bytes()).map_err(|e| e.to_string())?;
+    Ok(())
 }
 
 fn map_lesson_note_err(err: LessonNoteError) -> String {

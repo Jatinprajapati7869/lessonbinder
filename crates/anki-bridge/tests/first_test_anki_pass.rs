@@ -4,7 +4,8 @@ use std::path::Path;
 
 use anki::prelude::NoteId;
 use anki_bridge::{
-    commit_card_draft, due_summary, get_note, next_review_card, open_profile, LessonbinderProfilePaths,
+    commit_card_draft, due_summary, get_note, next_review_card, open_profile,
+    LessonbinderProfilePaths,
 };
 use vault_core::anki_link::{list_lesson_card_links, unlink_card};
 use vault_core::card::{build_card_draft, card_draft_from_subtitle_cue, CardError};

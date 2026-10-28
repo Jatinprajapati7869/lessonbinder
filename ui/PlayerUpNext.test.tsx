@@ -6,7 +6,9 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { CourseCommandPort } from "./src/api/courseCommands";
 import type { LessonRow } from "./src/api/courseTypes";
 import { CourseCommandsProvider } from "./src/course/CourseCommandsContext";
+import { SettingsCommandsProvider } from "./src/settings/SettingsCommandsContext";
 import { PlayerScreen } from "./src/screens/PlayerScreen";
+import { settingsCommandStubs } from "./src/test/settingsPlaybackStubs";
 import { lessonNoteCommandStubs } from "./src/test/lessonNoteCommandStubs";
 import { transcriptionCommandStubs } from "./src/test/transcriptionCommandStubs";
 
@@ -62,14 +64,16 @@ describe("PlayerScreen up next", () => {
     };
 
     render(
-      <CourseCommandsProvider commands={commands}>
-        <PlayerScreen
-          lesson={lesson}
-          courseId="course-1"
-          onBack={() => {}}
-          onPlayUpNext={onPlayUpNext}
-        />
-      </CourseCommandsProvider>
+      <SettingsCommandsProvider commands={settingsCommandStubs}>
+        <CourseCommandsProvider commands={commands}>
+          <PlayerScreen
+            lesson={lesson}
+            courseId="course-1"
+            onBack={() => {}}
+            onPlayUpNext={onPlayUpNext}
+          />
+        </CourseCommandsProvider>
+      </SettingsCommandsProvider>
     );
 
     await waitFor(() => {
@@ -105,14 +109,16 @@ describe("PlayerScreen up next", () => {
     };
 
     render(
-      <CourseCommandsProvider commands={commands}>
-        <PlayerScreen
-          lesson={lesson}
-          courseId="course-1"
-          onBack={() => {}}
-          onPlayUpNext={() => {}}
-        />
-      </CourseCommandsProvider>
+      <SettingsCommandsProvider commands={settingsCommandStubs}>
+        <CourseCommandsProvider commands={commands}>
+          <PlayerScreen
+            lesson={lesson}
+            courseId="course-1"
+            onBack={() => {}}
+            onPlayUpNext={() => {}}
+          />
+        </CourseCommandsProvider>
+      </SettingsCommandsProvider>
     );
 
     await waitFor(() => {

@@ -10,6 +10,10 @@ pub struct VaultSettingsDto {
     pub tesseract_language: String,
     pub transcription_model_path: String,
     pub anki_desktop_binary_path: String,
+    pub ui_theme: String,
+    pub playback_speed: f64,
+    pub player_volume: f64,
+    pub player_muted: bool,
 }
 
 impl From<VaultSettings> for VaultSettingsDto {
@@ -18,6 +22,10 @@ impl From<VaultSettings> for VaultSettingsDto {
             tesseract_language: value.tesseract_language,
             transcription_model_path: value.transcription_model_path,
             anki_desktop_binary_path: value.anki_desktop_binary_path,
+            ui_theme: value.ui_theme.as_str().to_string(),
+            playback_speed: value.playback_speed.value(),
+            player_volume: value.player_volume,
+            player_muted: value.player_muted,
         }
     }
 }
@@ -28,6 +36,10 @@ impl From<VaultSettingsDto> for VaultSettings {
             tesseract_language: value.tesseract_language,
             transcription_model_path: value.transcription_model_path,
             anki_desktop_binary_path: value.anki_desktop_binary_path,
+            ui_theme: vault_core::vault_settings::UiTheme::parse(&value.ui_theme),
+            playback_speed: vault_core::vault_settings::PlaybackSpeed::parse(value.playback_speed),
+            player_volume: vault_core::vault_settings::normalize_player_volume(value.player_volume),
+            player_muted: value.player_muted,
         }
     }
 }

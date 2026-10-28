@@ -76,12 +76,12 @@ Per metadata field: `known(value)` | `unknown(reason)` — never invented summar
 
 **Role:** Root aggregate for all vault content on this machine.
 
-| Field          | Type        | Notes               |
-| -------------- | ----------- | ------------------- |
-| `id`           | `LibraryId` | Primary key.        |
+| Field          | Type        | Notes                  |
+| -------------- | ----------- | ---------------------- |
+| `id`           | `LibraryId` | Primary key.           |
 | `display_name` | string      | e.g. `"Lessonbinder"`. |
-| `created_at`   | timestamp   |                     |
-| `updated_at`   | timestamp   |                     |
+| `created_at`   | timestamp   |                        |
+| `updated_at`   | timestamp   |                        |
 
 **Relationships:** Owns many `Course`, many `Roadmap`. Does not own Anki collection data (separate Anki profile).
 
@@ -305,14 +305,14 @@ Setting resume **does not** set `done`. Watch % **does not** auto-set `done` (De
 
 **Role:** Stable bridge from vault lesson context to Anki collection note (Decision 4, 15, 16).
 
-| Field                | Type             | Notes                                       |
-| -------------------- | ---------------- | ------------------------------------------- |
-| `id`                 | `AnkiCardLinkId` |                                             |
-| `lesson_id`          | `LessonId`       |                                             |
+| Field                | Type             | Notes                                          |
+| -------------------- | ---------------- | ---------------------------------------------- |
+| `id`                 | `AnkiCardLinkId` |                                                |
+| `lesson_id`          | `LessonId`       |                                                |
 | `anki_note_id`       | int64            | Note id in Lessonbinder-owned Anki collection. |
-| `video_timestamp_ms` | int              | Same sense as charter “timestamp”.          |
-| `link_status`        | `LinkStatus`     |                                             |
-| `created_at`         | timestamp        |                                             |
+| `video_timestamp_ms` | int              | Same sense as charter “timestamp”.             |
+| `link_status`        | `LinkStatus`     |                                                |
+| `created_at`         | timestamp        |                                                |
 
 **Invariant:** **Card body lives only in the Anki collection** (deck `Lessonbinder`, type `Lessonbinder OCR` in v1). Vault stores ids and context, not card HTML.
 

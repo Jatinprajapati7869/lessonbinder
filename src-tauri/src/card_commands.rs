@@ -1,5 +1,5 @@
 use anki_bridge::{
-    commit_card_draft, get_clip_note, open_profile, LessonbinderProfilePaths, CommitCardError,
+    commit_card_draft, get_clip_note, open_profile, CommitCardError, LessonbinderProfilePaths,
 };
 use serde::Serialize;
 use tauri::State;

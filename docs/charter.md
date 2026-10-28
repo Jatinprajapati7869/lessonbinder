@@ -49,8 +49,8 @@ Canonical lesson state (stored on each lesson; never a separate “roadmap check
 
 ## Relationship to other docs
 
-| Document                 | Role                                                                                |
-| ------------------------ | ----------------------------------------------------------------------------------- |
+| Document                    | Role                                                                                |
+| --------------------------- | ----------------------------------------------------------------------------------- |
 | `lessonbinder-workspace.md` | Where repos live; AGPL; non-goals (trademark, license server, Qt fork, second SRS). |
 | `lessonbinder-domain.md`    | Entities and invariants (prompt 04).                                                |
 | `lessonbinder-SPEC.md`      | Testable scenarios (prompt 05).                                                     |

@@ -6,7 +6,9 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { CourseCommandPort } from "./src/api/courseCommands";
 import type { LessonRow } from "./src/api/courseTypes";
 import { CourseCommandsProvider } from "./src/course/CourseCommandsContext";
+import { SettingsCommandsProvider } from "./src/settings/SettingsCommandsContext";
 import { PlayerScreen } from "./src/screens/PlayerScreen";
+import { settingsCommandStubs } from "./src/test/settingsPlaybackStubs";
 import { lessonNoteCommandStubs } from "./src/test/lessonNoteCommandStubs";
 import { transcriptionCommandStubs } from "./src/test/transcriptionCommandStubs";
 import { TRANSCRIPTION_MODEL_PATH_REQUIRED } from "./src/player/PlayerTranscribeControl";
@@ -66,14 +68,16 @@ describe("Player transcription", () => {
     const transcribeLesson = vi.fn();
 
     render(
-      <CourseCommandsProvider
-        commands={baseCommands({
-          getTranscriptionModelPath: vi.fn().mockResolvedValue(""),
-          transcribeLesson,
-        })}
-      >
-        <PlayerScreen lesson={lesson} courseId="course-1" onBack={() => {}} />
-      </CourseCommandsProvider>
+      <SettingsCommandsProvider commands={settingsCommandStubs}>
+        <CourseCommandsProvider
+          commands={baseCommands({
+            getTranscriptionModelPath: vi.fn().mockResolvedValue(""),
+            transcribeLesson,
+          })}
+        >
+          <PlayerScreen lesson={lesson} courseId="course-1" onBack={() => {}} />
+        </CourseCommandsProvider>
+      </SettingsCommandsProvider>
     );
 
     await waitFor(() => {

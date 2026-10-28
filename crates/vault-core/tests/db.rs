@@ -4,7 +4,7 @@ use vault_core::LessonStatus;
 #[test]
 fn migrate_fresh() {
     let db = VaultDb::open_in_memory().expect("migrate fresh db");
-    assert_eq!(db.applied_migration_count(), 18);
+    assert_eq!(db.applied_migration_count(), 24);
 
     let course_id = db
         .insert_course("Linear Algebra", "/courses/linear-algebra")

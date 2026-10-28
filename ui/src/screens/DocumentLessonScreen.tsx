@@ -202,7 +202,10 @@ export function DocumentLessonScreen({
             <p className="library-empty__hint">Loading document…</p>
           ) : null}
         </div>
-        <LessonNotesColumn lessonId={lesson.lesson_id} />
+        <LessonNotesColumn
+          lessonId={lesson.lesson_id}
+          lessonTitle={lesson.title}
+        />
       </div>
       <LessonCardLinksList lessonId={lesson.lesson_id} />
       <div className="player-bar">

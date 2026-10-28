@@ -6,6 +6,7 @@ use anki_bridge::{
 use serde::{Deserialize, Serialize};
 use tauri::State;
 use vault_core::anki_link::anki_note_ids_for_course;
+use vault_core::weekly_report::record_card_grade;
 
 use crate::app_state::AppState;
 use crate::vault_paths::anki_profile_dir;
@@ -126,7 +127,8 @@ pub fn review_answer_card(
     let profile_dir = anki_profile_dir(&state.app_data_dir);
     let mut guarded = open_profile(&profile_dir).map_err(|e| e.to_string())?;
     let col = guarded.collection_mut();
-    answer_card_by_id(col, card_id, ReviewEase::from(ease)).map_err(map_answer_error)
+    answer_card_by_id(col, card_id, ReviewEase::from(ease)).map_err(map_answer_error)?;
+    state.with_vault(|vault| record_card_grade(vault).map_err(|e| e.to_string()))
 }
 
 fn map_answer_error(err: AnswerCardError) -> String {

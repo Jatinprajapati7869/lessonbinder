@@ -5,8 +5,8 @@ use std::ffi::OsStr;
 use std::fs;
 use std::path::{Component, Path, PathBuf};
 
-use crate::lessonbinderignore::LessonbinderIgnore;
 use crate::db::VaultDb;
+use crate::lessonbinderignore::LessonbinderIgnore;
 use crate::progress_persist::ProgressPersistenceError;
 
 const PRIMARY_MEDIA_EXTENSIONS: &[&str] = &["mp4", "mkv", "webm", "mp3", "m4a"];
@@ -86,13 +86,14 @@ pub fn rescan(db: &VaultDb, course_id: &str) -> Result<ImportReport, RescanError
     };
     let root = PathBuf::from(&root_path);
     let lessons = scan_folder(&root)?;
+    relink_renamed_local_files(db, course_id, &root, &lessons)?;
     let scanned_keys: HashSet<String> = lessons
         .iter()
         .map(|lesson| lesson.relative_path.clone())
         .collect();
 
     let existing = db.local_file_lessons_for_course(course_id)?;
-    let lesson_ids = db.upsert_scanned_lessons(course_id, &lessons)?;
+    let lesson_ids = db.upsert_scanned_lessons(course_id, &root, &lessons)?;
 
     for lesson in existing {
         if !scanned_keys.contains(&lesson.stable_key) {
@@ -104,6 +105,12 @@ pub fn rescan(db: &VaultDb, course_id: &str) -> Result<ImportReport, RescanError
         course_id: course_id.to_string(),
         lesson_ids,
     })
+}
+
+/// Same checks as [`import_folder`] before touching the vault.
+pub fn validate_import_folder_path(picked: &Path) -> Result<(), ImportError> {
+    resolve_import_root(picked)?;
+    Ok(())
 }
 
 /// Import or re-import a folder as one course (idempotent on `root_path`).
@@ -399,4 +406,85 @@ fn resolves_outside_picked_directory(picked: &Path, canonical: &Path) -> Result<
     }
     let parent_canonical = fs::canonicalize(parent)?;
     Ok(!canonical.starts_with(&parent_canonical))
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+struct FileInodeIdentity {
+    dev: u64,
+    ino: u64,
+    size_bytes: u64,
+}
+
+pub(crate) fn source_file_disk_metadata(path: &Path) -> (Option<i64>, Option<i64>, Option<i64>) {
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::MetadataExt;
+        let Ok(meta) = fs::metadata(path) else {
+            return (None, None, None);
+        };
+        (
+            i64::try_from(meta.len()).ok(),
+            i64::try_from(meta.dev()).ok(),
+            i64::try_from(meta.ino()).ok(),
+        )
+    }
+    #[cfg(not(unix))]
+    {
+        let _ = path;
+        (None, None, None)
+    }
+}
+
+fn file_inode_identity(path: &Path) -> Option<FileInodeIdentity> {
+    let (size_bytes, file_dev, file_ino) = source_file_disk_metadata(path);
+    Some(FileInodeIdentity {
+        dev: u64::try_from(file_dev?).ok()?,
+        ino: u64::try_from(file_ino?).ok()?,
+        size_bytes: u64::try_from(size_bytes?).ok()?,
+    })
+}
+
+fn relink_renamed_local_files(
+    db: &VaultDb,
+    course_id: &str,
+    course_root: &Path,
+    scanned: &[ScannedLesson],
+) -> Result<(), RescanError> {
+    #[cfg(not(unix))]
+    {
+        let _ = (db, course_id, course_root, scanned);
+        return Ok(());
+    }
+    #[cfg(unix)]
+    {
+        let mut inode_to_path: HashMap<FileInodeIdentity, String> = HashMap::new();
+        for lesson in scanned {
+            let path = course_root.join(&lesson.relative_path);
+            if let Some(identity) = file_inode_identity(&path) {
+                inode_to_path.insert(identity, lesson.relative_path.clone());
+            }
+        }
+
+        for row in db.local_file_lessons_for_course(course_id)? {
+            if course_root.join(&row.stable_key).exists() {
+                continue;
+            }
+            let Some(stored) = db.lesson_source_inode_identity(&row.lesson_id)? else {
+                continue;
+            };
+            let identity = FileInodeIdentity {
+                dev: stored.0,
+                ino: stored.1,
+                size_bytes: stored.2,
+            };
+            let Some(new_relative_path) = inode_to_path.get(&identity) else {
+                continue;
+            };
+            if new_relative_path.as_str() == row.stable_key {
+                continue;
+            }
+            db.relink_local_file_lesson(&row.lesson_id, new_relative_path)?;
+        }
+        Ok(())
+    }
 }

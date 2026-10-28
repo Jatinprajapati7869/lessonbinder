@@ -5,6 +5,8 @@ export const lessonNoteCommandStubs = {
   createLessonNote: vi.fn(),
   updateLessonNote: vi.fn(),
   deleteLessonNote: vi.fn().mockResolvedValue(undefined),
+  exportLessonNotesMarkdown: vi.fn().mockResolvedValue(undefined),
+  exportCourseNotesMarkdown: vi.fn().mockResolvedValue(undefined),
   saveDocumentPosition: vi.fn().mockResolvedValue(undefined),
   listLessonResources: vi.fn().mockResolvedValue([]),
   listLessonCardLinks: vi.fn().mockResolvedValue([]),

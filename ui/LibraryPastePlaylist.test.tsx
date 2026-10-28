@@ -4,6 +4,7 @@ import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 
 import type { LibraryCommandPort } from "./src/api/libraryCommands";
+import { emptyStudyHeatmap52Weeks } from "./src/api/libraryStudyHeatmapTypes";
 import type { CourseRow } from "./src/api/libraryTypes";
 import { LibraryCommandsProvider } from "./src/library/LibraryCommandsContext";
 import { LibraryScreen } from "./src/screens/LibraryScreen";
@@ -25,6 +26,7 @@ function libraryCommands(
   return {
     listCourses: vi.fn().mockResolvedValue([sampleCourse]),
     importFolder: vi.fn(),
+    validateImportFolderPath: vi.fn().mockResolvedValue(undefined),
     cancelImportFolder: vi.fn(),
     importPlaylist: vi.fn(),
     createPlaylistFromPaste: vi.fn().mockResolvedValue(undefined),
@@ -32,7 +34,12 @@ function libraryCommands(
     pickPlaylistJson: vi.fn(),
     searchLibrary: vi.fn().mockResolvedValue([]),
     getLibraryContinueRow: vi.fn().mockResolvedValue(null),
+    getLibraryStudyStreakDays: vi.fn().mockResolvedValue(0),
+    getLibraryStudyHeatmap52Weeks: vi
+      .fn()
+      .mockResolvedValue(emptyStudyHeatmap52Weeks()),
     mediaUrlForPath: vi.fn().mockResolvedValue("asset://file"),
+    pathIsDirectory: vi.fn().mockResolvedValue(true),
     ...overrides,
   };
 }

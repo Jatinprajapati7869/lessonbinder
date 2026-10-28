@@ -1,8 +1,8 @@
 use std::fs;
 
 use tempfile::tempdir;
-use vault_core::lessonbinderignore::parse_patterns;
 use vault_core::import::import_folder;
+use vault_core::lessonbinderignore::parse_patterns;
 use vault_core::VaultDb;
 
 #[test]

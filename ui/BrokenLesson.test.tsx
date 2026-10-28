@@ -7,8 +7,10 @@ import type { CourseCommandPort } from "./src/api/courseCommands";
 import type { CourseDetail, LessonRow } from "./src/api/courseTypes";
 import type { CourseRow } from "./src/api/libraryTypes";
 import { CourseCommandsProvider } from "./src/course/CourseCommandsContext";
+import { SettingsCommandsProvider } from "./src/settings/SettingsCommandsContext";
 import { CourseScreen } from "./src/screens/CourseScreen";
 import { PlayerScreen } from "./src/screens/PlayerScreen";
+import { settingsCommandStubs } from "./src/test/settingsPlaybackStubs";
 
 const brokenLesson: LessonRow = {
   lesson_id: "lesson-broken",
@@ -84,6 +86,8 @@ const noopCommands: Pick<
   createLessonNote: vi.fn(),
   updateLessonNote: vi.fn(),
   deleteLessonNote: vi.fn().mockResolvedValue(undefined),
+  exportLessonNotesMarkdown: vi.fn().mockResolvedValue(undefined),
+  exportCourseNotesMarkdown: vi.fn().mockResolvedValue(undefined),
   saveDocumentPosition: vi.fn().mockResolvedValue(undefined),
 };
 
@@ -122,13 +126,15 @@ describe("BrokenLesson", () => {
     };
 
     render(
-      <CourseCommandsProvider commands={commands}>
-        <PlayerScreen
-          lesson={brokenLesson}
-          courseId="course-1"
-          onBack={() => {}}
-        />
-      </CourseCommandsProvider>
+      <SettingsCommandsProvider commands={settingsCommandStubs}>
+        <CourseCommandsProvider commands={commands}>
+          <PlayerScreen
+            lesson={brokenLesson}
+            courseId="course-1"
+            onBack={() => {}}
+          />
+        </CourseCommandsProvider>
+      </SettingsCommandsProvider>
     );
 
     expect(

@@ -5,6 +5,11 @@ use lessonbinder_tauri::backup::{
 };
 use tempfile::tempdir;
 use vault_core::anki_link::{anki_card_link, insert_anki_card_link};
+use vault_core::study_day::{current_streak_days, list_study_days, record_study_day};
+use vault_core::vault_settings::{
+    load_vault_settings, save_vault_settings, PlaybackSpeed, UiTheme, VaultSettings,
+    DEFAULT_PLAYER_VOLUME,
+};
 use vault_core::VaultDb;
 
 const COLLECTION_MARKER: &str = "collection-backup-v1";
@@ -72,4 +77,66 @@ fn restore_from_refuses_backup_missing_either_database() {
 
     let err = restore_from(app_data.path(), backup_dir.path()).unwrap_err();
     assert!(matches!(err, BackupError::IncompleteBackupFolder));
+}
+
+#[test]
+fn backup_restore_round_trip_preserves_study_days_and_pack_settings() {
+    let app_data = tempdir().unwrap();
+    let backups_parent = tempdir().unwrap();
+
+    fs::create_dir_all(anki_profile_dir(app_data.path())).unwrap();
+    fs::write(
+        anki_profile_dir(app_data.path()).join("collection.anki2"),
+        COLLECTION_MARKER,
+    )
+    .unwrap();
+
+    let expected_settings = VaultSettings {
+        tesseract_language: "eng".to_string(),
+        transcription_model_path: String::new(),
+        anki_desktop_binary_path: "anki".to_string(),
+        ui_theme: UiTheme::Dark,
+        playback_speed: PlaybackSpeed::parse(1.5),
+        player_volume: 0.35,
+        player_muted: true,
+    };
+    let expected_study_days = ["2026-10-26", "2026-10-27", "2026-10-28"];
+
+    {
+        let db = VaultDb::open(vault_db_path(app_data.path())).unwrap();
+        for day in expected_study_days {
+            record_study_day(&db, day).unwrap();
+        }
+        save_vault_settings(&db, &expected_settings).unwrap();
+    }
+
+    let backup_dir = backup_to(app_data.path(), backups_parent.path()).unwrap();
+
+    fs::remove_file(vault_db_path(app_data.path())).unwrap();
+    {
+        let db = VaultDb::open(vault_db_path(app_data.path())).unwrap();
+        save_vault_settings(&db, &VaultSettings::default()).unwrap();
+        assert!(list_study_days(&db).unwrap().is_empty());
+        assert_eq!(load_vault_settings(&db).unwrap().ui_theme, UiTheme::Light);
+        assert_eq!(
+            load_vault_settings(&db).unwrap().player_volume,
+            DEFAULT_PLAYER_VOLUME
+        );
+    }
+
+    restore_from(app_data.path(), &backup_dir).unwrap();
+
+    let db = VaultDb::open(vault_db_path(app_data.path())).unwrap();
+    assert_eq!(
+        list_study_days(&db).unwrap(),
+        expected_study_days
+            .iter()
+            .map(|d| (*d).to_string())
+            .collect::<Vec<_>>()
+    );
+    assert_eq!(
+        current_streak_days(&db, "2026-10-28").unwrap(),
+        expected_study_days.len() as u32
+    );
+    assert_eq!(load_vault_settings(&db).unwrap(), expected_settings);
 }

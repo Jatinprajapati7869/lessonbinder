@@ -8,7 +8,10 @@ use vault_core::continue_learning::library_continue_row;
 use vault_core::import::import_folder_with_cancel;
 use vault_core::library::{list_courses, CourseLibraryVisibility, CourseSourceKind};
 use vault_core::playlist::{import_playlist_definition, import_playlist_from_pasted_lines};
-use vault_core::search::{search, SearchMatchKind};
+use vault_core::search::{lesson_note_body, search, SearchMatchKind};
+use vault_core::study_day::{
+    current_streak_days, machine_local_date_string, study_heatmap_52_weeks, StudyHeatmap52Weeks,
+};
 use vault_core::DerivedStatus;
 use vault_core::VaultDb;
 
@@ -101,6 +104,7 @@ pub enum SearchMatchKindDto {
     LessonTitle,
     RelativePath,
     SubtitleCue,
+    LessonNote,
 }
 
 #[derive(Debug, Clone, Serialize)]
@@ -123,6 +127,14 @@ pub fn search_library(state: State<AppState>, query: String) -> Result<Vec<Searc
     })
 }
 
+#[tauri::command]
+pub fn get_search_lesson_note_body(
+    state: State<AppState>,
+    note_id: String,
+) -> Result<Option<String>, String> {
+    state.with_vault(|vault| lesson_note_body(vault, &note_id).map_err(|e| e.to_string()))
+}
+
 impl From<vault_core::search::SearchHit> for SearchHitDto {
     fn from(hit: vault_core::search::SearchHit) -> Self {
         Self {
@@ -134,6 +146,7 @@ impl From<vault_core::search::SearchHit> for SearchHitDto {
                 SearchMatchKind::LessonTitle => SearchMatchKindDto::LessonTitle,
                 SearchMatchKind::RelativePath => SearchMatchKindDto::RelativePath,
                 SearchMatchKind::SubtitleCue => SearchMatchKindDto::SubtitleCue,
+                SearchMatchKind::LessonNote => SearchMatchKindDto::LessonNote,
             },
             snippet: hit.snippet,
             cue_start_ms: hit.cue_start_ms,
@@ -162,6 +175,58 @@ pub fn get_library_continue_row(
     })
 }
 
+#[tauri::command]
+pub fn get_library_study_streak_days(state: State<AppState>) -> Result<u32, String> {
+    state.with_vault(|vault| {
+        current_streak_days(vault, &machine_local_date_string()).map_err(|e| e.to_string())
+    })
+}
+
+#[derive(Debug, Clone, Serialize)]
+pub struct StudyHeatmapDayDto {
+    pub local_date: String,
+    pub counted: bool,
+}
+
+#[derive(Debug, Clone, Serialize)]
+pub struct StudyHeatmap52WeeksDto {
+    pub weeks: Vec<Vec<StudyHeatmapDayDto>>,
+    pub counted_days: u32,
+    pub total_days: u32,
+}
+
+impl From<StudyHeatmap52Weeks> for StudyHeatmap52WeeksDto {
+    fn from(value: StudyHeatmap52Weeks) -> Self {
+        Self {
+            weeks: value
+                .weeks
+                .into_iter()
+                .map(|week| {
+                    week.into_iter()
+                        .map(|day| StudyHeatmapDayDto {
+                            local_date: day.local_date,
+                            counted: day.counted,
+                        })
+                        .collect()
+                })
+                .collect(),
+            counted_days: value.counted_days,
+            total_days: value.total_days,
+        }
+    }
+}
+
+#[tauri::command]
+pub fn get_library_study_heatmap_52_weeks(
+    state: State<AppState>,
+) -> Result<StudyHeatmap52WeeksDto, String> {
+    state.with_vault(|vault| {
+        study_heatmap_52_weeks(vault, &machine_local_date_string())
+            .map(StudyHeatmap52WeeksDto::from)
+            .map_err(|e| e.to_string())
+    })
+}
+
 impl From<vault_core::continue_learning::LibraryContinueRow> for LibraryContinueRowDto {
     fn from(row: vault_core::continue_learning::LibraryContinueRow) -> Self {
         Self {
@@ -184,6 +249,17 @@ pub fn list_library_courses(
         .map(LibraryVisibilityDto::to_core)
         .unwrap_or(CourseLibraryVisibility::Active);
     state.with_vault(|vault| list_library_course_rows(vault, visibility).map_err(|e| e.to_string()))
+}
+
+#[tauri::command]
+pub fn path_is_directory(path: String) -> bool {
+    Path::new(&path).is_dir()
+}
+
+#[tauri::command]
+pub fn validate_import_folder_path(path: String) -> Result<(), String> {
+    vault_core::import::validate_import_folder_path(Path::new(&path))
+        .map_err(|e| from_import_error(e).to_invoke_string())
 }
 
 #[tauri::command]

@@ -1,20 +1,16 @@
 export const LIBRARY_FIRST_RUN_COPY =
-  "Import a folder on your disk or a playlist JSON file to add courses.";
+  "Add a folder on your disk to import a course.";
 
 export type LibraryFirstRunEmptyProps = {
   busy: boolean;
   error: string | null;
   onAddFolder: () => void;
-  onAddPlaylistJson: () => void;
-  onPastePlaylist: () => void;
 };
 
 export function LibraryFirstRunEmpty({
   busy,
   error,
   onAddFolder,
-  onAddPlaylistJson,
-  onPastePlaylist,
 }: LibraryFirstRunEmptyProps) {
   return (
     <div className="library-empty" role="region" aria-label="Empty library">
@@ -22,27 +18,11 @@ export function LibraryFirstRunEmpty({
       <div className="library-empty__actions">
         <button
           type="button"
-          className="study-button"
+          className="library-button-primary"
           disabled={busy}
           onClick={onAddFolder}
         >
           Add folder
-        </button>
-        <button
-          type="button"
-          className="library-button-secondary"
-          disabled={busy}
-          onClick={onAddPlaylistJson}
-        >
-          Add playlist JSON
-        </button>
-        <button
-          type="button"
-          className="library-button-secondary"
-          disabled={busy}
-          onClick={onPastePlaylist}
-        >
-          Paste playlist
         </button>
       </div>
       {error ? (

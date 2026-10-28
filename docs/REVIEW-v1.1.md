@@ -10,14 +10,14 @@
 
 ## Executive summary (priority risks)
 
-| Risk                                           | Verdict                                                                                                    | Severity           |
-| ---------------------------------------------- | ---------------------------------------------------------------------------------------------------------- | ------------------ |
+| Risk                                           | Verdict                                                                                                       | Severity           |
+| ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------- | ------------------ |
 | Scheduler answers affecting the **wrong deck** | **Mostly mitigated** for grades; **gap** on “empty queue” when a non–Lessonbinder card sits at scheduler head | Medium             |
-| **Media path escape**                          | **Mitigated** in `read_media` + test; UI trusts note field filename (expected)                             | Low–medium         |
-| **Transcription network**                      | **No HTTP in app code**; **T-03 evidence test missing**                                                    | Low (doc gap)      |
-| **Silent reorder**                             | **Course order:** proposal + post-transcription guard; **roadmap** reorder is explicit UI                  | Low                |
-| **Auto-`done` from watch %**                   | **Implementation looks correct**; **W-05 named test missing**                                              | Low (coverage gap) |
-| **Backup deleting live profile**               | **Backup into live profile refused**; restore is destructive-by-design with aside copy                     | Low                |
+| **Media path escape**                          | **Mitigated** in `read_media` + test; UI trusts note field filename (expected)                                | Low–medium         |
+| **Transcription network**                      | **No HTTP in app code**; **T-03 evidence test missing**                                                       | Low (doc gap)      |
+| **Silent reorder**                             | **Course order:** proposal + post-transcription guard; **roadmap** reorder is explicit UI                     | Low                |
+| **Auto-`done` from watch %**                   | **Implementation looks correct**; **W-05 named test missing**                                                 | Low (coverage gap) |
+| **Backup deleting live profile**               | **Backup into live profile refused**; restore is destructive-by-design with aside copy                        | Low                |
 
 ---
 
@@ -93,12 +93,12 @@
 
 _Sources:_ `AGENTS.md` (SPEC before behavior, anki-bridge-only Anki access, DESIGN for UI), `docs/SPEC-v1.1.md` evidence column, Fowler smell baseline (judgement calls).
 
-| Finding                                 | Type                           | Detail                                                                                                                                                                                                            |
-| --------------------------------------- | ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Finding                                 | Type                           | Detail                                                                                                                                                                                                               |
+| --------------------------------------- | ------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Missing SPEC-named tests                | Hard vs spec                   | Several v1.1 evidence functions are named in SPEC but absent as tests (`next_card_from_lessonbinder_decks`, `union_full_watch_does_not_auto_done`, `no_network_weight_download`, `failure_leaves_lesson_unchanged`). |
-| `transcribe_with_cues` write-then-check | Judgement (Shotgun / ordering) | Cues are committed before order/progress checks; unlikely to fail in practice, but T-04 “no partial writes” is not airtight.                                                                                      |
-| `ReviewScreen.tsx` size/complexity      | Judgement                      | react-doctor (prompt 96) flagged high complexity; not a standards violation but maintainability debt.                                                                                                             |
-| Duplicated profile open per command     | Judgement (Duplicated Code)    | Each `study_commands` handler opens profile independently — acceptable for v1.1, could consolidate later.                                                                                                         |
+| `transcribe_with_cues` write-then-check | Judgement (Shotgun / ordering) | Cues are committed before order/progress checks; unlikely to fail in practice, but T-04 “no partial writes” is not airtight.                                                                                         |
+| `ReviewScreen.tsx` size/complexity      | Judgement                      | react-doctor (prompt 96) flagged high complexity; not a standards violation but maintainability debt.                                                                                                                |
+| Duplicated profile open per command     | Judgement (Duplicated Code)    | Each `study_commands` handler opens profile independently — acceptable for v1.1, could consolidate later.                                                                                                            |
 
 **Standards axis:** **4 findings** (1 spec-evidence gap cluster, 3 judgement). **Worst:** missing automated evidence for security- and scheduler-critical SPEC rows.
 
@@ -106,15 +106,15 @@ _Sources:_ `AGENTS.md` (SPEC before behavior, anki-bridge-only Anki access, DESI
 
 ## Spec
 
-| ID                        | Status                   | Notes                                                                   |
-| ------------------------- | ------------------------ | ----------------------------------------------------------------------- |
+| ID                        | Status                   | Notes                                                                      |
+| ------------------------- | ------------------------ | -------------------------------------------------------------------------- |
 | R-02                      | **Partial**              | See scheduler head skip → `None` when non-Lessonbinder card is queue head. |
-| R-03                      | **Met**                  | Answers persist via `col.answer_card`; tests present.                   |
-| R-04                      | **Met** with R-02 caveat | Empty when truly no dues; false empty possible per R-02.                |
-| W-05                      | **Likely met**           | Behavior consistent; **evidence test missing**.                         |
-| T-03                      | **Likely met**           | No in-app network; **evidence test missing**.                           |
-| T-04                      | **Partial**              | Success-path guards tested; failure / partial-write paths not.          |
-| Backup (scope / PROGRESS) | **Met**                  | Refuse backup destination = live profile; restore aside pattern tested. |
+| R-03                      | **Met**                  | Answers persist via `col.answer_card`; tests present.                      |
+| R-04                      | **Met** with R-02 caveat | Empty when truly no dues; false empty possible per R-02.                   |
+| W-05                      | **Likely met**           | Behavior consistent; **evidence test missing**.                            |
+| T-03                      | **Likely met**           | No in-app network; **evidence test missing**.                              |
+| T-04                      | **Partial**              | Success-path guards tested; failure / partial-write paths not.             |
+| Backup (scope / PROGRESS) | **Met**                  | Refuse backup destination = live profile; restore aside pattern tested.    |
 
 **Scope creep (acceptable):** Local whisper transcription ships in v1.1 though early SCOPE text mentioned “not in v1.1”; SPEC `T-*` rows now govern.
 

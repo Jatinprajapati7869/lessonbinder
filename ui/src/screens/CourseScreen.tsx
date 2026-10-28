@@ -181,6 +181,21 @@ export function CourseScreen({
     }
   }
 
+  async function handleExportCourseNotes() {
+    if (!detail) {
+      return;
+    }
+    setBusy(true);
+    setError(null);
+    try {
+      await commands.exportCourseNotesMarkdown(course.course_id, detail.title);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Could not export notes.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
   if (!detail) {
     return (
       <div className="course-screen">
@@ -370,6 +385,14 @@ export function CourseScreen({
               Rescan folder
             </button>
           ) : null}
+          <button
+            type="button"
+            className="library-button-secondary"
+            disabled={busy}
+            onClick={() => void handleExportCourseNotes()}
+          >
+            Export notes
+          </button>
           {course.is_archived ? (
             <button
               type="button"
@@ -466,47 +489,49 @@ export function CourseScreen({
           )}
         </div>
       ) : (
-        <table
-          className="library-table course-lesson-table"
-          onKeyDown={(event) =>
-            handleTableArrowKeys(
-              event,
-              lessonTableRef.current,
-              "tbody tr",
-              "button.library-course-link, .lesson-actions button, .playlist-watched-toggle input"
-            )
-          }
-        >
-          <thead>
-            <tr>
-              <th scope="col">#</th>
-              <th scope="col">Title</th>
-              <th scope="col">Duration</th>
-              <th scope="col">Watched</th>
-              <th scope="col">Status</th>
-              <th scope="col">Actions</th>
-            </tr>
-          </thead>
-          <tbody ref={lessonTableRef}>
-            {lessonGroups.flatMap((group, groupIndex) => {
-              const heading =
-                group.section === null
-                  ? []
-                  : [
-                      <tr key={`section-${group.section}-${groupIndex}`}>
-                        <th
-                          colSpan={6}
-                          scope="rowgroup"
-                          className="course-section-heading"
-                        >
-                          {group.section}
-                        </th>
-                      </tr>,
-                    ];
-              return [...heading, ...group.lessons.map(renderLessonRow)];
-            })}
-          </tbody>
-        </table>
+        <div className="library-table-panel">
+          <table
+            className="library-table course-lesson-table"
+            onKeyDown={(event) =>
+              handleTableArrowKeys(
+                event,
+                lessonTableRef.current,
+                "tbody tr",
+                "button.library-course-link, .lesson-actions button, .playlist-watched-toggle input"
+              )
+            }
+          >
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Title</th>
+                <th scope="col">Duration</th>
+                <th scope="col">Watched</th>
+                <th scope="col">Status</th>
+                <th scope="col">Actions</th>
+              </tr>
+            </thead>
+            <tbody ref={lessonTableRef}>
+              {lessonGroups.flatMap((group, groupIndex) => {
+                const heading =
+                  group.section === null
+                    ? []
+                    : [
+                        <tr key={`section-${group.section}-${groupIndex}`}>
+                          <th
+                            colSpan={6}
+                            scope="rowgroup"
+                            className="course-section-heading"
+                          >
+                            {group.section}
+                          </th>
+                        </tr>,
+                      ];
+                return [...heading, ...group.lessons.map(renderLessonRow)];
+              })}
+            </tbody>
+          </table>
+        </div>
       )}
     </div>
   );

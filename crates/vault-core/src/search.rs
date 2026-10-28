@@ -1,4 +1,7 @@
-//! Library search over lesson titles, media paths, and subtitle cue text.
+//! Library search over lesson titles, media paths, subtitle cue text, and lesson notes.
+//!
+//! Lesson-note lookup for search stays in `vault.db` only (see
+//! `search_stays_local_lesson_note_body_returned_and_missing_note_not`).
 
 use crate::cues::{list_cues, CueError};
 use crate::db::{DbError, LessonSearchRow, VaultDb};
@@ -25,6 +28,7 @@ pub enum SearchMatchKind {
     LessonTitle,
     RelativePath,
     SubtitleCue,
+    LessonNote,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -100,7 +104,21 @@ pub fn search(db: &VaultDb, query: &str) -> Result<Vec<SearchHit>, SearchError> 
         }
     }
 
+    for (row, timestamp_ms, body) in db.search_lesson_note_rows(&like_pattern)? {
+        hits.push(hit(
+            &row,
+            SearchMatchKind::LessonNote,
+            snippet_around(&body, trimmed),
+            timestamp_ms,
+        ));
+    }
+
     Ok(hits)
+}
+
+/// Returns the full vault lesson-note body for a search hit. Missing ids return `None`.
+pub fn lesson_note_body(db: &VaultDb, note_id: &str) -> Result<Option<String>, SearchError> {
+    Ok(db.lesson_note_by_id(note_id)?.map(|row| row.body))
 }
 
 fn sql_like_pattern(query: &str) -> String {

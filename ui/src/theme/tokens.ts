@@ -29,6 +29,11 @@ export const DESIGN_SPACE_TOKENS: Record<string, string> = {
   "--space-6": "32px",
 };
 
+export const DESIGN_FONT_TOKENS: Record<string, string> = {
+  "--font-family": '"Google Sans", system-ui, sans-serif',
+  "--font-wordmark": '"Andina", serif',
+};
+
 export const DESIGN_TYPE_TOKENS: Record<string, string> = {
   "--text-xs": "0.75rem",
   "--text-sm": "0.8125rem",

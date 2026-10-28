@@ -301,3 +301,113 @@ Product name is Lessonbinder. Full text: `~/Documents/auravault-cursor-prompts.m
 Can run after 142. Full text: `~/Documents/auravault-cursor-prompts.md`.
 
 - [x] 151 — README
+
+## Study app (prompts 152–201)
+
+Repo is `/home/xingzi/Documents/lessonbinder`. Full text: `~/Documents/auravault-cursor-prompts.md`. Google Sans for UI text. Andina for the wordmark.
+
+- [x] 152 — Scope
+- [x] 153 — Bundle the fonts
+- [x] 154 — Type tokens
+- [x] 155 — Library look
+- [x] 156 — Course look
+- [x] 157 — Player look
+- [x] 158 — Review, settings, roadmap
+- [x] 159 — Drop a folder
+- [x] 160 — Search notes
+- [x] 161 — Seek from search
+- [x] 162 — Export one lesson
+- [x] 163 — Export the course
+- [x] 164 — Theater
+- [x] 165 — Picture-in-picture
+- [x] 166 — Zen
+- [x] 167 — Dark theme
+- [x] 168 — Streak rules
+- [x] 169 — Streak number
+- [x] 170 — Heatmap
+- [x] 171 — Weekly report
+- [x] 172 — Notes save on blur
+- [x] 173 — Playback speed
+- [x] 174 — Volume
+- [x] 175 — Last lesson
+- [x] 176 — Backup
+- [x] 177 — Rescan
+- [x] 178 — Done stays manual
+- [x] 179 — Escape
+- [x] 180 — Drop a dangerous path
+- [x] 181 — Export stays out of Anki
+- [x] 182 — Search stays local
+- [x] 183 — Dark player
+- [x] 184 — Wordmark test
+- [x] 185 — Heatmap text
+- [x] 186 — Report copy
+- [x] 187 — Drop on the empty library — Rust: `validate_import_folder_path_guard_blocks_drop_on_risky_root`. UI: `LibraryEmpty.test.tsx` stubs a dropped path via `libraryFolderDropIntoLibrary` (Vitest does not emit Tauri drag events).
+- [x] 188 — Settings survive restart
+- [x] 189 — Streak does not count a visit
+- [x] 190 — Five-second seek — `ArrowLeft` / `ArrowRight` seek ±5s on player focus (scrubber `step` 5000 ms + `playerSeekKeyboard.ts`; no separate shortcut).
+- [x] 191 — Mark complete from the keyboard — `D` on player focus calls `markLessonComplete` (same as button); `aria-label` `Mark complete (D)`; `playerCompleteKeyboard.ts` + `Player.test.tsx` / `playerCompleteKeyboard.test.ts`; watch interval still does not complete.
+- [x] 192 — Archive keeps cards — `archive_keeps_lessons_progress_roadmap_status_and_anki_links` in `crates/vault-core/tests/archive_course.rs` (Anki link + `anki_note_id` unchanged after `archive_course`; UI copy: `Course.test.tsx` `archive confirm keeps Anki notes line and calls command`).
+- [x] 193 — Playlist does not download — `parse_playlist_lines_accepts_two_tab_separated_lines_and_skips_blanks` + `import_playlist_from_pasted_lines_creates_playlist_course_without_http` in `crates/vault-core/tests/paste_playlist.rs` (title/tab/URL only; metadata import, no HTTP). No on-disk lesson media for playlist rows: `playlist_lesson_has_no_local_clip_source` in `crates/vault-core/tests/audio_clip.rs` (same `playlist_item` path as paste).
+- [x] 194 — Fonts are local in the build — `ui/fontsBuild.test.ts` + `ui/theme.test.ts`; four `.ttf` in Vite `ui/dist/assets/`; Tauri `frontendDist` only (`docs/FONTS.md` records `rg` / `vite build` check; no `fonts.googleapis.com` / `fonts.gstatic.com`).
+- [x] 195 — Missing font file — `ui/build/assertBundledFonts.ts` + Vite `buildStart` in `vite.config.ts`; build fails with `Missing licensed font file: <name>`; `fontsBuild.test.ts`; no network fallback.
+- [x] 196 — Deslop this pack — shared `playerKeyboardGuard`; one player keydown listener; inlined Vite font check; trimmed prompt-number test titles and redundant font-build helpers.
+- [x] 197 — Doctor — `npx react-doctor@latest . --verbose` in `ui/`: **64 / 100** (was 54); fixed pack crash — missing `SettingsCommandsProvider` import in `App.tsx`. Left complexity / giant-component / dialog warnings unchanged.
+- [x] 198 — README — documents bundled Google Sans / Andina, drag-and-drop import, local note search, Markdown export, theater / zen, dark theme, study streak; PiP omitted when WebView lacks support (one clause).
+- [x] 199 — Checklist — [`docs/V1.3.md`](V1.3.md) from [`SCOPE-v1.3.md`](SCOPE-v1.3.md): **28 pass**, **2 unproven** (look pass per screen; Settings theme radios E2E).
+- [x] 200 — Tests — `cargo test --workspace`: **219 passed** (70 suites); `cd ui && npm test`: **157 passed** (51 files); `npm run typecheck`: **pass**.
+- [x] 201 — Freeze — [`docs/FIRST-TEST.md`](FIRST-TEST.md) § Study app (v1.3) manual steps; [`docs/V1.3.md`](V1.3.md) footer **READY** + test counts (219 / 157); no release tag.
+
+## First course and cancel (prompts 202–251)
+
+Repo: `/home/xingzi/Documents/lessonbinder`. Full text: `~/Documents/auravault-cursor-prompts.md`. Prompt 202 commits the finished v1.3 tree. After that, every second prompt commits and pushes that pair.
+
+- [x] 202 — Land v1.3 — commit `Ship the v1.3 study loop…` on `master`; migrations 019–024, bundled fonts, study-loop UI + docs.
+- [ ] 203 — First course checklist
+- [ ] 204 — Theme radios
+- [ ] 205 — Look of each screen
+- [ ] 206 — Boot
+- [ ] 207 — One blocker
+- [ ] 208 — Profile in use
+- [ ] 209 — Cancel design
+- [ ] 210 — Import yields
+- [ ] 211 — Cancel control
+- [ ] 212 — Rescan yields
+- [ ] 213 — One import path
+- [ ] 214 — Cancel is not completion
+- [ ] 215 — Count
+- [ ] 216 — One scan at a time
+- [ ] 217 — Fonts the bundle will ship
+- [ ] 218 — Build the AppImage
+- [ ] 219 — Launch the image
+- [ ] 220 — Install section
+- [ ] 221 — Identity of the bundle
+- [ ] 222 — Empty folder
+- [ ] 223 — File disappears
+- [ ] 224 — Media symlink
+- [ ] 225 — Delete keeps the Anki note
+- [ ] 226 — OCR stays on the machine
+- [ ] 227 — Cancel copy
+- [ ] 228 — Escape is not cancel
+- [ ] 229 — Cancelled rescan keeps work
+- [ ] 230 — Import again after cancel
+- [ ] 231 — Ignore file still applies
+- [ ] 232 — Risky root
+- [ ] 233 — Done stays manual
+- [ ] 234 — Backup still round-trips
+- [ ] 235 — Notes and search
+- [ ] 236 — First-course page
+- [ ] 237 — Deslop
+- [ ] 238 — Doctor
+- [ ] 239 — README
+- [ ] 240 — Scope
+- [ ] 241 — Checklist
+- [ ] 242 — Tests
+- [ ] 243 — Study doc
+- [ ] 244 — Pin path
+- [ ] 245 — Command failures
+- [ ] 246 — Continue after relaunch
+- [ ] 247 — No network font in the image
+- [ ] 248 — Unsigned, on purpose
+- [ ] 249 — Waiting list
+- [ ] 250 — Tests again
+- [ ] 251 — Freeze

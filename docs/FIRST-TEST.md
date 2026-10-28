@@ -72,13 +72,13 @@ EOF
 cargo test -p vault-core --test first_test_fixture
 ```
 
-| Step                                                                                                    | Result   | Notes                                                                                                 |
-| ------------------------------------------------------------------------------------------------------- | -------- | ----------------------------------------------------------------------------------------------------- |
+| Step                                                                                                       | Result   | Notes                                                                                                 |
+| ---------------------------------------------------------------------------------------------------------- | -------- | ----------------------------------------------------------------------------------------------------- |
 | Fixture on disk (`alpha.mp4`, `alpha.srt`, `notes.md`, `.lessonbinderignore`, excluded `private-beta.mp4`) | **pass** | `alpha.mp4` generated with **ffmpeg** when available (~1s silent 320×240).                            |
-| Import folder                                                                                           | **pass** | Two lessons (`alpha.mp4`, `notes.md`); `private-beta.mp4` skipped; `.srt` paired, not a third lesson. |
-| Mark first lesson (`alpha`) complete                                                                    | **pass** | `LessonStatus::Done` on first import order id.                                                        |
-| Move first lesson down (swap with `notes`)                                                              | **pass** | `reorder_lessons` → order `[notes, alpha]` by title.                                                  |
-| Rescan folder (no file changes)                                                                         | **pass** | `learning_order` unchanged after `rescan`; course detail titles still `notes` then `alpha`.           |
+| Import folder                                                                                              | **pass** | Two lessons (`alpha.mp4`, `notes.md`); `private-beta.mp4` skipped; `.srt` paired, not a third lesson. |
+| Mark first lesson (`alpha`) complete                                                                       | **pass** | `LessonStatus::Done` on first import order id.                                                        |
+| Move first lesson down (swap with `notes`)                                                                 | **pass** | `reorder_lessons` → order `[notes, alpha]` by title.                                                  |
+| Rescan folder (no file changes)                                                                            | **pass** | `learning_order` unchanged after `rescan`; course detail titles still `notes` then `alpha`.           |
 
 ---
 
@@ -98,7 +98,7 @@ cd ui && npm test -- Review.test.tsx CaptureCard.test.tsx
 | **Study** with empty queue → empty state                            | **pass** | Fresh profile: `next_review_card` = none, `due_summary` all zero (`first_test_anki_pass_walkthrough`). UI: `Review.test.tsx` shows **The review queue is empty.** when `fetchNextCard` is null and due counts are zero.                                                                                                                        |
 | **Capture** when Tesseract missing                                  | **pass** | `TesseractOcrEngine::without_tesseract()` → `OcrUnavailable`; no Anki note created (`due_summary` unchanged). UI: `CaptureCard.test.tsx` alert **Tesseract is not installed… Images are not sent anywhere else.** (matches `capture_ocr_status` / `build_capture_draft` error mapping). OCR is local CLI only in `vault-core`; no upload path. |
 | Create one note (subtitle cue draft), **Unlink**, Anki note remains | **pass** | `card_draft_from_subtitle_cue` + `commit_card_draft` with cue **First cue** on fixture `alpha` lesson; `unlink_card` clears vault link; `get_note` still returns front **First cue**.                                                                                                                                                          |
-| Top-bar due counts from Lessonbinder profile                           | **pass** | After commit, `due_summary` → **1** new (not learning/review). App loads counts via `study_bar_state` → `anki_bridge::due_summary` on `{app_data}/anki-profile/` (`fetchStudyBarState` in UI); `zeroDue` is only used when that command fails—not a normal empty-queue guess.                                                                  |
+| Top-bar due counts from Lessonbinder profile                        | **pass** | After commit, `due_summary` → **1** new (not learning/review). App loads counts via `study_bar_state` → `anki_bridge::due_summary` on `{app_data}/anki-profile/` (`fetchStudyBarState` in UI); `zeroDue` is only used when that command fails—not a normal empty-queue guess.                                                                  |
 
 ---
 
@@ -150,19 +150,19 @@ cd ui && npm test -- Review.test.tsx CaptureCard.test.tsx
 
 ## OCR capture
 
-| Step                                                                                                                                                                                                              | Expected result                                                                                 | Blocked if                                                                                                                              |
-| ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| Step                                                                                                                                                                                                              | Expected result                                                                                    | Blocked if                                                                                                                              |
+| ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
 | Open a **local video** lesson. Pause on a frame with readable text. Click **Capture card**, drag a region on the frame, run OCR, edit front/back if needed, confirm **Save card** (or equivalent commit control). | Card commits into the Lessonbinder **Anki profile**; capture panel closes without a generic crash. | **Tesseract** not installed or app built without OCR support (capture shows install hint / error). Non-video lesson (no frame capture). |
 
 ---
 
 ## In-app review
 
-| Step                                                                                                                                             | Expected result                                                                                    | Blocked if                                                              |
-| ------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| Step                                                                                                                                                | Expected result                                                                                    | Blocked if                                                                 |
+| --------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
 | After at least one Lessonbinder card exists (e.g. from OCR capture above), note **New / Learning / Review** counts in the top bar. Click **Study**. | In-app **review** opens: front shown, **Show answer**, then Again / Hard / Good / Easy as offered. | No due cards in Lessonbinder decks (counts all zero and nothing captured). |
-| Grade one card **Good** (or another offered button).                                                                                             | Next card loads or empty-queue message appears; top-bar due counts change.                         | —                                                                       |
-| (Optional) With **Anki Desktop** installed and path set in Settings, from review fallback use **Open in Anki Desktop**.                          | External Anki opens on the same **Lessonbinder profile** directory shown in Settings.                 | **`anki`** not on PATH and Settings binary path wrong.                  |
+| Grade one card **Good** (or another offered button).                                                                                                | Next card loads or empty-queue message appears; top-bar due counts change.                         | —                                                                          |
+| (Optional) With **Anki Desktop** installed and path set in Settings, from review fallback use **Open in Anki Desktop**.                             | External Anki opens on the same **Lessonbinder profile** directory shown in Settings.              | **`anki`** not on PATH and Settings binary path wrong.                     |
 
 ---
 
@@ -211,6 +211,19 @@ cd ui && npm test -- Review.test.tsx CaptureCard.test.tsx
 
 ---
 
+## Study app (v1.3)
+
+| Step                                                                                                                     | Expected result                                                                                                                     | Blocked if                                                                          |
+| ------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| On **Library** (empty or with courses), drag a **folder** from the file manager onto the window (not a single file).     | Same import as **Add folder**: new course appears (or refreshes); risky roots (e.g. `$HOME`) show an error, not a silent import.    | Tauri drag unavailable in your WM; use **Add folder** instead and note **blocked**. |
+| Open a lesson with vault notes (or add note text). On the player notes column or course toolbar, click **Export notes**. | A Markdown file is written where the save dialog points; Anki cards are unchanged.                                                  | No notes to export (empty export is OK if the app says so).                         |
+| Open a **local video** lesson. Click **Theater**.                                                                        | Lesson chrome recedes; video uses more of the window; moving the mouse or a key press shows the bottom bar again.                   | Broken / missing media file.                                                        |
+| In **Theater** or **Zen**, press **Escape** (capture / clip panels closed).                                              | Mode exits back to normal player chrome; lesson is **not** marked complete.                                                         | —                                                                                   |
+| **Settings** → **Theme** → **Dark** → **Save**. Return to **Library** and open the **player**.                           | Dark surfaces and readable controls (including player bar).                                                                         | —                                                                                   |
+| **Mark complete** on a lesson (or grade a card in **Study**), return to **Library**.                                     | **Streak** shows at least **1 days** (or increases from prior); opening a course alone without study does **not** increment streak. | —                                                                                   |
+
+---
+
 ## Safety pass
 
 Automated proofs (2026-10-28). Run:
@@ -235,7 +248,7 @@ cargo test -p anki-bridge read_media_rejects_path_escape
 
 ## Quick pass criteria
 
-You have exercised the v1 / v1.1 / v1.2 surface described in [`README.md`](../README.md), [`V1.md`](V1.md), [`V1.1.md`](V1.1.md), and [`V1.2.md`](V1.2.md) when every section above completes as expected (or is explicitly **blocked** for a documented missing tool, not a crash or silent wrong behavior).
+You have exercised the v1 / v1.1 / v1.2 surface described in [`README.md`](../README.md), [`V1.md`](V1.md), [`V1.1.md`](V1.1.md), and [`V1.2.md`](V1.2.md), plus v1.3 rows in [`V1.3.md`](V1.3.md) and **Study app (v1.3)** above, when every section completes as expected (or is explicitly **blocked** for a documented missing tool, not a crash or silent wrong behavior).
 
 **Status:** **READY** — dev launch shows Library (§ Launch); fixture import / reorder / rescan (§ Fixture pass); automated gate prompt **132** and safety prompt **139** passed (see [`docs/PROGRESS.md`](PROGRESS.md)).
 

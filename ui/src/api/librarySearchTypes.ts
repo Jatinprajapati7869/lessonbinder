@@ -1,4 +1,5 @@
-export type SearchMatchKind = "lesson_title" | "relative_path" | "subtitle_cue";
+export type SearchMatchKind =
+  "lesson_title" | "relative_path" | "subtitle_cue" | "lesson_note";
 
 export type LibrarySearchHit = {
   lesson_id: string;

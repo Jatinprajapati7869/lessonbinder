@@ -144,3 +144,53 @@ fn rescan_rejects_playlist_courses() {
     let err = rescan(&db, &report.course_id).unwrap_err();
     assert_eq!(err, RescanError::NotSupported);
 }
+
+#[test]
+#[cfg(unix)]
+fn rescan_after_rename_keeps_order_notes_and_study_days() {
+    use vault_core::lesson_note::{create_lesson_note, list_lesson_notes};
+    use vault_core::order::{learning_order, reorder_lessons};
+    use vault_core::study_day::{has_study_day, record_study_day};
+
+    let dir = tempdir().unwrap();
+    let root = dir.path();
+    fs::write(root.join("a.mp4"), b"lesson-a-bytes").unwrap();
+    fs::write(root.join("b.mp4"), b"lesson-b-bytes").unwrap();
+
+    let db = VaultDb::open_in_memory().unwrap();
+    let report = import_folder(&db, root).unwrap();
+    let lesson_a = report.lesson_ids[0].clone();
+    let lesson_b = report.lesson_ids[1].clone();
+
+    reorder_lessons(
+        &db,
+        &report.course_id,
+        &[lesson_b.clone(), lesson_a.clone()],
+    )
+    .unwrap();
+    create_lesson_note(&db, &lesson_a, "Survives rescan", Some(2_000)).unwrap();
+    record_study_day(&db, "2026-10-28").unwrap();
+
+    fs::rename(root.join("a.mp4"), root.join("moved-a.mp4")).unwrap();
+
+    rescan(&db, &report.course_id).unwrap();
+
+    assert_eq!(
+        db.lesson_id_for_stable_key(&report.course_id, "moved-a.mp4")
+            .unwrap(),
+        lesson_a
+    );
+    assert_eq!(
+        learning_order(&db, &report.course_id).unwrap(),
+        vec![lesson_b.clone(), lesson_a.clone()]
+    );
+    assert_eq!(
+        list_lesson_notes(&db, &lesson_a).unwrap()[0].text,
+        "Survives rescan"
+    );
+    assert!(has_study_day(&db, "2026-10-28").unwrap());
+    assert_ne!(
+        db.progress_for_lesson(&lesson_a).unwrap().status,
+        LessonStatus::Broken
+    );
+}

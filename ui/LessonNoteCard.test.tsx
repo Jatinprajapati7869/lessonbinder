@@ -83,7 +83,7 @@ describe("Lesson note card", () => {
     render(
       <CaptureCommandsProvider commands={captureCommands}>
         <CourseCommandsProvider commands={courseCommands()}>
-          <LessonNotesColumn lessonId="lesson-1" />
+          <LessonNotesColumn lessonId="lesson-1" lessonTitle="Intro clip" />
         </CourseCommandsProvider>
       </CaptureCommandsProvider>
     );

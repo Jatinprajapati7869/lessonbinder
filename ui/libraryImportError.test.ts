@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  LIBRARY_DROP_FILE_MESSAGE,
   libraryImportErrorMessage,
   RISKY_IMPORT_PATH_MESSAGE,
 } from "./src/library/libraryImportError";
@@ -17,6 +18,19 @@ describe("libraryImportErrorMessage", () => {
       "Import folder failed."
     );
     expect(message).toBe(RISKY_IMPORT_PATH_MESSAGE);
+  });
+
+  it("maps import_invalid_path to drop-a-folder copy", () => {
+    const message = libraryImportErrorMessage(
+      new Error(
+        JSON.stringify({
+          code: "import_invalid_path",
+          message: "import root must be a directory",
+        })
+      ),
+      "Import folder failed."
+    );
+    expect(message).toBe(LIBRARY_DROP_FILE_MESSAGE);
   });
 
   it("returns null for user-cancelled import", () => {

@@ -13,6 +13,7 @@ export type LessonNotesPlaybackContext = {
 
 export type LessonNotesColumnProps = {
   lessonId: string;
+  lessonTitle: string;
   playbackContext?: LessonNotesPlaybackContext;
 };
 
@@ -21,6 +22,7 @@ type EditorState =
 
 export function LessonNotesColumn({
   lessonId,
+  lessonTitle,
   playbackContext,
 }: LessonNotesColumnProps) {
   const commands = useCourseCommands();
@@ -32,6 +34,7 @@ export function LessonNotesColumn({
   const [linkTimestamp, setLinkTimestamp] = useState(false);
   const [cardNote, setCardNote] = useState<LessonNote | null>(null);
   const listRef = useRef<HTMLOListElement>(null);
+  const skipNextBlurSave = useRef(false);
 
   const refresh = useCallback(async () => {
     setError(null);
@@ -64,6 +67,10 @@ export function LessonNotesColumn({
     setDraftText("");
   }
 
+  function markSkipBlurSave() {
+    skipNextBlurSave.current = true;
+  }
+
   async function handleSave() {
     const text = draftText.trim();
     if (!text) {
@@ -92,6 +99,17 @@ export function LessonNotesColumn({
     }
   }
 
+  async function handleBlurSave() {
+    if (skipNextBlurSave.current) {
+      skipNextBlurSave.current = false;
+      return;
+    }
+    if (busy || editor.mode === "closed") {
+      return;
+    }
+    await handleSave();
+  }
+
   async function handleDelete(noteId: string) {
     setBusy(true);
     setError(null);
@@ -105,18 +123,40 @@ export function LessonNotesColumn({
     }
   }
 
+  async function handleExportNotes() {
+    setBusy(true);
+    setError(null);
+    try {
+      await commands.exportLessonNotesMarkdown(lessonId, lessonTitle);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Could not export notes.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
   return (
     <aside className="lesson-notes" role="region" aria-label="Lesson notes">
       <div className="lesson-notes__header">
         <h2 className="lesson-notes__title">Notes</h2>
-        <button
-          type="button"
-          className="library-button-secondary lesson-notes__add"
-          disabled={busy || editor.mode !== "closed"}
-          onClick={openCreate}
-        >
-          Add note
-        </button>
+        <div className="lesson-notes__header-actions">
+          <button
+            type="button"
+            className="library-button-secondary"
+            disabled={busy || editor.mode !== "closed"}
+            onClick={() => void handleExportNotes()}
+          >
+            Export notes
+          </button>
+          <button
+            type="button"
+            className="library-button-secondary lesson-notes__add"
+            disabled={busy || editor.mode !== "closed"}
+            onClick={openCreate}
+          >
+            Add note
+          </button>
+        </div>
       </div>
 
       {error ? (
@@ -143,6 +183,7 @@ export function LessonNotesColumn({
             value={draftText}
             disabled={busy}
             onChange={(event) => setDraftText(event.target.value)}
+            onBlur={() => void handleBlurSave()}
           />
           {playbackContext ? (
             <label className="lesson-notes__timestamp-toggle">
@@ -161,6 +202,7 @@ export function LessonNotesColumn({
               type="button"
               className="library-button-secondary"
               disabled={busy}
+              onMouseDown={markSkipBlurSave}
               onClick={closeEditor}
             >
               Cancel
@@ -169,6 +211,7 @@ export function LessonNotesColumn({
               type="submit"
               className="library-button-primary"
               disabled={busy || !draftText.trim()}
+              onMouseDown={markSkipBlurSave}
             >
               Save note
             </button>

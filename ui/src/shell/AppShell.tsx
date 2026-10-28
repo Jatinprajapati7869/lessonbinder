@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 
 import type { AnkiLaunchStatus, DueSummary } from "../api/types";
 
-export type AppRoute = "library" | "roadmap" | "review" | "settings";
+export type AppRoute = "library" | "roadmap" | "report" | "review" | "settings";
 
 export type AppShellProps = {
   route: AppRoute;
@@ -29,7 +29,10 @@ export function AppShell({
   return (
     <div className="app-shell">
       <header className="top-bar">
-        <h1 className="top-bar__title">{screenTitle}</h1>
+        <div className="top-bar__brand">
+          <span className="top-bar__wordmark">Lessonbinder</span>
+          <h1 className="top-bar__title">{screenTitle}</h1>
+        </div>
         <div className="top-bar__end">
           <div className="due-counts" aria-label="Lessonbinder due counts">
             <span className="due-count">
@@ -78,6 +81,16 @@ export function AppShell({
             onClick={() => onNavigate("roadmap")}
           >
             Roadmap
+          </button>
+          <button
+            type="button"
+            className={
+              route === "report" ? "nav-item nav-item--active" : "nav-item"
+            }
+            aria-current={route === "report" ? "page" : undefined}
+            onClick={() => onNavigate("report")}
+          >
+            Report
           </button>
           <button
             type="button"

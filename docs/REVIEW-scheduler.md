@@ -6,10 +6,10 @@ Lessonbinder in-app review only grades cards in the **`Lessonbinder::`** deck su
 
 | Method                                                              | Role                                                                                                                                                                                                 |
 | ------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `Collection::set_current_deck`                                      | Scope the built study queue to the top-level **`Lessonbinder`** deck (includes `Lessonbinder::<course>` children).                                                                                         |
+| `Collection::set_current_deck`                                      | Scope the built study queue to the top-level **`Lessonbinder`** deck (includes `Lessonbinder::<course>` children).                                                                                   |
 | `Collection::get_queued_cards(fetch_limit, intraday_learning_only)` | Returns the next cards in scheduler order with template states for answering. Implemented in Anki rslib as the same pipeline as `get_next_card()` (which is `get_queued_cards(1, …).cards.first()`). |
 | `Collection::answer_card`                                           | Grade a card the learner chose; only called for ids returned by `next_review_card`.                                                                                                                  |
-| `Collection::get_deck` / deck `human_name()`                        | Decide whether a queued card belongs to the Lessonbinder prefix.                                                                                                                                        |
+| `Collection::get_deck` / deck `human_name()`                        | Decide whether a queued card belongs to the Lessonbinder prefix.                                                                                                                                     |
 
 **Skip foreign dues:** `next_review_card` walks the queued slice, **continues** past cards whose deck name is not `Lessonbinder` or `Lessonbinder::…`, and returns the first matching card. Foreign cards are never graded and never buried by this path.
 

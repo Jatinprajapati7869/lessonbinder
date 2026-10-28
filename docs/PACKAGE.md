@@ -20,7 +20,7 @@ Release artifacts:
 
 | Output                            | Path                                        |
 | --------------------------------- | ------------------------------------------- |
-| Binary                            | `target/release/lessonbinder`                  |
+| Binary                            | `target/release/lessonbinder`               |
 | AppImage (when bundling succeeds) | `target/release/bundle/appimage/*.AppImage` |
 
 `src-tauri/tauri.conf.json` sets `bundle.targets` to **`["appimage"]`** on Linux (no `.deb` / `.rpm` from this config). Updater artifacts are disabled (`createUpdaterArtifacts: false`).
@@ -68,12 +68,12 @@ Until `patchelf` is installed (and AppRun download succeeds), treat **`target/re
 
 These are **system** tools Lessonbinder invokes or expects on `PATH`. They are **not** vendored in the bundle.
 
-| Dependency                                               | Required?                     | Notes                                                                                                                                                                                                                          |
-| -------------------------------------------------------- | ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Tesseract** (`tesseract` CLI)                          | **Yes** for frame OCR capture | Without it, capture returns a clear “not installed” error. Images are processed locally only.                                                                                                                                  |
-| **whisper.cpp** (`whisper-cli` or path set in Settings)  | **Optional**                  | Local lesson transcription when `transcription_model_path` points at a model file. Empty path disables transcription.                                                                                                          |
+| Dependency                                               | Required?                     | Notes                                                                                                                                                                                                                             |
+| -------------------------------------------------------- | ----------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Tesseract** (`tesseract` CLI)                          | **Yes** for frame OCR capture | Without it, capture returns a clear “not installed” error. Images are processed locally only.                                                                                                                                     |
+| **whisper.cpp** (`whisper-cli` or path set in Settings)  | **Optional**                  | Local lesson transcription when `transcription_model_path` points at a model file. Empty path disables transcription.                                                                                                             |
 | **Anki Desktop** (`anki` on `PATH`, or path in Settings) | **Optional**                  | In-app review uses the embedded collection via `anki-bridge`. **Study in Anki** launches external Anki Desktop against the Lessonbinder profile; if Anki is missing, that fallback is unavailable (in-app review may still work). |
-| **ffprobe**                                              | Optional                      | Better video duration metadata when present.                                                                                                                                                                                   |
+| **ffprobe**                                              | Optional                      | Better video duration metadata when present.                                                                                                                                                                                      |
 
 ## AGPL source offer
 

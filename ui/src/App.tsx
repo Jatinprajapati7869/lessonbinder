@@ -25,6 +25,9 @@ import { PlayerScreen } from "./screens/PlayerScreen";
 import { ReviewScreen } from "./screens/ReviewScreen";
 import { RoadmapScreen } from "./screens/RoadmapScreen";
 import { SettingsScreen } from "./screens/SettingsScreen";
+import { WeeklyReportScreen } from "./screens/WeeklyReportScreen";
+import { WeeklyReportCommandsProvider } from "./report/WeeklyReportCommandsContext";
+import { ThemeSync } from "./settings/ThemeSync";
 import { SettingsCommandsProvider } from "./settings/SettingsCommandsContext";
 import { VaultUnavailableScreen } from "./screens/VaultUnavailableScreen";
 import { AppShell, type AppRoute } from "./shell/AppShell";
@@ -161,6 +164,9 @@ function MainContent({
   }
   if (route === "roadmap") {
     return <RoadmapScreen />;
+  }
+  if (route === "report") {
+    return <WeeklyReportScreen />;
   }
   if (route === "settings") {
     return <SettingsScreen />;
@@ -341,9 +347,11 @@ export function LessonbinderApp({
       ? "Review"
       : route === "roadmap"
         ? "Roadmap"
-        : route === "settings"
-          ? "Settings"
-          : "Library");
+        : route === "report"
+          ? "Weekly report"
+          : route === "settings"
+            ? "Settings"
+            : "Library");
 
   return (
     <LibraryCommandsProvider>
@@ -352,42 +360,45 @@ export function LessonbinderApp({
           <RoadmapCommandsProvider>
             <ReviewCommandsProvider>
               <SettingsCommandsProvider>
-                <AppShell
-                  route={route}
-                  screenTitle={screenTitle}
-                  onNavigate={handleNavigate}
-                  due={due}
-                  anki={anki}
-                  onStartReview={handleStartReview}
-                >
-                  <MainContent
+                <WeeklyReportCommandsProvider>
+                  <ThemeSync />
+                  <AppShell
                     route={route}
-                    openCourse={openCourse}
-                    playerLesson={playerLesson}
-                    playerSeekMs={playerSeekMs}
-                    onOpenCourse={setOpenCourse}
-                    onBackToLibrary={() => {
-                      setOpenCourse(null);
-                      setPlayerLesson(null);
-                      setPlayerSeekMs(null);
-                      setReviewCourseId(null);
-                      setRoute("library");
-                    }}
-                    onPlayLesson={handlePlayLesson}
-                    onBackFromPlayer={() => {
-                      setPlayerLesson(null);
-                      setPlayerSeekMs(null);
-                    }}
-                    onOpenInAnkiDesktop={() => void handleOpenInAnkiDesktop()}
-                    desktopAnkiAvailable={desktopAnkiAvailable}
-                    desktopLaunchError={desktopLaunchError}
-                    desktopLaunchBusy={desktopLaunchBusy}
-                    onReviewQueueChanged={() => void refreshStudyBar()}
-                    reviewCourseId={reviewCourseId}
-                    onReviewCourse={handleReviewCourse}
-                    onBackFromReview={handleBackFromReview}
-                  />
-                </AppShell>
+                    screenTitle={screenTitle}
+                    onNavigate={handleNavigate}
+                    due={due}
+                    anki={anki}
+                    onStartReview={handleStartReview}
+                  >
+                    <MainContent
+                      route={route}
+                      openCourse={openCourse}
+                      playerLesson={playerLesson}
+                      playerSeekMs={playerSeekMs}
+                      onOpenCourse={setOpenCourse}
+                      onBackToLibrary={() => {
+                        setOpenCourse(null);
+                        setPlayerLesson(null);
+                        setPlayerSeekMs(null);
+                        setReviewCourseId(null);
+                        setRoute("library");
+                      }}
+                      onPlayLesson={handlePlayLesson}
+                      onBackFromPlayer={() => {
+                        setPlayerLesson(null);
+                        setPlayerSeekMs(null);
+                      }}
+                      onOpenInAnkiDesktop={() => void handleOpenInAnkiDesktop()}
+                      desktopAnkiAvailable={desktopAnkiAvailable}
+                      desktopLaunchError={desktopLaunchError}
+                      desktopLaunchBusy={desktopLaunchBusy}
+                      onReviewQueueChanged={() => void refreshStudyBar()}
+                      reviewCourseId={reviewCourseId}
+                      onReviewCourse={handleReviewCourse}
+                      onBackFromReview={handleBackFromReview}
+                    />
+                  </AppShell>
+                </WeeklyReportCommandsProvider>
               </SettingsCommandsProvider>
             </ReviewCommandsProvider>
           </RoadmapCommandsProvider>

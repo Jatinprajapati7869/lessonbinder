@@ -5,6 +5,7 @@ mod command_failure;
 mod commands;
 mod course_commands;
 mod library_commands;
+mod report_commands;
 mod roadmap_commands;
 mod settings_commands;
 mod study_commands;
@@ -34,7 +35,13 @@ pub fn run() {
             study_commands::review_read_media,
             library_commands::list_library_courses,
             library_commands::get_library_continue_row,
+            library_commands::get_library_study_streak_days,
+            library_commands::get_library_study_heatmap_52_weeks,
+            report_commands::get_weekly_report,
             library_commands::search_library,
+            library_commands::get_search_lesson_note_body,
+            library_commands::path_is_directory,
+            library_commands::validate_import_folder_path,
             library_commands::import_course_folder,
             library_commands::cancel_import_course_folder,
             library_commands::import_playlist_json,
@@ -49,6 +56,8 @@ pub fn run() {
             course_commands::create_lesson_note_entry,
             course_commands::update_lesson_note_entry,
             course_commands::delete_lesson_note_entry,
+            course_commands::export_lesson_notes_markdown,
+            course_commands::export_course_notes_markdown,
             course_commands::list_chapters,
             course_commands::list_lesson_cues,
             course_commands::list_lesson_resources_entry,

@@ -80,6 +80,7 @@ function renderRoadmap(commands: RoadmapCommandPort) {
       commands={{
         listCourses: vi.fn().mockResolvedValue([]),
         importFolder: vi.fn(),
+        validateImportFolderPath: vi.fn().mockResolvedValue(undefined),
         cancelImportFolder: vi.fn(),
         importPlaylist: vi.fn(),
         createPlaylistFromPaste: vi.fn(),
@@ -87,7 +88,14 @@ function renderRoadmap(commands: RoadmapCommandPort) {
         pickPlaylistJson: vi.fn(),
         searchLibrary: vi.fn().mockResolvedValue([]),
         getLibraryContinueRow: vi.fn().mockResolvedValue(null),
+        getLibraryStudyStreakDays: vi.fn().mockResolvedValue(0),
+        getLibraryStudyHeatmap52Weeks: vi.fn().mockResolvedValue({
+          weeks: [],
+          counted_days: 0,
+          total_days: 364,
+        }),
         mediaUrlForPath: vi.fn().mockResolvedValue("asset://file"),
+        pathIsDirectory: vi.fn().mockResolvedValue(true),
       }}
     >
       <RoadmapCommandsProvider commands={commands}>

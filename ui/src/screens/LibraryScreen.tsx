@@ -23,9 +23,14 @@ import { LibraryCourseTitleCell } from "../library/LibraryCourseTitleCell";
 import { LibraryFirstRunEmpty } from "../library/LibraryFirstRunEmpty";
 import { LibraryFolderScan } from "../library/LibraryFolderScan";
 import { LibraryPastePlaylistPanel } from "../library/LibraryPastePlaylistPanel";
+import { LibraryStreak } from "../library/LibraryStreak";
+import { LibraryStudyHeatmap } from "../library/LibraryStudyHeatmap";
+import type { StudyHeatmap52Weeks } from "../api/libraryStudyHeatmapTypes";
+import { emptyStudyHeatmap52Weeks } from "../api/libraryStudyHeatmapTypes";
 import { LibraryVisibilityFilter } from "../library/LibraryVisibilityFilter";
 import type { LibraryVisibility } from "../api/libraryTypes";
 import { libraryImportErrorMessage } from "../library/libraryImportError";
+import { libraryFolderDropIntoLibrary } from "../library/libraryFolderDrop";
 import { useLibraryCommands } from "../library/useLibraryCommands";
 
 export type LibraryScreenProps = {
@@ -55,16 +60,24 @@ export function LibraryScreen({
   );
   const [visibility, setVisibility] = useState<LibraryVisibility>("active");
   const [pastePlaylistOpen, setPastePlaylistOpen] = useState(false);
+  const [studyStreakDays, setStudyStreakDays] = useState(0);
+  const [studyHeatmap, setStudyHeatmap] = useState<StudyHeatmap52Weeks>(
+    emptyStudyHeatmap52Weeks
+  );
 
   const refresh = useCallback(async () => {
     setError(null);
     try {
-      const [rows, continueTarget] = await Promise.all([
+      const [rows, continueTarget, streakDays, heatmap] = await Promise.all([
         commands.listCourses(visibility),
         commands.getLibraryContinueRow(),
+        commands.getLibraryStudyStreakDays(),
+        commands.getLibraryStudyHeatmap52Weeks(),
       ]);
       setCourses(rows);
       setContinueRow(continueTarget);
+      setStudyStreakDays(streakDays);
+      setStudyHeatmap(heatmap);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Could not load courses.");
     }
@@ -94,12 +107,68 @@ export function LibraryScreen({
     };
   }, [commands, debouncedSearch]);
 
+  const importFolderAtPath = useCallback(
+    async (path: string) => {
+      setBusy(true);
+      setError(null);
+      try {
+        setScanningFolder(true);
+        await commands.importFolder(path);
+        await refresh();
+      } catch (e) {
+        const message = libraryImportErrorMessage(e, "Import folder failed.");
+        if (message !== null) {
+          setError(message);
+        }
+      } finally {
+        setScanningFolder(false);
+        setBusy(false);
+      }
+    },
+    [commands, refresh]
+  );
+
+  useEffect(() => {
+    if (typeof window === "undefined" || !("__TAURI_INTERNALS__" in window)) {
+      return;
+    }
+    let unlisten: (() => void) | undefined;
+    void (async () => {
+      const { getCurrentWebview } = await import("@tauri-apps/api/webview");
+      unlisten = await getCurrentWebview().onDragDropEvent((event) => {
+        if (event.payload.type !== "drop") {
+          return;
+        }
+        void (async () => {
+          const dropError = await libraryFolderDropIntoLibrary(
+            event.payload.paths,
+            {
+              pathIsDirectory: (path) => commands.pathIsDirectory(path),
+              validateImportFolderPath: (path) =>
+                commands.validateImportFolderPath(path),
+              importFolderAtPath,
+            }
+          );
+          if (dropError !== null) {
+            setError(dropError);
+          }
+        })();
+      });
+    })();
+    return () => {
+      unlisten?.();
+    };
+  }, [commands, importFolderAtPath]);
+
   function handleSearchSelect(hit: LibrarySearchHit) {
-    onOpenLesson({
+    const target: OpenLessonFromSearch = {
       courseId: hit.course_id,
       lessonId: hit.lesson_id,
-      seekMs: hit.cue_start_ms ?? undefined,
-    });
+    };
+    if (hit.cue_start_ms !== null) {
+      target.seekMs = hit.cue_start_ms;
+    }
+    onOpenLesson(target);
   }
 
   function handleContinueActivate() {
@@ -124,6 +193,13 @@ export function LibraryScreen({
       />
     );
 
+  const studyStatsField = (
+    <div className="library-study-stats">
+      <LibraryStreak days={studyStreakDays} />
+      <LibraryStudyHeatmap heatmap={studyHeatmap} />
+    </div>
+  );
+
   const searchField = (
     <div className="library-search">
       <label className="library-search__label" htmlFor="library-search-input">
@@ -134,7 +210,7 @@ export function LibraryScreen({
         type="search"
         className="library-search__input"
         value={searchQuery}
-        placeholder="Lesson title, path, or subtitle text"
+        placeholder="Lesson title, path, subtitle, or note text"
         onChange={(event) => setSearchQuery(event.target.value)}
       />
       <LibrarySearchResults
@@ -147,25 +223,11 @@ export function LibraryScreen({
   );
 
   async function handleImportFolder() {
-    setBusy(true);
-    setError(null);
-    try {
-      const path = await commands.pickFolder();
-      if (!path) {
-        return;
-      }
-      setScanningFolder(true);
-      await commands.importFolder(path);
-      await refresh();
-    } catch (e) {
-      const message = libraryImportErrorMessage(e, "Import folder failed.");
-      if (message !== null) {
-        setError(message);
-      }
-    } finally {
-      setScanningFolder(false);
-      setBusy(false);
+    const path = await commands.pickFolder();
+    if (!path) {
+      return;
     }
+    await importFolderAtPath(path);
   }
 
   function handleCancelFolderScan() {
@@ -238,14 +300,12 @@ export function LibraryScreen({
     return (
       <div className="library">
         {folderScanStatus}
+        {studyStatsField}
         <LibraryFirstRunEmpty
           busy={busy}
           error={error}
           onAddFolder={() => void handleImportFolder()}
-          onAddPlaylistJson={() => void handleImportPlaylist()}
-          onPastePlaylist={() => setPastePlaylistOpen(true)}
         />
-        {pastePlaylistPanel}
       </div>
     );
   }
@@ -254,7 +314,10 @@ export function LibraryScreen({
     return (
       <div className="library">
         {folderScanStatus}
-        <div className="library-header">{visibilityFilter}</div>
+        <div className="library-header">
+          {studyStatsField}
+          {visibilityFilter}
+        </div>
         {continueField}
         {searchField}
         {error ? (
@@ -273,11 +336,12 @@ export function LibraryScreen({
     <div className="library">
       {folderScanStatus}
       <div className="library-header">
+        {studyStatsField}
         <div className="library-toolbar">
           {visibilityFilter}
           <button
             type="button"
-            className="study-button"
+            className="library-button-primary"
             disabled={busy}
             onClick={() => void handleImportFolder()}
           >
@@ -302,54 +366,56 @@ export function LibraryScreen({
           {error}
         </p>
       ) : null}
-      <table
-        className="library-table"
-        onKeyDown={(event) =>
-          handleTableArrowKeys(
-            event,
-            tableBodyRef.current,
-            "tbody tr",
-            ".library-course-link"
-          )
-        }
-      >
-        <thead>
-          <tr>
-            <th scope="col">Title</th>
-            <th scope="col">Source</th>
-            <th scope="col">Status</th>
-            <th scope="col">Remaining</th>
-            <th scope="col">Unknown duration</th>
-          </tr>
-        </thead>
-        <tbody ref={tableBodyRef}>
-          {courses.map((course) => (
-            <tr key={course.course_id}>
-              <td>
-                <LibraryCourseTitleCell
-                  course={course}
-                  onOpen={() => onOpenCourse(course)}
-                  resolveMediaUrl={commands.mediaUrlForPath}
-                />
-              </td>
-              <td>{formatSourceKind(course.source_kind)}</td>
-              <td>
-                <span
-                  className={`library-status library-status--${course.status}`}
-                >
-                  {formatStatus(course.status)}
-                </span>
-              </td>
-              <td className="library-numeric">
-                {formatRemainingMs(course.remaining_ms)}
-              </td>
-              <td className="library-numeric">
-                {course.unknown_duration_count}
-              </td>
+      <div className="library-table-panel">
+        <table
+          className="library-table"
+          onKeyDown={(event) =>
+            handleTableArrowKeys(
+              event,
+              tableBodyRef.current,
+              "tbody tr",
+              ".library-course-link"
+            )
+          }
+        >
+          <thead>
+            <tr>
+              <th scope="col">Title</th>
+              <th scope="col">Source</th>
+              <th scope="col">Status</th>
+              <th scope="col">Remaining</th>
+              <th scope="col">Unknown duration</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody ref={tableBodyRef}>
+            {courses.map((course) => (
+              <tr key={course.course_id}>
+                <td>
+                  <LibraryCourseTitleCell
+                    course={course}
+                    onOpen={() => onOpenCourse(course)}
+                    resolveMediaUrl={commands.mediaUrlForPath}
+                  />
+                </td>
+                <td>{formatSourceKind(course.source_kind)}</td>
+                <td>
+                  <span
+                    className={`library-status library-status--${course.status}`}
+                  >
+                    {formatStatus(course.status)}
+                  </span>
+                </td>
+                <td className="library-numeric">
+                  {formatRemainingMs(course.remaining_ms)}
+                </td>
+                <td className="library-numeric">
+                  {course.unknown_duration_count}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

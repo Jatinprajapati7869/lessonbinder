@@ -2,7 +2,6 @@
 
 pub mod anki_link;
 pub mod audio_clip;
-pub mod lessonbinderignore;
 pub mod card;
 pub mod chapters;
 pub mod clip_encoder;
@@ -15,7 +14,9 @@ pub mod db;
 pub mod extract;
 pub mod import;
 pub mod lesson_note;
+pub mod lesson_note_export;
 pub mod lesson_resource;
+pub mod lessonbinderignore;
 pub mod library;
 pub mod ocr;
 pub mod order;
@@ -27,12 +28,14 @@ pub mod roadmap;
 pub mod rollup;
 pub mod search;
 pub mod sections;
+pub mod study_day;
 pub mod thumbnail;
 pub mod time;
 pub mod transcription;
 pub mod up_next;
 pub mod vault_settings;
 pub mod watched;
+pub mod weekly_report;
 pub mod whisper_cpp;
 
 pub use anki_link::anki_card_link_for_selection;
@@ -70,11 +73,15 @@ pub use extract::{
     index_lesson_metadata, ExtractorEnv, ExtractorOutcome,
 };
 pub use import::{
-    import_folder, import_folder_with_cancel, rescan, ImportError, ImportReport, RescanError,
+    import_folder, import_folder_with_cancel, rescan, validate_import_folder_path, ImportError,
+    ImportReport, RescanError,
 };
 pub use lesson_note::{
     create_lesson_note, delete_lesson_note, list_lesson_notes, update_lesson_note, LessonNote,
     LessonNoteError,
+};
+pub use lesson_note_export::{
+    course_notes_markdown, format_lesson_notes_markdown, lesson_notes_markdown,
 };
 pub use lesson_resource::{list_lesson_resources, LessonResourceView};
 pub use library::{list_courses, CourseLibraryVisibility, CourseListEntry, CourseSourceKind};
@@ -106,7 +113,7 @@ pub use roadmap::{
     RoadmapGraphNode, RoadmapStepView,
 };
 pub use rollup::{derive_course_status, derive_roadmap_status};
-pub use search::{search, SearchHit, SearchMatchKind};
+pub use search::{lesson_note_body, search, SearchHit, SearchMatchKind};
 pub use sections::{
     folder_lesson_section, group_lessons_by_section, list_sections, LessonSectionGroup,
     SectionError,
@@ -121,7 +128,10 @@ pub use transcription::{
     SettingsTranscriptionEngine, TranscriptionEngine, TranscriptionError,
 };
 pub use up_next::{up_next, UpNextError, UpNextTarget};
-pub use vault_settings::{load_vault_settings, save_vault_settings, SettingsError, VaultSettings};
+pub use vault_settings::{
+    load_vault_settings, save_vault_settings, PlaybackSpeed, SettingsError, UiTheme, VaultSettings,
+    DEFAULT_PLAYER_VOLUME, PLAYBACK_SPEED_CHOICES,
+};
 pub use watched::{watched_ms, watched_percent, PlaybackRangeError, WatchedRange};
 pub use whisper_cpp::{
     parse_whisper_json_output, resolve_whisper_cpp_binary, resolve_whisper_cpp_binary_in,

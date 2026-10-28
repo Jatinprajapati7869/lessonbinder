@@ -13,6 +13,10 @@ const defaults: VaultSettings = {
   tesseract_language: "eng",
   transcription_model_path: "",
   anki_desktop_binary_path: "anki",
+  ui_theme: "light",
+  playback_speed: 1,
+  player_volume: 1,
+  player_muted: false,
 };
 
 function renderSettings(commands: SettingsCommandPort) {
@@ -30,7 +34,9 @@ describe("SettingsScreen", () => {
       saveVaultSettings: vi.fn(),
       getAnkiProfilePath: vi
         .fn()
-        .mockResolvedValue("/home/user/.local/share/dev.lessonbinder.app/anki-profile"),
+        .mockResolvedValue(
+          "/home/user/.local/share/dev.lessonbinder.app/anki-profile"
+        ),
       ...backupRestoreCommandStubs,
     };
 
@@ -85,6 +91,10 @@ describe("SettingsScreen", () => {
         tesseract_language: "deu",
         transcription_model_path: "/models/whisper.bin",
         anki_desktop_binary_path: "/usr/bin/anki",
+        ui_theme: "light",
+        playback_speed: 1,
+        player_volume: 1,
+        player_muted: false,
       });
       expect(screen.getByText("Settings saved.")).toBeInTheDocument();
     });
@@ -122,7 +132,9 @@ describe("SettingsScreen", () => {
     await user.click(screen.getByRole("button", { name: "Restore backup" }));
 
     await waitFor(() => {
-      expect(restoreVault).toHaveBeenCalledWith("/backups/lessonbinder-backup-1");
+      expect(restoreVault).toHaveBeenCalledWith(
+        "/backups/lessonbinder-backup-1"
+      );
     });
   });
 });

@@ -1,1 +1,9 @@
-{"default":{"identifier":"default","description":"Default Lessonbinder capabilities","local":true,"windows":["main"],"permissions":["core:default","dialog:default"]}}
+{
+  "default": {
+    "identifier": "default",
+    "description": "Default Lessonbinder capabilities",
+    "local": true,
+    "windows": ["main"],
+    "permissions": ["core:default", "dialog:default"]
+  }
+}

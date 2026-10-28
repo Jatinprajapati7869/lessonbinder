@@ -35,7 +35,7 @@ mod tests {
     fn open_vault_db_in_app_data_dir() {
         let dir = tempfile::tempdir().unwrap();
         let db = open_or_create_vault_db(dir.path()).unwrap();
-        assert_eq!(db.applied_migration_count(), 18);
+        assert_eq!(db.applied_migration_count(), 24);
         assert!(vault_db_path(dir.path()).is_file());
     }
 }
