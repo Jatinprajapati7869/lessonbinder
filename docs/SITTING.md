@@ -35,6 +35,21 @@ Maps each row in [`FIRST-COURSE.md`](FIRST-COURSE.md) to **existing automated te
 
 ---
 
+## Prompt 276 — No analytics / off-localhost hosts
+
+**Scope:** `ui/src` and `src-tauri/src` only (Anki/rslib not searched).
+
+**Commands run from repo root:**
+
+```bash
+rg -i 'analytics|telemetry|mixpanel|sentry|segment\.|posthog|google-analytics|gtag|hotjar|fullstory|amplitude' ui/src src-tauri/src
+rg 'https?://' ui/src src-tauri/src
+```
+
+**Result (2026-10-28):** No analytics or telemetry strings. `https?://` hits were: SVG `xmlns` (`roadmapGraphSvg.ts`), playlist paste placeholder (`LibraryPastePlaylistPanel.tsx`), and a test fixture remote image URL (`ui/src/test/fixtures/lesson-with-remote-image.md`). **Removed phone-home risk:** dropped the fixture `https://example.com/…` image URL, stopped echoing remote markdown image URLs in the UI, and block `fetch` for non-local media URLs (`isAllowedLocalMediaFetchUrl` in `DocumentLessonScreen` / `LessonResourceReader`). **Regression:** `ui/noPhoneHomeHosts.test.ts` — `matches the SITTING.md ripgrep audit (no removable phone-home hits)`.
+
+---
+
 ## How to use this doc
 
 - Run `cargo test -p vault-core first_course_sitting` for the vault sitting integration, or the named slice tests in CI or locally (`cargo test`, `npm test`) without repeating the full folder walkthrough.

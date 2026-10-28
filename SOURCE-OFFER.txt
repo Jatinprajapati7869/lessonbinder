@@ -1,0 +1,1 @@
+Lessonbinder is licensed under AGPL-3.0-or-later because it links the anki crate from Anki’s rslib, which is AGPL-licensed as well. The complete corresponding source for a distributed binary is the Git commit of this repository that was checked out when that binary was built (record the commit hash at build time); there is no separate release tag for that correspondence.

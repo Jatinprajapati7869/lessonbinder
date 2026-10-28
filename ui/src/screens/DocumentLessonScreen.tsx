@@ -8,6 +8,7 @@ import {
   pdfSrcWithPage,
   scrollToCharOffset,
 } from "../lesson/documentPosition";
+import { isAllowedLocalMediaFetchUrl } from "../media/localMediaFetchUrl";
 import {
   isDocumentLessonPath,
   isMarkdownLessonPath,
@@ -62,6 +63,10 @@ export function DocumentLessonScreen({
       }
       if (isPdf) {
         setDocUrl(url);
+        return;
+      }
+      if (!isAllowedLocalMediaFetchUrl(url)) {
+        setLoadError("Could not load document.");
         return;
       }
       try {

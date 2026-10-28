@@ -1,5 +1,5 @@
 # Fixture heading
 
-![](https://example.com/remote.png)
+![](remote-sidecar.png)
 
 Lesson body after the image.

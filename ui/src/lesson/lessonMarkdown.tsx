@@ -7,7 +7,7 @@ function headingLevel(markers: string): 1 | 2 | 3 | 4 | 5 | 6 {
   return Math.min(6, markers.length) as 1 | 2 | 3 | 4 | 5 | 6;
 }
 
-function renderImagePlaceholder(alt: string, url: string): ReactNode {
+function renderImagePlaceholder(alt: string): ReactNode {
   const label = alt.trim() || "Image";
   return (
     <p
@@ -15,7 +15,6 @@ function renderImagePlaceholder(alt: string, url: string): ReactNode {
       data-testid="markdown-image-placeholder"
     >
       {label} (not loaded)
-      <span className="lesson-markdown__image-url">{url}</span>
     </p>
   );
 }
@@ -60,7 +59,7 @@ export function LessonMarkdownBody({ source }: { source: string }) {
       flushParagraph();
       blocks.push(
         <span key={`img-${blocks.length}`}>
-          {renderImagePlaceholder(image[1], image[2])}
+          {renderImagePlaceholder(image[1])}
         </span>
       );
       continue;

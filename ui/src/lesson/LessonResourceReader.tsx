@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 
 import type { LessonResource } from "../api/courseTypes";
 import { useCourseCommands } from "../course/useCourseCommands";
+import { isAllowedLocalMediaFetchUrl } from "../media/localMediaFetchUrl";
 import { pdfSrcWithPage } from "./documentPosition";
 import { isDocumentLessonPath, isMarkdownLessonPath } from "./lessonDocument";
 import { LessonMarkdownBody } from "./lessonMarkdown";
@@ -37,6 +38,10 @@ export function LessonResourceReader({ resource }: LessonResourceReaderProps) {
       }
       if (isPdf) {
         setDocUrl(url);
+        return;
+      }
+      if (!isAllowedLocalMediaFetchUrl(url)) {
+        setLoadError("Could not load resource.");
         return;
       }
       try {

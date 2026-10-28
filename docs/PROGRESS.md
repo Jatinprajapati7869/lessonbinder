@@ -472,8 +472,8 @@ Repo: `/home/xingzi/Documents/lessonbinder`. Full text: `~/Documents/auravault-c
 - [x] 272 — Twenty lines — `command_log.rs` `COMMAND_LOG_MAX_LINES` (20); `crates/tauri/tests/command_log.rs` — `log_command_error_keeps_last_twenty_newest_lines`; library risky import sentence unchanged (`Library.test.tsx`).
 - [x] 273 — Cues that already exist — player lists sidecar cues via `PlayerCueList` (`listLessonCues`); **`PlayerCues.test.tsx`**; cue activate covered in **`Player.test.tsx`** below.
 - [x] 274 — Cue seek stays local — **`ui/Player.test.tsx`** — **`clicking a cue seeks local playback and saves resume without opening a URL or marking complete`**.
-- [ ] 275 — Source offer
-- [ ] 276 — No analytics host
+- [x] 275 — Source offer — [`SOURCE-OFFER.txt`](../SOURCE-OFFER.txt) at repo root (AGPL via `anki` link; source = build commit).
+- [x] 276 — No analytics host — `docs/SITTING.md` § Prompt 276 ripgrep audit; removed fixture `example.com` URL + block off-localhost `fetch`; `noPhoneHomeHosts.test.ts`.
 - [ ] 277 — Show folder only with a course
 - [ ] 278 — Show folder waits for the scan
 - [ ] 279 — Complete stays manual
