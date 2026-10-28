@@ -528,8 +528,8 @@ Repo: `/home/xingzi/Documents/lessonbinder`. Full text: `~/Documents/auravault-c
 - [x] 304 — Fixture — `/tmp/lessonbinder-sitting`: `intro.mp4` + `intro.srt` (two cues), `notes.md`, `extra.mp4` + `.lessonbinderignore` (ffmpeg on PATH); fixture not committed.
 - [x] 305 — Import in the app — [`SITTING-RUN.md`](SITTING-RUN.md) **Import** **pass** (sitting profile + fixture; `extra.mp4` ignored).
 - [x] 306 — Resume in the app — [`SITTING-RUN.md`](SITTING-RUN.md) **Resume** **pass** (1500 ms resume; not **done**); commit 305–306.
-- [ ] 307 — Note in the app
-- [ ] 308 — One card in the app
+- [x] 307 — Note in the app — [`SITTING-RUN.md`](SITTING-RUN.md) **Note** **pass** (vault persist + timestamp seek via `LessonNotes.test.tsx`).
+- [x] 308 — One card in the app — [`SITTING-RUN.md`](SITTING-RUN.md) **One card (subtitle cue)** **pass** (sitting vault link + subtitle draft commit; no OCR/Whisper).
 - [ ] 309 — Review in the app
 - [ ] 310 — Theme in the app
 - [ ] 311 — Quit and relaunch
