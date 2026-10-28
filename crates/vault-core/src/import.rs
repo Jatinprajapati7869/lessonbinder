@@ -118,7 +118,8 @@ pub fn import_folder(db: &VaultDb, picked: &Path) -> Result<ImportReport, Import
     import_folder_with_cancel(db, picked, &|| false)
 }
 
-/// Import a folder, checking `should_cancel` between each directory entry.
+/// Import a folder, checking `should_cancel` between directory entries while scanning
+/// and again before each lesson upsert (never mid-write for a single lesson).
 pub fn import_folder_with_cancel(
     db: &VaultDb,
     picked: &Path,
@@ -132,8 +133,23 @@ pub fn import_folder_with_cancel(
         .unwrap_or("Course")
         .to_string();
     let root_path = root.to_string_lossy().to_string();
-    db.import_scanned_folder(&root_path, &title, &lessons)
-        .map_err(ImportError::from)
+    let course_id = db
+        .ensure_folder_course(&root_path, &title)
+        .map_err(ImportError::from)?;
+    let mut lesson_ids = Vec::with_capacity(lessons.len());
+    for lesson in &lessons {
+        if should_cancel() {
+            return Err(ImportError::Cancelled);
+        }
+        let lesson_id = db
+            .upsert_single_scanned_lesson(&course_id, &root, lesson)
+            .map_err(ImportError::from)?;
+        lesson_ids.push(lesson_id);
+    }
+    Ok(ImportReport {
+        course_id,
+        lesson_ids,
+    })
 }
 
 /// Discover lesson and subtitle files under `root` (pure; no database).

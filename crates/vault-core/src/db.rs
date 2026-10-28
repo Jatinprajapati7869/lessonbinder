@@ -833,6 +833,76 @@ impl VaultDb {
         self.lesson_ids_in_learning_order(course_id)
     }
 
+    /// Upsert one scanned lesson in its own transaction (for cancellable folder import).
+    pub fn upsert_single_scanned_lesson(
+        &self,
+        course_id: &str,
+        course_root: &Path,
+        lesson: &crate::import::ScannedLesson,
+    ) -> Result<String, DbError> {
+        let existing = self.local_file_lessons_for_course(course_id)?;
+        let sort_for_key: std::collections::HashMap<String, i32> = existing
+            .iter()
+            .map(|row| (row.stable_key.clone(), row.sort_index))
+            .collect();
+        let next_sort = existing
+            .iter()
+            .map(|row| row.sort_index)
+            .max()
+            .unwrap_or(-1)
+            + 1;
+        let sort_index = sort_for_key
+            .get(&lesson.relative_path)
+            .copied()
+            .unwrap_or(next_sort);
+
+        let conn = self.conn.lock().expect("vault db lock");
+        let now = now_iso8601();
+        conn.execute(
+            "UPDATE course SET last_scanned_at = ?1 WHERE id = ?2",
+            rusqlite::params![now, course_id],
+        )?;
+        let tx = conn.unchecked_transaction()?;
+        let lesson_id =
+            upsert_lesson_from_scan(&tx, course_id, course_root, lesson, sort_index, &now)?;
+        tx.commit()?;
+        Ok(lesson_id)
+    }
+
+    pub(crate) fn ensure_folder_course(
+        &self,
+        root_path: &str,
+        title: &str,
+    ) -> Result<String, DbError> {
+        let conn = self.conn.lock().expect("vault db lock");
+        let now = now_iso8601();
+        match conn
+            .query_row(
+                "SELECT id FROM course WHERE root_path = ?1",
+                [root_path],
+                |row| row.get::<_, String>(0),
+            )
+            .optional()?
+        {
+            Some(id) => {
+                conn.execute(
+                    "UPDATE course SET last_scanned_at = ?1, title = ?2 WHERE id = ?3",
+                    rusqlite::params![now, title, id],
+                )?;
+                Ok(id)
+            }
+            None => {
+                let id = Uuid::new_v4().to_string();
+                conn.execute(
+                    "INSERT INTO course (id, library_id, title, source_kind, root_path, imported_at, last_scanned_at)
+                     VALUES (?1, ?2, ?3, 'folder', ?4, ?5, ?5)",
+                    rusqlite::params![id, DEFAULT_LIBRARY_ID, title, root_path, now],
+                )?;
+                Ok(id)
+            }
+        }
+    }
+
     pub fn course_source_kind(&self, course_id: &str) -> Result<String, DbError> {
         let conn = self.conn.lock().expect("vault db lock");
         conn.query_row(
@@ -1547,50 +1617,6 @@ impl VaultDb {
             .filter(|(_, key)| !active_external_ids.contains(key.as_str()))
             .map(|(id, _)| id)
             .collect())
-    }
-
-    pub(crate) fn import_scanned_folder(
-        &self,
-        root_path: &str,
-        title: &str,
-        lessons: &[crate::import::ScannedLesson],
-    ) -> Result<crate::import::ImportReport, DbError> {
-        let course_id = {
-            let conn = self.conn.lock().expect("vault db lock");
-            let now = now_iso8601();
-            match conn
-                .query_row(
-                    "SELECT id FROM course WHERE root_path = ?1",
-                    [root_path],
-                    |row| row.get::<_, String>(0),
-                )
-                .optional()?
-            {
-                Some(id) => {
-                    conn.execute(
-                        "UPDATE course SET last_scanned_at = ?1, title = ?2 WHERE id = ?3",
-                        rusqlite::params![now, title, id],
-                    )?;
-                    id
-                }
-                None => {
-                    let id = Uuid::new_v4().to_string();
-                    conn.execute(
-                        "INSERT INTO course (id, library_id, title, source_kind, root_path, imported_at, last_scanned_at)
-                         VALUES (?1, ?2, ?3, 'folder', ?4, ?5, ?5)",
-                        rusqlite::params![id, DEFAULT_LIBRARY_ID, title, root_path, now],
-                    )?;
-                    id
-                }
-            }
-        };
-
-        let lesson_ids = self.upsert_scanned_lessons(&course_id, Path::new(root_path), lessons)?;
-
-        Ok(crate::import::ImportReport {
-            course_id,
-            lesson_ids,
-        })
     }
 
     pub fn marked_done_at(&self, lesson_id: &str) -> Result<Option<String>, DbError> {

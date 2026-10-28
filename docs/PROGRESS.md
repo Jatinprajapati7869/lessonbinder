@@ -368,8 +368,8 @@ Repo: `/home/xingzi/Documents/lessonbinder`. Full text: `~/Documents/auravault-c
 - [x] 206 — Boot — [`docs/FIRST-COURSE.md`](FIRST-COURSE.md) § Boot: temp `XDG_DATA_HOME`, Library confirmed, no startup crash (2026-10-28).
 - [x] 207 — One blocker — no blocker ([`docs/FIRST-COURSE.md`](FIRST-COURSE.md) § Boot: crash none; no dead control named).
 - [x] 208 — Profile in use — `AnkiProfileInUse.test.tsx` shows `study_bar_state` lock sentence; `anki-bridge` `open_profile_while_lock_held_returns_in_use_message`.
-- [ ] 209 — Cancel design
-- [ ] 210 — Import yields
+- [x] 209 — Cancel design — [`docs/CANCEL-SCAN.md`](CANCEL-SCAN.md): cancel between files, partial course OK, no Anki on import, Escape ≠ cancel.
+- [x] 210 — Import yields — `import_folder_with_cancel` checks cancel during scan and before each lesson upsert; `#[tauri::command(async)]` on `import_course_folder`; `import_cancel.rs` keeps first lesson on mid-import cancel.
 - [ ] 211 — Cancel control
 - [ ] 212 — Rescan yields
 - [ ] 213 — One import path

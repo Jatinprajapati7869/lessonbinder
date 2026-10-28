@@ -6,8 +6,20 @@ use vault_core::import::{import_folder_with_cancel, ImportError};
 use vault_core::library::{list_courses, CourseLibraryVisibility};
 use vault_core::VaultDb;
 
+fn total_lesson_count(db: &VaultDb) -> usize {
+    list_courses(db, None, CourseLibraryVisibility::Active)
+        .unwrap()
+        .into_iter()
+        .map(|course| {
+            db.lesson_ids_in_learning_order(&course.course_id)
+                .unwrap()
+                .len()
+        })
+        .sum()
+}
+
 #[test]
-fn cancel_after_first_directory_entry_leaves_no_course() {
+fn cancel_during_scan_leaves_no_course() {
     let dir = tempdir().unwrap();
     let root = dir.path();
     fs::write(root.join("one.mp4"), b"").unwrap();
@@ -24,4 +36,26 @@ fn cancel_after_first_directory_entry_leaves_no_course() {
     assert!(list_courses(&db, None, CourseLibraryVisibility::Active)
         .unwrap()
         .is_empty());
+}
+
+#[test]
+fn cancel_after_first_lesson_keeps_that_lesson_and_stops_import() {
+    let dir = tempdir().unwrap();
+    let root = dir.path();
+    fs::write(root.join("one.mp4"), b"").unwrap();
+    fs::write(root.join("two.mp4"), b"").unwrap();
+    fs::write(root.join("three.mp4"), b"").unwrap();
+
+    let db = VaultDb::open_in_memory().unwrap();
+    let should_cancel = || total_lesson_count(&db) >= 1;
+
+    let err = import_folder_with_cancel(&db, root, &should_cancel).unwrap_err();
+    assert!(matches!(err, ImportError::Cancelled));
+
+    let courses = list_courses(&db, None, CourseLibraryVisibility::Active).unwrap();
+    assert_eq!(courses.len(), 1);
+    let lesson_ids = db
+        .lesson_ids_in_learning_order(&courses[0].course_id)
+        .unwrap();
+    assert_eq!(lesson_ids.len(), 1);
 }

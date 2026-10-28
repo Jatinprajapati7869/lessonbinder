@@ -262,7 +262,7 @@ pub fn validate_import_folder_path(path: String) -> Result<(), String> {
         .map_err(|e| from_import_error(e).to_invoke_string())
 }
 
-#[tauri::command]
+#[tauri::command(async)]
 pub fn import_course_folder(state: State<AppState>, path: String) -> Result<(), String> {
     state.import_folder_cancel.store(false, Ordering::Relaxed);
     state.with_vault(|vault| {
