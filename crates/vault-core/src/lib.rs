@@ -103,7 +103,8 @@ pub use progress_persist::record_playback;
 pub use progress_persist::set_document_position;
 pub use progress_persist::ProgressPersistenceError;
 pub use read_model::{
-    course_progress, library_summary, refresh_course_sources, refresh_sources, LibrarySummary,
+    course_progress, guard_local_media_for_resume, library_summary, refresh_course_sources,
+    refresh_sources, LibrarySummary,
 };
 pub use roadmap::{
     add_prerequisite_edge, add_roadmap_step, create_roadmap, delete_course, list_roadmaps,

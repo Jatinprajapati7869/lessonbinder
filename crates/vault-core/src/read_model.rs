@@ -65,3 +65,26 @@ fn refresh_local_source(
     }
     Ok(())
 }
+
+/// Before resuming local media playback, mark the lesson broken when its file is gone.
+/// Does not mark the lesson done; preserves resume position in progress.
+pub fn guard_local_media_for_resume(
+    db: &VaultDb,
+    lesson_id: &str,
+) -> Result<crate::LessonStatus, ProgressPersistenceError> {
+    use crate::LessonStatus;
+
+    let progress = db.progress_for_lesson(lesson_id)?;
+    if progress.status == LessonStatus::Broken {
+        return Ok(LessonStatus::Broken);
+    }
+    let Some(source) = db.local_lesson_source_for_lesson(lesson_id)? else {
+        return Ok(progress.status);
+    };
+    let path = source.root_path.join(&source.relative_path);
+    if path.exists() {
+        return Ok(progress.status);
+    }
+    db.mark_source_missing(lesson_id)?;
+    Ok(LessonStatus::Broken)
+}

@@ -76,6 +76,7 @@ export type PlayerScreenProps = {
 
 type UnplayableProps = {
   lesson: LessonRow;
+  lessonStatus: LessonRow["status"];
   courseId: string;
   mediaPath: string | null;
   onBack: () => void;
@@ -83,6 +84,7 @@ type UnplayableProps = {
 
 function PlayerUnplayable({
   lesson,
+  lessonStatus,
   courseId,
   mediaPath,
   onBack,
@@ -93,7 +95,7 @@ function PlayerUnplayable({
   async function handleRecovery() {
     setBusy(true);
     try {
-      if (lesson.status === "broken") {
+      if (lessonStatus === "broken") {
         await commands.rescanCourse(courseId);
       } else {
         await commands.markLessonBroken(lesson.lesson_id);
@@ -105,7 +107,7 @@ function PlayerUnplayable({
   }
 
   const recoveryLabel =
-    lesson.status === "broken" ? "Rescan course" : "Mark as broken";
+    lessonStatus === "broken" ? "Rescan course" : "Mark as broken";
 
   return (
     <div className="player-screen">
@@ -149,6 +151,10 @@ export function PlayerScreen({
   const settingsCommands = useSettingsCommands();
   const videoRef = useRef<HTMLVideoElement>(null);
   const captureButtonRef = useRef<HTMLButtonElement>(null);
+  const [playbackStatus, setPlaybackStatus] = useState(lesson.status);
+  const [mediaReady, setMediaReady] = useState(
+    !lesson.local_media_path || lesson.status === "broken"
+  );
   const [mediaSrc, setMediaSrc] = useState<string | null>(null);
   const [playing, setPlaying] = useState(false);
   const [loadFailed, setLoadFailed] = useState(false);
@@ -189,6 +195,28 @@ export function PlayerScreen({
     pendingSeekMsRef.current = initialSeekMs;
     playbackMsRef.current = lesson.resume_position_ms;
   }, [initialSeekMs, lesson.lesson_id, lesson.resume_position_ms]);
+
+  useEffect(() => {
+    setPlaybackStatus(lesson.status);
+    setMediaReady(!lesson.local_media_path || lesson.status === "broken");
+  }, [lesson.lesson_id, lesson.local_media_path, lesson.status]);
+
+  useEffect(() => {
+    if (!lesson.local_media_path || lesson.status === "broken") {
+      return;
+    }
+    let cancelled = false;
+    void commands.guardLessonMediaForResume(lesson.lesson_id).then((status) => {
+      if (cancelled) {
+        return;
+      }
+      setPlaybackStatus(status);
+      setMediaReady(true);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [commands, lesson.lesson_id, lesson.local_media_path, lesson.status]);
 
   useEffect(() => {
     theaterModeRef.current = theaterMode;
@@ -313,10 +341,14 @@ export function PlayerScreen({
   }, [exitZenMode]);
 
   const unplayable =
-    lesson.status === "broken" || !lesson.local_media_path || loadFailed;
+    playbackStatus === "broken" || !lesson.local_media_path || loadFailed;
 
   useEffect(() => {
-    if (!lesson.local_media_path || lesson.status === "broken") {
+    if (
+      !mediaReady ||
+      !lesson.local_media_path ||
+      playbackStatus === "broken"
+    ) {
       return;
     }
     let cancelled = false;
@@ -336,7 +368,7 @@ export function PlayerScreen({
     return () => {
       cancelled = true;
     };
-  }, [commands, lesson.local_media_path, lesson.status]);
+  }, [commands, lesson.local_media_path, mediaReady, playbackStatus]);
 
   useEffect(() => {
     let cancelled = false;
@@ -758,10 +790,26 @@ export function PlayerScreen({
     setCaptureOpen(true);
   }
 
+  if (lesson.local_media_path && lesson.status !== "broken" && !mediaReady) {
+    return (
+      <div className="player-screen">
+        <button
+          type="button"
+          className="library-button-secondary"
+          onClick={onBack}
+        >
+          Back to course
+        </button>
+        <p className="library-empty__hint">Loading lesson…</p>
+      </div>
+    );
+  }
+
   if (unplayable) {
     return (
       <PlayerUnplayable
         lesson={lesson}
+        lessonStatus={playbackStatus}
         courseId={courseId}
         mediaPath={lesson.local_media_path}
         onBack={onBack}

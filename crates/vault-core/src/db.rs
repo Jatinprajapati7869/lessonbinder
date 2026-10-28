@@ -1250,6 +1250,31 @@ impl VaultDb {
         Ok(rows)
     }
 
+    pub fn local_lesson_source_for_lesson(
+        &self,
+        lesson_id: &str,
+    ) -> Result<Option<LocalLessonSource>, DbError> {
+        let conn = self.conn.lock().expect("vault db lock");
+        let mut stmt = conn.prepare(
+            "SELECT l.id, c.root_path, sf.relative_path
+             FROM lesson l
+             INNER JOIN course c ON c.id = l.course_id
+             INNER JOIN source_file sf ON sf.id = l.source_file_id
+             WHERE l.source_kind = 'local_file'
+               AND c.root_path IS NOT NULL
+               AND l.id = ?1",
+        )?;
+        stmt.query_row([lesson_id], |row| {
+            Ok(LocalLessonSource {
+                lesson_id: row.get(0)?,
+                root_path: PathBuf::from(row.get::<_, String>(1)?),
+                relative_path: row.get(2)?,
+            })
+        })
+        .optional()
+        .map_err(DbError::from)
+    }
+
     pub fn local_lesson_sources(&self) -> Result<Vec<LocalLessonSource>, DbError> {
         let conn = self.conn.lock().expect("vault db lock");
         let mut stmt = conn.prepare(

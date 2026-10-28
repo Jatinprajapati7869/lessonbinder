@@ -382,8 +382,8 @@ Repo: `/home/xingzi/Documents/lessonbinder`. Full text: `~/Documents/auravault-c
 - [x] 220 — Install section
 - [x] 221 — Identity of the bundle
 - [x] 222 — Empty folder
-- [ ] 223 — File disappears
-- [ ] 224 — Media symlink
+- [x] 223 — File disappears
+- [x] 224 — Media symlink
 - [ ] 225 — Delete keeps the Anki note
 - [ ] 226 — OCR stays on the machine
 - [ ] 227 — Cancel copy

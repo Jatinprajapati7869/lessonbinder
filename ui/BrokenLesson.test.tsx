@@ -96,6 +96,7 @@ describe("BrokenLesson", () => {
     const commands: CourseCommandPort = {
       getCourseDetail: vi.fn().mockResolvedValue(detail),
       markLessonBroken: vi.fn(),
+      guardLessonMediaForResume: vi.fn().mockResolvedValue("in_progress"),
       rescanCourse: vi.fn(),
       ...noopCommands,
     };
@@ -121,6 +122,7 @@ describe("BrokenLesson", () => {
     const commands: CourseCommandPort = {
       getCourseDetail: vi.fn(),
       markLessonBroken: vi.fn(),
+      guardLessonMediaForResume: vi.fn().mockResolvedValue("in_progress"),
       rescanCourse,
       ...noopCommands,
     };
@@ -146,5 +148,38 @@ describe("BrokenLesson", () => {
 
     await user.click(screen.getByRole("button", { name: "Rescan course" }));
     expect(rescanCourse).toHaveBeenCalledWith("course-1");
+  });
+
+  it("shows broken player when resume guard finds missing media", async () => {
+    const guardLessonMediaForResume = vi.fn().mockResolvedValue("broken");
+    const lesson: LessonRow = {
+      ...brokenLesson,
+      status: "in_progress",
+      resume_position_ms: 4_500,
+      local_media_path: "/courses/linear/lecture.mp4",
+    };
+    const commands: CourseCommandPort = {
+      getCourseDetail: vi.fn(),
+      markLessonBroken: vi.fn(),
+      guardLessonMediaForResume,
+      rescanCourse: vi.fn(),
+      ...noopCommands,
+    };
+
+    render(
+      <SettingsCommandsProvider commands={settingsCommandStubs}>
+        <CourseCommandsProvider commands={commands}>
+          <PlayerScreen lesson={lesson} courseId="course-1" onBack={() => {}} />
+        </CourseCommandsProvider>
+      </SettingsCommandsProvider>
+    );
+
+    expect(
+      await screen.findByText(/No playable file for this lesson/i)
+    ).toBeInTheDocument();
+    expect(guardLessonMediaForResume).toHaveBeenCalledWith("lesson-broken");
+    expect(
+      screen.getByRole("button", { name: "Rescan course" })
+    ).toBeInTheDocument();
   });
 });

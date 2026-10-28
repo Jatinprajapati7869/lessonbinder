@@ -40,6 +40,16 @@ fn read_media_returns_png_written_by_commit() {
     assert_eq!(bytes, png);
 }
 
+#[test]
+fn read_media_rejects_path_escape() {
+    let profile = tempfile::tempdir().unwrap();
+    let paths = LessonbinderProfilePaths::in_dir(profile.path());
+    std::fs::create_dir_all(&paths.media_folder).unwrap();
+
+    let err = read_media(&paths.media_folder, "../outside.png").unwrap_err();
+    assert!(matches!(err, ReadMediaError::InvalidFilename));
+}
+
 #[cfg(unix)]
 #[test]
 fn read_media_rejects_symlink_outside_media_root() {
@@ -53,15 +63,5 @@ fn read_media_rejects_symlink_outside_media_root() {
     symlink(&outside, paths.media_folder.join("escape.png")).unwrap();
 
     let err = read_media(&paths.media_folder, "escape.png").unwrap_err();
-    assert!(matches!(err, ReadMediaError::InvalidFilename));
-}
-
-#[test]
-fn read_media_rejects_path_escape() {
-    let profile = tempfile::tempdir().unwrap();
-    let paths = LessonbinderProfilePaths::in_dir(profile.path());
-    std::fs::create_dir_all(&paths.media_folder).unwrap();
-
-    let err = read_media(&paths.media_folder, "../outside.png").unwrap_err();
     assert!(matches!(err, ReadMediaError::InvalidFilename));
 }

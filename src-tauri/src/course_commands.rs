@@ -18,6 +18,7 @@ use vault_core::lesson_resource::list_lesson_resources;
 use vault_core::list_lesson_card_links;
 use vault_core::order::{accept_proposal, reject_proposal, reorder_lessons};
 use vault_core::playlist::set_watched;
+use vault_core::read_model::guard_local_media_for_resume;
 use vault_core::record_playback as merge_lesson_playback;
 use vault_core::set_document_position;
 use vault_core::thumbnail::{capture_thumbnail, ThumbnailCapturer, ThumbnailError};
@@ -137,6 +138,27 @@ pub fn mark_lesson_broken(state: State<AppState>, lesson_id: String) -> Result<(
             .map_err(|e| e.to_string())?;
         Ok(())
     })
+}
+
+#[tauri::command]
+pub fn guard_lesson_media_for_resume(
+    state: State<AppState>,
+    lesson_id: String,
+) -> Result<String, String> {
+    state.with_vault(|vault| {
+        let status = guard_local_media_for_resume(vault, &lesson_id).map_err(|e| e.to_string())?;
+        Ok(lesson_status_code(status))
+    })
+}
+
+fn lesson_status_code(status: LessonStatus) -> String {
+    match status {
+        LessonStatus::NotStarted => "not_started",
+        LessonStatus::InProgress => "in_progress",
+        LessonStatus::Done => "done",
+        LessonStatus::Broken => "broken",
+    }
+    .to_string()
 }
 
 #[tauri::command(async)]

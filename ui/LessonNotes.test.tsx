@@ -21,6 +21,7 @@ function noteCommands(
     reorderLessons: vi.fn(),
     setPlaylistItemWatched: vi.fn(),
     markLessonBroken: vi.fn(),
+    guardLessonMediaForResume: vi.fn().mockResolvedValue("in_progress"),
     rescanCourse: vi.fn(),
     mediaUrlForPath: vi.fn(),
     listLessonCues: vi.fn().mockResolvedValue([]),

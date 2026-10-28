@@ -150,6 +150,7 @@ function courseCommandStubs(): CourseCommandPort {
     reorderLessons: vi.fn().mockResolvedValue(undefined),
     setPlaylistItemWatched: vi.fn(),
     markLessonBroken: vi.fn(),
+    guardLessonMediaForResume: vi.fn().mockResolvedValue("in_progress"),
     rescanCourse: vi.fn().mockResolvedValue(undefined),
     cancelFolderScan: vi.fn().mockResolvedValue(undefined),
     archiveCourse: vi.fn().mockResolvedValue(undefined),

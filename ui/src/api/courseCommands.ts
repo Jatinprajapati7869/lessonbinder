@@ -7,6 +7,7 @@ import type {
   LessonResource,
   LessonResourceKind,
   LessonChapters,
+  LessonRow,
   UpNextTarget,
   SubtitleCue,
   WatchedRange,
@@ -26,6 +27,7 @@ export type CourseCommandPort = {
     watched: boolean
   ): Promise<void>;
   markLessonBroken(lessonId: string): Promise<void>;
+  guardLessonMediaForResume(lessonId: string): Promise<LessonRow["status"]>;
   rescanCourse(courseId: string): Promise<void>;
   cancelFolderScan(): Promise<void>;
   archiveCourse(courseId: string): Promise<void>;
@@ -92,6 +94,8 @@ export const tauriCourseCommands: CourseCommandPort = {
   setPlaylistItemWatched: (playlistItemId, watched) =>
     invoke("set_playlist_item_watched", { playlistItemId, watched }),
   markLessonBroken: (lessonId) => invoke("mark_lesson_broken", { lessonId }),
+  guardLessonMediaForResume: (lessonId) =>
+    invoke<LessonRow["status"]>("guard_lesson_media_for_resume", { lessonId }),
   rescanCourse: (courseId) => invoke("rescan_course", { courseId }),
   cancelFolderScan: () => invoke("cancel_import_course_folder"),
   archiveCourse: (courseId) => invoke("archive_course_entry", { courseId }),
