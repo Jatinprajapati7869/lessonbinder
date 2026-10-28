@@ -458,8 +458,8 @@ Repo: `/home/xingzi/Documents/lessonbinder`. Full text: `~/Documents/auravault-c
 - [x] 258 — One bundle attempt — **not run** (`patchelf` missing; bundler not invoked).
 - [x] 259 — Launch only a real image — no AppImage from **258**; one sentence in [`docs/FIRST-COURSE.md`](FIRST-COURSE.md) § Boot → [`docs/PACKAGE.md`](PACKAGE.md) (no launch invented).
 - [x] 260 — Install section stays true — [`README.md`](../README.md) **Install** matches **258** (bundler not run; **`patchelf`**); still **unsigned**, **0.0.0**.
-- [ ] 261 — Bundle identity
-- [ ] 262 — Fonts in that build
+- [x] 261 — Bundle identity — no AppImage to inspect `.desktop` **`Name=`**; [`src-tauri/tauri.conf.json`](../src-tauri/tauri.conf.json) unchanged: `productName` **Lessonbinder**, `version` **0.0.0**, `createUpdaterArtifacts` **false**.
+- [x] 262 — Fonts in that build — **no pass**; no **`ui/dist` from 258** ([`docs/FONTS.md`](FONTS.md) § Prompt 262).
 - [ ] 263 — Cancel before the row write
 - [ ] 264 — Close that row
 - [ ] 265 — Show the course folder

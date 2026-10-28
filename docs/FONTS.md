@@ -91,3 +91,9 @@ rg 'fonts\.googleapis\.com|fonts\.gstatic\.com' ui/dist/
 ```
 
 **Result:** no matches (ripgrep exit code **1** — empty). This records the current `ui/dist/` tree only; it does **not** certify an AppImage shipped without Google Fonts URLs.
+
+## Prompt 262 (2026-10-28)
+
+Prompt **258** did not run the AppImage bundler (`patchelf` missing; see [`PROGRESS.md`](PROGRESS.md) **258**). There is **no `ui/dist` from 258** to search.
+
+**Result:** **no pass** — did not run a `fonts.googleapis.com` / `fonts.gstatic.com` scan against a **258** build output; an older local `ui/dist/` from other work does not count.
