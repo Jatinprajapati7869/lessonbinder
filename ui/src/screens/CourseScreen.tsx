@@ -130,6 +130,20 @@ export function CourseScreen({
     void commands.cancelFolderScan();
   }
 
+  async function handleShowFolder() {
+    setBusy(true);
+    setError(null);
+    try {
+      await commands.openCourseFolderInFileManager(course.course_id);
+    } catch (e) {
+      setError(
+        e instanceof Error ? e.message : "Could not open course folder."
+      );
+    } finally {
+      setBusy(false);
+    }
+  }
+
   async function handleArchiveCourse() {
     setBusy(true);
     setError(null);
@@ -394,6 +408,17 @@ export function CourseScreen({
               onClick={() => onReviewThisCourse(course.course_id)}
             >
               Review this course
+            </button>
+          ) : null}
+          {isFolderCourse ? (
+            <button
+              type="button"
+              className="library-button-secondary"
+              disabled={busy}
+              aria-label="Show folder"
+              onClick={() => void handleShowFolder()}
+            >
+              Show folder
             </button>
           ) : null}
           {isFolderCourse ? (

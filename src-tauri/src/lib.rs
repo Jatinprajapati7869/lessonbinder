@@ -19,6 +19,7 @@ use tauri::Manager;
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_dialog::init())
+        .plugin(tauri_plugin_opener::init())
         .setup(|app| {
             let app_data_dir = app.path().app_data_dir().map_err(|e| e.to_string())?;
             app.manage(commands::init_app_state(app_data_dir));
@@ -46,6 +47,7 @@ pub fn run() {
             library_commands::validate_import_folder_path,
             library_commands::import_course_folder,
             library_commands::cancel_import_course_folder,
+            library_commands::open_course_folder_in_file_manager,
             library_commands::import_playlist_json,
             library_commands::import_playlist_paste,
             settings_commands::get_vault_settings,

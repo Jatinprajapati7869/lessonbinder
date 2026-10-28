@@ -5,6 +5,7 @@ use serde::Deserialize;
 use serde::Serialize;
 use tauri::{AppHandle, State};
 use vault_core::continue_learning::library_continue_row;
+use vault_core::course_folder::course_folder_path_for_open;
 use vault_core::import::{import_folder_with_cancel, FolderScanProgress};
 use vault_core::library::{list_courses, CourseLibraryVisibility, CourseSourceKind};
 use vault_core::playlist::{import_playlist_definition, import_playlist_from_pasted_lines};
@@ -15,7 +16,7 @@ use vault_core::study_day::{
 use vault_core::DerivedStatus;
 use vault_core::VaultDb;
 
-use lessonbinder_tauri::command_error::from_import_error;
+use lessonbinder_tauri::command_error::{from_course_folder_open_error, from_import_error};
 
 use crate::app_state::AppState;
 use crate::folder_scan_progress::emit_folder_scan_progress;
@@ -289,6 +290,23 @@ pub fn import_course_folder(
 #[tauri::command]
 pub fn cancel_import_course_folder(state: State<AppState>) {
     state.import_folder_cancel.store(true, Ordering::Relaxed);
+}
+
+#[tauri::command]
+pub fn open_course_folder_in_file_manager(
+    app: AppHandle,
+    state: State<AppState>,
+    course_id: String,
+) -> Result<(), String> {
+    use tauri_plugin_opener::OpenerExt;
+
+    let path = state.with_vault(|vault| {
+        course_folder_path_for_open(vault, &course_id)
+            .map_err(|e| from_course_folder_open_error(e).to_invoke_string())
+    })?;
+    app.opener()
+        .open_path(path.to_string_lossy().into_owned(), None::<&str>)
+        .map_err(|e| e.to_string())
 }
 
 #[tauri::command]

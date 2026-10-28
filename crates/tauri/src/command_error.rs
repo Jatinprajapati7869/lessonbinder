@@ -1,4 +1,5 @@
 use serde::Serialize;
+use vault_core::course_folder::CourseFolderOpenError;
 use vault_core::import::{ImportError, RescanError};
 use vault_core::thumbnail::ThumbnailError;
 
@@ -45,6 +46,32 @@ pub fn from_import_error(err: ImportError) -> CommandError {
     CommandError {
         code: code.to_string(),
         message: err.to_string(),
+    }
+}
+
+pub fn from_course_folder_open_error(err: CourseFolderOpenError) -> CommandError {
+    match err {
+        CourseFolderOpenError::Import(import_err) => from_import_error(import_err),
+        CourseFolderOpenError::CourseNotFound => CommandError {
+            code: "course_not_found".into(),
+            message: "course_not_found".into(),
+        },
+        CourseFolderOpenError::NotFolderCourse => CommandError {
+            code: "not_folder_course".into(),
+            message: "not_folder_course".into(),
+        },
+        CourseFolderOpenError::CourseRootMissing => CommandError {
+            code: "course_root_missing".into(),
+            message: "course_root_missing".into(),
+        },
+        CourseFolderOpenError::CourseRootStale => CommandError {
+            code: "course_root_stale".into(),
+            message: "course_root_stale".into(),
+        },
+        CourseFolderOpenError::Db(db_err) => CommandError {
+            code: "open_course_folder_db_error".into(),
+            message: db_err.to_string(),
+        },
     }
 }
 

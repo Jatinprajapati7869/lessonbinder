@@ -14,4 +14,5 @@ export const lessonNoteCommandStubs = {
   captureLessonThumbnail: vi.fn().mockResolvedValue(undefined),
   listLessonChapters: vi.fn().mockResolvedValue({ chapters: [], reason: null }),
   upNext: vi.fn().mockResolvedValue(null),
+  openCourseFolderInFileManager: vi.fn().mockResolvedValue(undefined),
 };

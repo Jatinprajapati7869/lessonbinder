@@ -143,6 +143,11 @@ pub fn validate_import_folder_path(picked: &Path) -> Result<(), ImportError> {
     Ok(())
 }
 
+/// Canonical folder path after risky-path checks (same as import).
+pub fn canonical_import_folder_path(picked: &Path) -> Result<PathBuf, ImportError> {
+    resolve_import_root(picked)
+}
+
 /// Import or re-import a folder as one course (idempotent on `root_path`).
 pub fn import_folder(db: &VaultDb, picked: &Path) -> Result<ImportReport, ImportError> {
     import_folder_with_cancel(db, picked, &|| false, None)

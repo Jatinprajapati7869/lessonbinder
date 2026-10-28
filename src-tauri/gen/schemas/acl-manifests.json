@@ -1927,5 +1927,113 @@
     },
     "permission_sets": {},
     "global_scope_schema": null
+  },
+  "opener": {
+    "default_permission": {
+      "identifier": "default",
+      "description": "This permission set allows opening `mailto:`, `tel:`, `https://` and `http://` urls using their default application\nas well as reveal file in directories using default file explorer",
+      "permissions": [
+        "allow-open-url",
+        "allow-reveal-item-in-dir",
+        "allow-default-urls"
+      ]
+    },
+    "permissions": {
+      "allow-default-urls": {
+        "identifier": "allow-default-urls",
+        "description": "This enables opening `mailto:`, `tel:`, `https://` and `http://` urls using their default application.",
+        "commands": { "allow": [], "deny": [] },
+        "scope": {
+          "allow": [
+            { "url": "mailto:*" },
+            { "url": "tel:*" },
+            { "url": "http://*" },
+            { "url": "https://*" }
+          ]
+        }
+      },
+      "allow-open-path": {
+        "identifier": "allow-open-path",
+        "description": "Enables the open_path command without any pre-configured scope.",
+        "commands": { "allow": ["open_path"], "deny": [] }
+      },
+      "allow-open-url": {
+        "identifier": "allow-open-url",
+        "description": "Enables the open_url command without any pre-configured scope.",
+        "commands": { "allow": ["open_url"], "deny": [] }
+      },
+      "allow-reveal-item-in-dir": {
+        "identifier": "allow-reveal-item-in-dir",
+        "description": "Enables the reveal_item_in_dir command without any pre-configured scope.",
+        "commands": { "allow": ["reveal_item_in_dir"], "deny": [] }
+      },
+      "deny-open-path": {
+        "identifier": "deny-open-path",
+        "description": "Denies the open_path command without any pre-configured scope.",
+        "commands": { "allow": [], "deny": ["open_path"] }
+      },
+      "deny-open-url": {
+        "identifier": "deny-open-url",
+        "description": "Denies the open_url command without any pre-configured scope.",
+        "commands": { "allow": [], "deny": ["open_url"] }
+      },
+      "deny-reveal-item-in-dir": {
+        "identifier": "deny-reveal-item-in-dir",
+        "description": "Denies the reveal_item_in_dir command without any pre-configured scope.",
+        "commands": { "allow": [], "deny": ["reveal_item_in_dir"] }
+      }
+    },
+    "permission_sets": {},
+    "global_scope_schema": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "anyOf": [
+        {
+          "properties": {
+            "app": {
+              "allOf": [{ "$ref": "#/definitions/Application" }],
+              "description": "An application to open this url with, for example: firefox."
+            },
+            "url": {
+              "description": "A URL that can be opened by the webview when using the Opener APIs.\n\nWildcards can be used following the UNIX glob pattern.\n\nExamples:\n\n- \"https://*\" : allows all HTTPS origin\n\n- \"https://*.github.com/tauri-apps/tauri\": allows any subdomain of \"github.com\" with the \"tauri-apps/api\" path\n\n- \"https://myapi.service.com/users/*\": allows access to any URLs that begins with \"https://myapi.service.com/users/\"",
+              "type": "string"
+            }
+          },
+          "required": ["url"],
+          "type": "object"
+        },
+        {
+          "properties": {
+            "app": {
+              "allOf": [{ "$ref": "#/definitions/Application" }],
+              "description": "An application to open this path with, for example: xdg-open."
+            },
+            "path": {
+              "description": "A path that can be opened by the webview when using the Opener APIs.\n\nThe pattern can start with a variable that resolves to a system base directory. The variables are: `$AUDIO`, `$CACHE`, `$CONFIG`, `$DATA`, `$LOCALDATA`, `$DESKTOP`, `$DOCUMENT`, `$DOWNLOAD`, `$EXE`, `$FONT`, `$HOME`, `$PICTURE`, `$PUBLIC`, `$RUNTIME`, `$TEMPLATE`, `$VIDEO`, `$RESOURCE`, `$APP`, `$LOG`, `$TEMP`, `$APPCONFIG`, `$APPDATA`, `$APPLOCALDATA`, `$APPCACHE`, `$APPLOG`.",
+              "type": "string"
+            }
+          },
+          "required": ["path"],
+          "type": "object"
+        }
+      ],
+      "definitions": {
+        "Application": {
+          "anyOf": [
+            { "description": "Open in default application.", "type": "null" },
+            {
+              "description": "If true, allow open with any application.",
+              "type": "boolean"
+            },
+            {
+              "description": "Allow specific application to open with.",
+              "type": "string"
+            }
+          ],
+          "description": "Opener scope application."
+        }
+      },
+      "description": "Opener scope entry.",
+      "title": "OpenerScopeEntry"
+    }
   }
 }

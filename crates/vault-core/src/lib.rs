@@ -9,6 +9,7 @@ pub mod continue_learning;
 pub mod course;
 pub mod course_archive;
 pub mod course_delete;
+pub mod course_folder;
 pub mod cues;
 pub mod db;
 pub mod extract;
@@ -65,6 +66,7 @@ pub use continue_learning::{
 };
 pub use course::{course_detail, CourseDetail, LessonKind, LessonView, OrderProposalView};
 pub use course_archive::{archive_course, unarchive_course, CourseArchiveError};
+pub use course_folder::{course_folder_path_for_open, CourseFolderOpenError};
 pub use cues::{list_cues, list_player_cues, parse_subtitle_file, CueError, SubtitleCue};
 pub use db::LessonStatus;
 pub use db::VaultDb;
@@ -73,8 +75,9 @@ pub use extract::{
     index_lesson_metadata, ExtractorEnv, ExtractorOutcome,
 };
 pub use import::{
-    import_folder, import_folder_with_cancel, rescan, rescan_with_cancel,
-    validate_import_folder_path, FolderScanProgress, ImportError, ImportReport, RescanError,
+    canonical_import_folder_path, import_folder, import_folder_with_cancel, rescan,
+    rescan_with_cancel, validate_import_folder_path, FolderScanProgress, ImportError, ImportReport,
+    RescanError,
 };
 pub use lesson_note::{
     create_lesson_note, delete_lesson_note, list_lesson_notes, update_lesson_note, LessonNote,

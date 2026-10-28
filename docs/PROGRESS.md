@@ -462,8 +462,8 @@ Repo: `/home/xingzi/Documents/lessonbinder`. Full text: `~/Documents/auravault-c
 - [x] 262 — Fonts in that build — **no pass**; no **`ui/dist` from 258** ([`docs/FONTS.md`](FONTS.md) § Prompt 262).
 - [x] 263 — Cancel before the row write — `vault_core::import_cancel::cancel_before_lesson_upsert_leaves_no_half_written_row`.
 - [x] 264 — Close that row — [`docs/V1.4.md`](V1.4.md) mid-write cancel row **pass** with `cancel_before_lesson_upsert_leaves_no_half_written_row`.
-- [ ] 265 — Show the course folder
-- [ ] 266 — Show folder control
+- [x] 265 — Show the course folder — `open_course_folder_in_file_manager` uses **`tauri-plugin-opener`** `OpenerExt::open_path`; `vault_core::course_folder::course_folder_path_for_open` (stored root + risky-path check only).
+- [x] 266 — Show folder control — `Course.test.tsx` — `Show folder calls open command with course id and stubbed opener receives course root`; accessible name **Show folder**.
 - [ ] 267 — Show the lesson file
 - [ ] 268 — Opener failure
 - [ ] 269 — Shortcut list

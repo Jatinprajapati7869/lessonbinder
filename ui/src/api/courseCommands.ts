@@ -30,6 +30,7 @@ export type CourseCommandPort = {
   guardLessonMediaForResume(lessonId: string): Promise<LessonRow["status"]>;
   rescanCourse(courseId: string): Promise<void>;
   cancelFolderScan(): Promise<void>;
+  openCourseFolderInFileManager(courseId: string): Promise<void>;
   archiveCourse(courseId: string): Promise<void>;
   unarchiveCourse(courseId: string): Promise<void>;
   mediaUrlForPath(path: string): Promise<string>;
@@ -98,6 +99,8 @@ export const tauriCourseCommands: CourseCommandPort = {
     invoke<LessonRow["status"]>("guard_lesson_media_for_resume", { lessonId }),
   rescanCourse: (courseId) => invoke("rescan_course", { courseId }),
   cancelFolderScan: () => invoke("cancel_import_course_folder"),
+  openCourseFolderInFileManager: (courseId) =>
+    invoke("open_course_folder_in_file_manager", { courseId }),
   archiveCourse: (courseId) => invoke("archive_course_entry", { courseId }),
   unarchiveCourse: (courseId) => invoke("unarchive_course_entry", { courseId }),
   mediaUrlForPath: async (path) => {

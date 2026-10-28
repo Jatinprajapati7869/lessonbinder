@@ -76,6 +76,35 @@ function baseCommands(
 }
 
 describe("CourseScreen", () => {
+  it("Show folder calls open command with course id and stubbed opener receives course root", async () => {
+    const user = userEvent.setup();
+    const courseRoot = "/tmp/lessonbinder-demo-course";
+    const openPath = vi.fn();
+    const openCourseFolderInFileManager = vi.fn(async (courseId: string) => {
+      expect(courseId).toBe("course-1");
+      openPath(courseRoot);
+    });
+    render(
+      <CourseCommandsProvider
+        commands={baseCommands({ openCourseFolderInFileManager })}
+      >
+        <CourseScreen
+          course={courseRow}
+          onBack={() => {}}
+          onPlayLesson={() => {}}
+        />
+      </CourseCommandsProvider>
+    );
+
+    await user.click(
+      await screen.findByRole("button", { name: "Show folder" })
+    );
+
+    expect(openCourseFolderInFileManager).toHaveBeenCalledWith("course-1");
+    expect(openCourseFolderInFileManager).toHaveBeenCalledTimes(1);
+    expect(openPath).toHaveBeenCalledWith(courseRoot);
+  });
+
   it("Review this course passes the course id to the review handler", async () => {
     const user = userEvent.setup();
     const onReviewThisCourse = vi.fn();

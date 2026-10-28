@@ -153,6 +153,7 @@ function courseCommandStubs(): CourseCommandPort {
     guardLessonMediaForResume: vi.fn().mockResolvedValue("in_progress"),
     rescanCourse: vi.fn().mockResolvedValue(undefined),
     cancelFolderScan: vi.fn().mockResolvedValue(undefined),
+    openCourseFolderInFileManager: vi.fn().mockResolvedValue(undefined),
     archiveCourse: vi.fn().mockResolvedValue(undefined),
     unarchiveCourse: vi.fn().mockResolvedValue(undefined),
     mediaUrlForPath: vi.fn().mockResolvedValue("asset://intro.mp4"),
