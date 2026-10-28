@@ -95,11 +95,7 @@ export function AppShell({
           </button>
           <button
             type="button"
-            className={
-              route === "settings"
-                ? "nav-item nav-item--active nav-item--with-icon theme-icon-label"
-                : "nav-item nav-item--with-icon theme-icon-label"
-            }
+            className={`nav-item theme-icon-label${route === "settings" ? " nav-item--active" : ""}`}
             aria-current={route === "settings" ? "page" : undefined}
             onClick={() => onNavigate("settings")}
           >

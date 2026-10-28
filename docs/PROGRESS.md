@@ -552,7 +552,7 @@ Repo: `/home/xingzi/Documents/lessonbinder`. Full text: `~/Documents/auravault-c
 - [x] 328 — Commands for those machines — [`PACKAGE.md`](PACKAGE.md) § **Platform scope**: Tauri 2 **`msi`** (Windows) / **`dmg`** (macOS) commands **unrun**; commit **327–328**.
 - [x] 329 — Linux target stays — [`src-tauri/tauri.conf.json`](../src-tauri/tauri.conf.json) `bundle.targets` **`["appimage"]`** only (no **nsis** / **msi** / **dmg** added on reference machine).
 - [x] 330 — Signing stays off — [`PACKAGE.md`](PACKAGE.md) § **Code signing**: not configured for Linux / Windows / macOS; commit **329–330**.
-- [ ] 331 — Deslop
+- [x] 331 — Deslop — icon pack UI: dropped dead `course-header__show-folder` / `nav-item--with-icon` / `library-search__icon`; one search a11y assert.
 - [ ] 332 — Doctor
 - [ ] 333 — README
 - [ ] 334 — Scope

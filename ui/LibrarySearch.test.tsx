@@ -92,11 +92,10 @@ describe("Library search", () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByLabelText("Search library")).toBeInTheDocument();
+      expect(
+        screen.getByRole("searchbox", { name: "Search library" })
+      ).toBeInTheDocument();
     });
-    expect(screen.getByRole("searchbox")).toHaveAccessibleName(
-      "Search library"
-    );
   });
 
   it("opens the lesson at the cue start time when a subtitle result is chosen", async () => {

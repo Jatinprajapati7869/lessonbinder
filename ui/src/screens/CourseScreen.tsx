@@ -414,7 +414,7 @@ export function CourseScreen({
           {isFolderCourse ? (
             <button
               type="button"
-              className="library-button-secondary course-header__show-folder theme-icon-label"
+              className="library-button-secondary theme-icon-label"
               disabled={busy || rescanningFolder}
               aria-label="Show folder"
               onClick={() => void handleShowFolder()}

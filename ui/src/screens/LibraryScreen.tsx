@@ -216,12 +216,12 @@ export function LibraryScreen({
       <label className="library-search__label" htmlFor="library-search-input">
         Search library
       </label>
-      <div className="library-search__field">
+      <div className="library-search__field theme-icon-label">
         <img
           src={searchOutline}
           alt=""
           aria-hidden
-          className="library-search__icon"
+          className="theme-icon-label__icon"
         />
         <input
           id="library-search-input"
