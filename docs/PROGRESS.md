@@ -556,8 +556,15 @@ Repo: `/home/xingzi/Documents/lessonbinder`. Full text: `~/Documents/auravault-c
 - [x] 332 — Doctor — `npx react-doctor@latest --verbose` on `ui/`: **64 / 100** (36 warnings). No crash, dead icon-pack control, or missing accessible name on icon additions; complexity warnings unchanged; commit **331–332**.
 - [x] 333 — README — links [`SITTING-RUN.md`](SITTING-RUN.md); names copied outline PNGs; **Install** matches **314** (no published/signed/Win/macOS claims).
 - [x] 334 — Scope — [`docs/SCOPE-v1.6.md`](SCOPE-v1.6.md): sitting run, AppImage **314** retry, six outline PNGs, Win/macOS doc §, signing off; out table on accounts/cloud/kit illustrations/certificate/auto-done; commit **333–334**.
-- [ ] 335 — Checklist
-- [ ] 336 — Tests
+- [x] 335 — Checklist — [`docs/V1.6.md`](V1.6.md) from [`SCOPE-v1.6.md`](SCOPE-v1.6.md): sitting rows → [`SITTING-RUN.md`](SITTING-RUN.md); AppImage launch **unproven** (315); six copied icon **pass** + school UI **unproven**; **Continue** **unproven**.
+- [x] 336 — Tests — `cargo test --workspace`: **241 passed** (77 suites); `cd ui && npm test`: **193 passed** (59 files); `npm run typecheck`: **pass**; commit **335–336**.
+
+```bash
+cargo test --workspace   # 241 passed (77 suites); 0 failed
+cd ui && npm test       # 59 files; 193 passed
+npm run typecheck       # pass (tsc -p ui/tsconfig.json --noEmit)
+```
+
 - [ ] 337 — Cancel still works
 - [ ] 338 — Show folder still opens the root
 - [ ] 339 — Shortcuts still match
