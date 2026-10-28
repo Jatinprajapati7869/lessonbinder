@@ -550,7 +550,7 @@ Repo: `/home/xingzi/Documents/lessonbinder`. Full text: `~/Documents/auravault-c
 - [x] 326 — Icons are local — [`ICONS.md`](ICONS.md) § prompt **326** (`theme/icons` imports; no FlutKit/network); commit **325–326**.
 - [x] 327 — Other operating systems — [`PACKAGE.md`](PACKAGE.md) § **Platform scope**: Linux build only; no Windows/macOS bundles; no download link.
 - [x] 328 — Commands for those machines — [`PACKAGE.md`](PACKAGE.md) § **Platform scope**: Tauri 2 **`msi`** (Windows) / **`dmg`** (macOS) commands **unrun**; commit **327–328**.
-- [ ] 329 — Linux target stays
+- [x] 329 — Linux target stays — [`src-tauri/tauri.conf.json`](../src-tauri/tauri.conf.json) `bundle.targets` **`["appimage"]`** only (no **nsis** / **msi** / **dmg** added on reference machine).
 - [ ] 330 — Signing stays off
 - [ ] 331 — Deslop
 - [ ] 332 — Doctor
