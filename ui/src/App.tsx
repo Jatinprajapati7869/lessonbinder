@@ -6,6 +6,7 @@ import {
   launchAnkiProfile,
   retryOpenVault,
 } from "./api/tauri";
+import { invokeErrorMessage } from "./api/invokeError";
 import type { LessonRow, UpNextTarget } from "./api/courseTypes";
 import type { CourseRow } from "./api/libraryTypes";
 import type { AnkiLaunchStatus, DueSummary, VaultBootstrap } from "./api/types";
@@ -197,15 +198,20 @@ export function LessonbinderApp({
   const [desktopLaunchError, setDesktopLaunchError] = useState<string | null>(
     null
   );
+  const [studyBarError, setStudyBarError] = useState<string | null>(null);
 
   const refreshStudyBar = useCallback(async () => {
     try {
       const bar = await fetchStudyBarStateImpl();
       setDue(bar.due);
       setAnki(bar.anki);
-    } catch {
+      setStudyBarError(null);
+    } catch (e) {
       setDue(zeroDue);
       setAnki(unavailableAnki);
+      setStudyBarError(
+        invokeErrorMessage(e, "Could not load study bar state.")
+      );
     }
   }, [fetchStudyBarStateImpl]);
 
@@ -370,6 +376,11 @@ export function LessonbinderApp({
                     anki={anki}
                     onStartReview={handleStartReview}
                   >
+                    {studyBarError ? (
+                      <p className="library-error" role="alert">
+                        {studyBarError}
+                      </p>
+                    ) : null}
                     <MainContent
                       route={route}
                       openCourse={openCourse}

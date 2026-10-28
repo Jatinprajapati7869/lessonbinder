@@ -1,3 +1,4 @@
+use anki_bridge::anki_error_user_message;
 use anki_bridge::due_summary;
 use anki_bridge::open_profile;
 use anki_bridge::DueSummary;
@@ -90,7 +91,7 @@ pub fn vault_db_info(state: State<AppState>) -> Result<VaultDbInfoDto, String> {
 #[tauri::command]
 pub fn study_bar_state(state: State<AppState>) -> Result<StudyBarDto, String> {
     let profile_dir = anki_profile_dir(&state.app_data_dir);
-    let mut col = open_profile(&profile_dir).map_err(|e| e.to_string())?;
+    let mut col = open_profile(&profile_dir).map_err(anki_error_user_message)?;
     let due = due_summary(&mut col).map_err(|e| e.to_string())?;
     let anki = match resolve_anki_binary() {
         Ok(_) => AnkiLaunchStatusDto::Available,

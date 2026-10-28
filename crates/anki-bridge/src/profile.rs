@@ -102,6 +102,14 @@ pub fn open_profile(profile_dir: impl AsRef<Path>) -> Result<GuardedProfile> {
     Ok(GuardedProfile { col, lock })
 }
 
+/// User-visible text for errors from [`open_profile`] and other Anki collection calls.
+pub fn anki_error_user_message(err: anki::error::AnkiError) -> String {
+    match err {
+        anki::error::AnkiError::InvalidInput { source } => source.message(),
+        other => other.to_string(),
+    }
+}
+
 /// Map Anki's public [`SchemaVersion`] enum to the on-disk `col.ver` integer.
 pub fn schema_version_as_u8(ver: SchemaVersion) -> u8 {
     match ver {

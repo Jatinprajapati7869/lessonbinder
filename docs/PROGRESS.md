@@ -366,8 +366,8 @@ Repo: `/home/xingzi/Documents/lessonbinder`. Full text: `~/Documents/auravault-c
 - [x] 204 — Theme radios — `Settings.test.tsx` dark → save → `applyUiTheme`; light → save again (settings command stubs).
 - [x] 205 — Look of each screen — `ui/screenShellLook.test.tsx` (Library, Course, Player, Review, Settings, Roadmap in `AppShell` + wordmark / Andina wiring).
 - [x] 206 — Boot — [`docs/FIRST-COURSE.md`](FIRST-COURSE.md) § Boot: temp `XDG_DATA_HOME`, Library confirmed, no startup crash (2026-10-28).
-- [ ] 207 — One blocker
-- [ ] 208 — Profile in use
+- [x] 207 — One blocker — no blocker ([`docs/FIRST-COURSE.md`](FIRST-COURSE.md) § Boot: crash none; no dead control named).
+- [x] 208 — Profile in use — `AnkiProfileInUse.test.tsx` shows `study_bar_state` lock sentence; `anki-bridge` `open_profile_while_lock_held_returns_in_use_message`.
 - [ ] 209 — Cancel design
 - [ ] 210 — Import yields
 - [ ] 211 — Cancel control

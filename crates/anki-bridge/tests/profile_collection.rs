@@ -1,6 +1,8 @@
 use std::path::Path;
 
-use anki_bridge::{open_profile, read_stored_schema_version, LessonbinderProfilePaths};
+use anki_bridge::{
+    anki_error_user_message, open_profile, read_stored_schema_version, LessonbinderProfilePaths,
+};
 use tempfile::tempdir;
 
 /// `SCHEMA_MAX_VERSION` in pinned `anki-main` (`rslib/src/storage/upgrades/mod.rs`).
@@ -40,4 +42,20 @@ fn reopens_existing_profile_and_reads_schema_version() {
         read_stored_schema_version(&col).unwrap(),
         LATEST_COLLECTION_SCHEMA
     );
+}
+
+#[test]
+fn open_profile_while_lock_held_returns_in_use_message() {
+    let dir = tempdir().unwrap();
+    let _first = open_profile(dir.path()).unwrap();
+    match open_profile(dir.path()) {
+        Err(e) => {
+            let err = anki_error_user_message(e);
+            assert!(
+                err.contains("Lessonbinder Anki profile is in use"),
+                "unexpected error: {err}"
+            );
+        }
+        Ok(_) => panic!("expected profile-in-use error while lock is held"),
+    }
 }

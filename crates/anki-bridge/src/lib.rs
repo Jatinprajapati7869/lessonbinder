@@ -17,6 +17,7 @@ pub use commit::{
 };
 pub use media::{read_media, ReadMediaError};
 pub use note_display::{note_study_back_text, note_study_text, NoteStudyText};
+pub use profile::anki_error_user_message;
 pub use profile::open_profile;
 pub use profile::read_stored_schema_version;
 pub use profile::GuardedProfile;
