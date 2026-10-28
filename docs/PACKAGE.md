@@ -2,6 +2,28 @@
 
 Lessonbinder is **not published** to an app store or update channel from this repository. Builds are for local distribution and testing only. **No code signing** is configured.
 
+## Platform scope (prompt 327–328)
+
+This repository is **built on Linux** (AppImage target in `tauri.conf.json`). **Windows** and **macOS** bundles are **not** produced here. There is **no** project-hosted download for other platforms—build from source on Linux if you need a local AppImage (see below).
+
+Reference commands below follow [Tauri 2](https://v2.tauri.app/reference/cli/) (`tauri build --bundles …`). They were **not run** on the Linux reference machine (prompt **328**); maintainers run them only on the matching OS with that platform’s Tauri prerequisites installed.
+
+From the repository root, with UI dependencies installed (`npm ci --prefix ui`):
+
+**Windows** (native Windows host; WiX **MSI** bundle — see [Windows installer](https://v2.tauri.app/distribute/windows-installer/)):
+
+```bash
+cd src-tauri && npx @tauri-apps/cli@2 build --bundles msi
+```
+
+**macOS** (native Mac host; **DMG** bundle — see [DMG](https://v2.tauri.app/distribute/dmg/)):
+
+```bash
+cd src-tauri && npx @tauri-apps/cli@2 build --bundles dmg
+```
+
+**Status (2026-10-28):** **unrun** on this host (Arch Linux). This repo’s `package.json` only defines `tauri:build:appimage` for local Linux work.
+
 ## Build command (AppImage)
 
 From the repository root, with UI dependencies installed (`npm ci --prefix ui`):

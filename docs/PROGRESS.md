@@ -548,8 +548,8 @@ Repo: `/home/xingzi/Documents/lessonbinder`. Full text: `~/Documents/auravault-c
 - [x] 324 — Reader and list — reader on **Show lesson file** + **Notes**; list on **Lessons** heading; **school-outline** unused; commit **323–324**.
 - [x] 325 — Names survive the icons — `Course.test.tsx` **Show folder**; `LibrarySearch.test.tsx` **Search library**; `shell.test.tsx` **Settings**.
 - [x] 326 — Icons are local — [`ICONS.md`](ICONS.md) § prompt **326** (`theme/icons` imports; no FlutKit/network); commit **325–326**.
-- [ ] 327 — Other operating systems
-- [ ] 328 — Commands for those machines
+- [x] 327 — Other operating systems — [`PACKAGE.md`](PACKAGE.md) § **Platform scope**: Linux build only; no Windows/macOS bundles; no download link.
+- [x] 328 — Commands for those machines — [`PACKAGE.md`](PACKAGE.md) § **Platform scope**: Tauri 2 **`msi`** (Windows) / **`dmg`** (macOS) commands **unrun**; commit **327–328**.
 - [ ] 329 — Linux target stays
 - [ ] 330 — Signing stays off
 - [ ] 331 — Deslop
