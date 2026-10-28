@@ -293,7 +293,7 @@ export function LibraryScreen({
   );
 
   const folderScanStatus = scanningFolder ? (
-    <LibraryFolderScan onCancel={handleCancelFolderScan} />
+    <LibraryFolderScan mode="import" onCancel={handleCancelFolderScan} />
   ) : null;
 
   if (courses.length === 0 && visibility === "active") {

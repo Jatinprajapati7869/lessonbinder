@@ -27,6 +27,7 @@ export type CourseCommandPort = {
   ): Promise<void>;
   markLessonBroken(lessonId: string): Promise<void>;
   rescanCourse(courseId: string): Promise<void>;
+  cancelFolderScan(): Promise<void>;
   archiveCourse(courseId: string): Promise<void>;
   unarchiveCourse(courseId: string): Promise<void>;
   mediaUrlForPath(path: string): Promise<string>;
@@ -92,6 +93,7 @@ export const tauriCourseCommands: CourseCommandPort = {
     invoke("set_playlist_item_watched", { playlistItemId, watched }),
   markLessonBroken: (lessonId) => invoke("mark_lesson_broken", { lessonId }),
   rescanCourse: (courseId) => invoke("rescan_course", { courseId }),
+  cancelFolderScan: () => invoke("cancel_import_course_folder"),
   archiveCourse: (courseId) => invoke("archive_course_entry", { courseId }),
   unarchiveCourse: (courseId) => invoke("unarchive_course_entry", { courseId }),
   mediaUrlForPath: async (path) => {

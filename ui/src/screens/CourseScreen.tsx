@@ -4,7 +4,8 @@ import { handleTableArrowKeys } from "../keyboard/tableListNavigation";
 
 import type { CourseDetail, LessonRow } from "../api/courseTypes";
 import { CourseLessonTitleCell } from "../course/CourseLessonTitleCell";
-import { invokeErrorMessage } from "../api/invokeError";
+import { libraryImportErrorMessage } from "../library/libraryImportError";
+import { LibraryFolderScan } from "../library/LibraryFolderScan";
 import type { CourseRow } from "../api/libraryTypes";
 import { useCourseCommands } from "../course/useCourseCommands";
 import {
@@ -40,6 +41,7 @@ export function CourseScreen({
   const [detail, setDetail] = useState<CourseDetail | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [rescanningFolder, setRescanningFolder] = useState(false);
   const [archiveConfirmOpen, setArchiveConfirmOpen] = useState(false);
 
   const refresh = useCallback(async () => {
@@ -107,13 +109,22 @@ export function CourseScreen({
     setBusy(true);
     setError(null);
     try {
+      setRescanningFolder(true);
       await commands.rescanCourse(course.course_id);
       await refresh();
     } catch (e) {
-      setError(invokeErrorMessage(e, "Could not rescan folder."));
+      const message = libraryImportErrorMessage(e, "Could not rescan folder.");
+      if (message !== null) {
+        setError(message);
+      }
     } finally {
+      setRescanningFolder(false);
       setBusy(false);
     }
+  }
+
+  function handleCancelFolderRescan() {
+    void commands.cancelFolderScan();
   }
 
   async function handleArchiveCourse() {
@@ -338,6 +349,9 @@ export function CourseScreen({
 
   return (
     <div className="course-screen">
+      {rescanningFolder ? (
+        <LibraryFolderScan mode="rescan" onCancel={handleCancelFolderRescan} />
+      ) : null}
       <button
         type="button"
         className="library-button-secondary"

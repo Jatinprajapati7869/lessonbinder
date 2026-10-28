@@ -216,6 +216,20 @@ describe("LibraryScreen", () => {
     expect(listCourses).toHaveBeenCalledTimes(1);
   });
 
+  it("does not show Cancel import while folder import is idle", async () => {
+    renderLibrary(libraryCommands());
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole("button", { name: "Add folder" })
+      ).toBeInTheDocument();
+    });
+
+    expect(
+      screen.queryByRole("button", { name: "Cancel import" })
+    ).not.toBeInTheDocument();
+  });
+
   it("cancel folder scan calls command layer while import is in flight", async () => {
     const user = userEvent.setup();
     let finishImport: (() => void) | undefined;
@@ -247,7 +261,7 @@ describe("LibraryScreen", () => {
       expect(importFolder).toHaveBeenCalledWith("/tmp/course");
     });
 
-    await user.click(screen.getByRole("button", { name: "Cancel" }));
+    await user.click(screen.getByRole("button", { name: "Cancel import" }));
 
     expect(cancelImportFolder).toHaveBeenCalledTimes(1);
 

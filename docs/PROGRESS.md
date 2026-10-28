@@ -370,8 +370,8 @@ Repo: `/home/xingzi/Documents/lessonbinder`. Full text: `~/Documents/auravault-c
 - [x] 208 — Profile in use — `AnkiProfileInUse.test.tsx` shows `study_bar_state` lock sentence; `anki-bridge` `open_profile_while_lock_held_returns_in_use_message`.
 - [x] 209 — Cancel design — [`docs/CANCEL-SCAN.md`](CANCEL-SCAN.md): cancel between files, partial course OK, no Anki on import, Escape ≠ cancel.
 - [x] 210 — Import yields — `import_folder_with_cancel` checks cancel during scan and before each lesson upsert; `#[tauri::command(async)]` on `import_course_folder`; `import_cancel.rs` keeps first lesson on mid-import cancel.
-- [ ] 211 — Cancel control
-- [ ] 212 — Rescan yields
+- [x] 211 — Cancel control — `LibraryFolderScan` while `scanningFolder`; `Cancel import` calls `cancelImportFolder`; hidden when idle (`Library.test.tsx`).
+- [x] 212 — Rescan yields — `rescan_with_cancel` + `#[tauri::command(async)]` on `rescan_course`; same `cancel_import_course_folder` flag; `LibraryFolderScan` **Cancel rescan** on course screen; `rescan_cancel.rs` + `Course.test.tsx`.
 - [ ] 213 — One import path
 - [ ] 214 — Cancel is not completion
 - [ ] 215 — Count

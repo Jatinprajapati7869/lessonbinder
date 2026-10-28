@@ -1,3 +1,5 @@
+use std::sync::atomic::Ordering;
+
 use serde::Serialize;
 use tauri::{AppHandle, State};
 use tauri_plugin_dialog::{DialogExt, FilePath};
@@ -9,7 +11,7 @@ use vault_core::course::LessonKind;
 use vault_core::course_archive::{archive_course, unarchive_course};
 use vault_core::cues::list_player_cues;
 use vault_core::extract::ExtractorEnv;
-use vault_core::import::rescan;
+use vault_core::import::rescan_with_cancel;
 use vault_core::lesson_note::{self as lesson_notes, LessonNoteError};
 use vault_core::lesson_note_export::{course_notes_markdown, lesson_notes_markdown};
 use vault_core::lesson_resource::list_lesson_resources;
@@ -136,10 +138,13 @@ pub fn mark_lesson_broken(state: State<AppState>, lesson_id: String) -> Result<(
     })
 }
 
-#[tauri::command]
+#[tauri::command(async)]
 pub fn rescan_course(state: State<AppState>, course_id: String) -> Result<(), String> {
+    state.import_folder_cancel.store(false, Ordering::Relaxed);
     state.with_vault(|vault| {
-        rescan(vault, &course_id).map_err(|err| map_rescan_failure(&state, &course_id, err))?;
+        let cancel = &state.import_folder_cancel;
+        rescan_with_cancel(vault, &course_id, &|| cancel.load(Ordering::Relaxed))
+            .map_err(|err| map_rescan_failure(&state, &course_id, err))?;
         Ok(())
     })
 }

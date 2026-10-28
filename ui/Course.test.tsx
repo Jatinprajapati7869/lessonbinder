@@ -60,6 +60,7 @@ function baseCommands(
     setPlaylistItemWatched: vi.fn(),
     markLessonBroken: vi.fn(),
     rescanCourse: vi.fn().mockResolvedValue(undefined),
+    cancelFolderScan: vi.fn().mockResolvedValue(undefined),
     archiveCourse: vi.fn().mockResolvedValue(undefined),
     unarchiveCourse: vi.fn().mockResolvedValue(undefined),
     mediaUrlForPath: vi.fn(),
@@ -98,6 +99,48 @@ describe("CourseScreen", () => {
     );
 
     expect(onReviewThisCourse).toHaveBeenCalledWith("course-1");
+  });
+
+  it("cancel rescan calls command layer while rescan is in flight", async () => {
+    const user = userEvent.setup();
+    let finishRescan: (() => void) | undefined;
+    const rescanCourse = vi.fn(
+      () =>
+        new Promise<void>((resolve) => {
+          finishRescan = resolve;
+        })
+    );
+    const cancelFolderScan = vi.fn().mockResolvedValue(undefined);
+    render(
+      <CourseCommandsProvider
+        commands={baseCommands({ rescanCourse, cancelFolderScan })}
+      >
+        <CourseScreen
+          course={courseRow}
+          onBack={() => {}}
+          onPlayLesson={() => {}}
+        />
+      </CourseCommandsProvider>
+    );
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole("button", { name: "Rescan folder" })
+      ).toBeInTheDocument();
+    });
+
+    await user.click(screen.getByRole("button", { name: "Rescan folder" }));
+
+    await waitFor(() => {
+      expect(screen.getByRole("status")).toHaveTextContent("Rescanning folder");
+      expect(rescanCourse).toHaveBeenCalledWith("course-1");
+    });
+
+    await user.click(screen.getByRole("button", { name: "Cancel rescan" }));
+
+    expect(cancelFolderScan).toHaveBeenCalledTimes(1);
+
+    finishRescan?.();
   });
 
   it("folder course rescan calls command layer and refreshes lessons", async () => {
@@ -441,6 +484,7 @@ describe("CourseScreen", () => {
       setPlaylistItemWatched: vi.fn(),
       markLessonBroken: vi.fn(),
       rescanCourse: vi.fn(),
+      cancelFolderScan: vi.fn(),
       archiveCourse: vi.fn(),
       unarchiveCourse: vi.fn(),
       mediaUrlForPath: vi.fn(),

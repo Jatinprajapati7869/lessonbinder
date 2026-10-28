@@ -151,6 +151,7 @@ function courseCommandStubs(): CourseCommandPort {
     setPlaylistItemWatched: vi.fn(),
     markLessonBroken: vi.fn(),
     rescanCourse: vi.fn().mockResolvedValue(undefined),
+    cancelFolderScan: vi.fn().mockResolvedValue(undefined),
     archiveCourse: vi.fn().mockResolvedValue(undefined),
     unarchiveCourse: vi.fn().mockResolvedValue(undefined),
     mediaUrlForPath: vi.fn().mockResolvedValue("asset://intro.mp4"),

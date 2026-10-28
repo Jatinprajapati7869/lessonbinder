@@ -17,6 +17,9 @@ impl CommandError {
 }
 
 pub fn from_rescan_error(err: RescanError) -> CommandError {
+    if matches!(err, RescanError::Import(ImportError::Cancelled)) {
+        return from_import_error(ImportError::Cancelled);
+    }
     let code = match &err {
         RescanError::NotSupported => "rescan_not_supported",
         RescanError::CourseNotFound => "rescan_course_not_found",

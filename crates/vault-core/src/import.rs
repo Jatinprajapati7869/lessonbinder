@@ -77,6 +77,15 @@ impl PartialEq for RescanError {
 
 /// Rescan a local folder course from disk: upsert current files, mark missing lessons broken.
 pub fn rescan(db: &VaultDb, course_id: &str) -> Result<ImportReport, RescanError> {
+    rescan_with_cancel(db, course_id, &|| false)
+}
+
+/// Like [`rescan`], but checks `should_cancel` while scanning and before each vault write.
+pub fn rescan_with_cancel(
+    db: &VaultDb,
+    course_id: &str,
+    should_cancel: &dyn Fn() -> bool,
+) -> Result<ImportReport, RescanError> {
     let source_kind = db.course_source_kind(course_id)?;
     if source_kind != "folder" {
         return Err(RescanError::NotSupported);
@@ -85,21 +94,37 @@ pub fn rescan(db: &VaultDb, course_id: &str) -> Result<ImportReport, RescanError
         return Err(RescanError::CourseNotFound);
     };
     let root = PathBuf::from(&root_path);
-    let lessons = scan_folder(&root)?;
+    let lessons = scan_folder_with_cancel(&root, should_cancel)?;
+    if should_cancel() {
+        return Err(RescanError::Import(ImportError::Cancelled));
+    }
     relink_renamed_local_files(db, course_id, &root, &lessons)?;
+    if should_cancel() {
+        return Err(RescanError::Import(ImportError::Cancelled));
+    }
     let scanned_keys: HashSet<String> = lessons
         .iter()
         .map(|lesson| lesson.relative_path.clone())
         .collect();
 
     let existing = db.local_file_lessons_for_course(course_id)?;
-    let lesson_ids = db.upsert_scanned_lessons(course_id, &root, &lessons)?;
+    for lesson in &lessons {
+        if should_cancel() {
+            return Err(RescanError::Import(ImportError::Cancelled));
+        }
+        db.upsert_single_scanned_lesson(course_id, &root, lesson)?;
+    }
 
     for lesson in existing {
         if !scanned_keys.contains(&lesson.stable_key) {
+            if should_cancel() {
+                return Err(RescanError::Import(ImportError::Cancelled));
+            }
             db.mark_source_missing(&lesson.lesson_id)?;
         }
     }
+
+    let lesson_ids = db.lesson_ids_in_learning_order(course_id)?;
 
     Ok(ImportReport {
         course_id: course_id.to_string(),
