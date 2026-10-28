@@ -2,9 +2,32 @@
 
 Walk through **one real course folder** on your machine (not a playlist URL course). Use a directory you are allowed to import: at least one **local video or document** lesson, and for the card step either a **paired subtitle file** (same stem as the video, `.srt` or `.vtt`) or a frame suitable for **Capture card**. Do the rows **in order** on the same app profile so quit, relaunch, and **Continue** prove persistence.
 
-Run a dev or packaged build the way you normally open Lessonbinder. Prefer your **usual app data location** (not a throwaway temp profile) so relaunch reads the same library. For launch isolation details, see [`FIRST-TEST.md`](FIRST-TEST.md) — this checklist does not repeat those commands.
+Run a dev or packaged build the way you normally open Lessonbinder. Prefer your **usual app data location** (not a throwaway temp profile) so relaunch reads the same library. For a **throwaway dev profile** (boot check only), use the command in **Boot** below.
 
 **Optional tools** (only where a row says so): **Tesseract** (OCR capture), **ffmpeg** / **ffprobe** (media tooling on `PATH`), a local **Whisper** model path plus CLI (transcription only), **Anki Desktop** on `PATH` when using the external fallback—not required for in-app **Study**.
+
+---
+
+## Boot
+
+Isolated dev launch before walking the checklist on a **persistent** profile. Same pattern as [`FIRST-TEST.md`](FIRST-TEST.md) § Launch.
+
+**Command (repo root, 2026-10-28):**
+
+```bash
+export XDG_DATA_HOME="$(mktemp -d)"
+export XDG_CONFIG_HOME="$(mktemp -d)"
+export XDG_CACHE_HOME="$(mktemp -d)"
+npm run tauri:dev
+```
+
+**Data directory used:** `/tmp/tmp.OuWd4XEug0/dev.lessonbinder.app/` (`vault.db` and `anki-profile/` created on first open).
+
+**Result:** **pass** — `Finished` / `Running …/target/debug/lessonbinder` in the dev log; window title **Lessonbinder**; **Library** route (empty-library **Add folder** / playlist actions), side nav (Library / Roadmap / Settings), screen title **Library** — not a blank webview and not the Vite + React starter template (`ui/index.html` title is **Lessonbinder**; app mounts `main.tsx`).
+
+**Crash / startup failure text:** none. Process quit cleanly after manual stop once the library was up.
+
+**Non-fatal console noise:** Vite logged repeated React duplicate-key warnings (`1970-01-01`) from `LibraryStudyHeatmap` on the library screen; startup was not blocked.
 
 ---
 

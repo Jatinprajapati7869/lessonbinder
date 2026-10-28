@@ -364,8 +364,8 @@ Repo: `/home/xingzi/Documents/lessonbinder`. Full text: `~/Documents/auravault-c
 - [x] 202 — Land v1.3 — commit `Ship the v1.3 study loop…` on `master`; migrations 019–024, bundled fonts, study-loop UI + docs.
 - [x] 203 — First course checklist — [`docs/FIRST-COURSE.md`](FIRST-COURSE.md): one real folder; import → resume → note → card → review → theme → quit → relaunch → Continue.
 - [x] 204 — Theme radios — `Settings.test.tsx` dark → save → `applyUiTheme`; light → save again (settings command stubs).
-- [ ] 205 — Look of each screen
-- [ ] 206 — Boot
+- [x] 205 — Look of each screen — `ui/screenShellLook.test.tsx` (Library, Course, Player, Review, Settings, Roadmap in `AppShell` + wordmark / Andina wiring).
+- [x] 206 — Boot — [`docs/FIRST-COURSE.md`](FIRST-COURSE.md) § Boot: temp `XDG_DATA_HOME`, Library confirmed, no startup crash (2026-10-28).
 - [ ] 207 — One blocker
 - [ ] 208 — Profile in use
 - [ ] 209 — Cancel design
