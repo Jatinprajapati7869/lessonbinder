@@ -3,9 +3,12 @@ use std::os::unix::fs::symlink;
 
 use std::fs;
 use std::path::Path;
+use std::sync::atomic::{AtomicBool, Ordering};
 
 use tempfile::tempdir;
-use vault_core::import::{import_folder, validate_import_folder_path, ImportError};
+use vault_core::import::{
+    import_folder, import_folder_with_cancel, validate_import_folder_path, ImportError,
+};
 use vault_core::VaultDb;
 
 #[test]
@@ -13,7 +16,23 @@ fn validate_import_folder_path_guard_blocks_drop_on_risky_root() {
     let db = VaultDb::open_in_memory().unwrap();
     let err = validate_import_folder_path(Path::new("/")).unwrap_err();
     assert!(matches!(err, ImportError::RiskyImportPath));
-    assert!(import_folder(&db, Path::new("/")).is_err());
+
+    let scan_or_upsert_started = AtomicBool::new(false);
+    let err = import_folder_with_cancel(
+        &db,
+        Path::new("/"),
+        &|| {
+            scan_or_upsert_started.store(true, Ordering::Relaxed);
+            false
+        },
+        None,
+    )
+    .unwrap_err();
+    assert!(matches!(err, ImportError::RiskyImportPath));
+    assert!(
+        !scan_or_upsert_started.load(Ordering::Relaxed),
+        "risky root must be rejected before directory scan"
+    );
 }
 
 #[test]

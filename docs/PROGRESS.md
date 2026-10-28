@@ -390,8 +390,8 @@ Repo: `/home/xingzi/Documents/lessonbinder`. Full text: `~/Documents/auravault-c
 - [x] 228 — Escape is not cancel
 - [x] 229 — Cancelled rescan keeps work — `rescan_cancel.rs`: `cancel_rescan_leaves_lesson_order_and_notes_unchanged` (cancel on second scan entry keeps explicit `reorder_lessons` order and lesson notes; no third lesson).
 - [x] 230 — Import again after cancel — `import_cancel.rs`: `reimport_after_cancelled_partial_import_finishes_without_duplicating_first_lesson`.
-- [ ] 231 — Ignore file still applies
-- [ ] 232 — Risky root
+- [x] 231 — Ignore file still applies — `import_ignore.rs`: `import_skips_secret_mp4_and_keeps_lecture` also uses `import_folder_with_cancel`.
+- [x] 232 — Risky root — `risky_import_path.rs`: `validate_import_folder_path_guard_blocks_drop_on_risky_root` (`import_folder_with_cancel` on `/` returns `RiskyImportPath` before scan).
 - [ ] 233 — Done stays manual
 - [ ] 234 — Backup still round-trips
 - [ ] 235 — Notes and search
