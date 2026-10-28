@@ -35,6 +35,7 @@ import {
   playerMarkCompleteAccessibleName,
   shouldHandlePlayerMarkComplete,
 } from "../player/playerCompleteKeyboard";
+import { PLAYER_EXIT_THEATER_OR_ZEN_KEY } from "../player/playerModeKeyboard";
 import {
   clampSeekMs,
   playerArrowSeekDeltaMs,
@@ -309,7 +310,7 @@ export function PlayerScreen({
       ) {
         return;
       }
-      if (event.key === "Escape") {
+      if (event.key === PLAYER_EXIT_THEATER_OR_ZEN_KEY) {
         event.preventDefault();
         event.stopImmediatePropagation();
         exitTheaterMode();
@@ -333,7 +334,7 @@ export function PlayerScreen({
       ) {
         return;
       }
-      if (event.key !== "Escape") {
+      if (event.key !== PLAYER_EXIT_THEATER_OR_ZEN_KEY) {
         return;
       }
       event.preventDefault();

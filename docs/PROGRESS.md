@@ -466,8 +466,8 @@ Repo: `/home/xingzi/Documents/lessonbinder`. Full text: `~/Documents/auravault-c
 - [x] 266 — Show folder control — `Course.test.tsx` — `Show folder calls open command with course id and stubbed opener receives course root`; accessible name **Show folder**.
 - [x] 267 — Show the lesson file — `lesson_file_directory_for_open` + `open_lesson_file_directory_in_file_manager`; player **Show lesson file**; `lesson_file_directory_open::rejects_lesson_media_that_escapes_course_root_via_symlink`.
 - [x] 268 — Opener failure — `opener_open_path_failed` command error; course + player use `invokeErrorMessage`; `Course.test.tsx` / `Player.test.tsx` / `courseFolderOpenError.test.ts`.
-- [ ] 269 — Shortcut list
-- [ ] 270 — Shortcuts in Settings
+- [x] 269 — Shortcut list — `ui/src/keyboard/implementedShortcuts.ts` reads `playerSeekKeyboard`, `playerCompleteKeyboard`, `playerModeKeyboard`, `reviewKeyboard`; `implementedShortcuts.test.ts`.
+- [x] 270 — Shortcuts in Settings — `SettingsKeyboardShortcutsList`; `Settings.test.tsx` — `renders keyboard shortcut rows from the implemented list`; `assertImplementedShortcutsMatchKeyModules` in `implementedShortcuts.test.ts`.
 - [ ] 271 — Last errors
 - [ ] 272 — Twenty lines
 - [ ] 273 — Cues that already exist

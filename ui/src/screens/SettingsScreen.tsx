@@ -4,6 +4,7 @@ import type { VaultSettings } from "../api/settingsTypes";
 import { invokeErrorMessage } from "../api/invokeError";
 import { useSettingsCommands } from "../settings/useSettingsCommands";
 import { applyUiTheme } from "../theme/applyUiTheme";
+import { SettingsKeyboardShortcutsList } from "../settings/SettingsKeyboardShortcutsList";
 
 const defaultSettings: VaultSettings = {
   tesseract_language: "eng",
@@ -245,6 +246,8 @@ export function SettingsScreen() {
             {ankiProfilePath || "—"}
           </p>
         </div>
+
+        <SettingsKeyboardShortcutsList />
 
         <div
           className="settings-backup"

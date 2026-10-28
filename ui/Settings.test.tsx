@@ -16,6 +16,10 @@ import {
   applyUiTheme,
   readUiThemeFromDocument,
 } from "./src/theme/applyUiTheme";
+import {
+  formatShortcutKeysForSettings,
+  IMPLEMENTED_PLAYER_AND_REVIEW_SHORTCUTS,
+} from "./src/keyboard/implementedShortcuts";
 
 const defaults: VaultSettings = {
   tesseract_language: "eng",
@@ -149,6 +153,32 @@ describe("SettingsScreen", () => {
       });
       expect(screen.getByText("Settings saved.")).toBeInTheDocument();
     });
+  });
+
+  it("renders keyboard shortcut rows from the implemented list", async () => {
+    const commands: SettingsCommandPort = {
+      getVaultSettings: vi.fn().mockResolvedValue(defaults),
+      saveVaultSettings: vi.fn(),
+      getAnkiProfilePath: vi.fn().mockResolvedValue("/data/anki-profile"),
+      ...backupRestoreCommandStubs,
+    };
+
+    renderSettings(commands);
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId("settings-keyboard-shortcuts")
+      ).toBeInTheDocument();
+    });
+
+    IMPLEMENTED_PLAYER_AND_REVIEW_SHORTCUTS.forEach((row, index) => {
+      const line = screen.getByTestId(`settings-shortcut-row-${index}`);
+      expect(line).toHaveTextContent(formatShortcutKeysForSettings(row.keys));
+      expect(line).toHaveTextContent(row.action);
+    });
+    expect(screen.getAllByTestId(/^settings-shortcut-row-/)).toHaveLength(
+      IMPLEMENTED_PLAYER_AND_REVIEW_SHORTCUTS.length
+    );
   });
 
   it("restore requires explicit confirm before calling command", async () => {

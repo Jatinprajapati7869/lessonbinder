@@ -13,6 +13,10 @@ const DIGIT_TO_EASE: Record<string, ReviewEase> = {
   "4": "easy",
 };
 
+/** Digit keys used to grade a revealed card (see `reviewEaseForDigit`). */
+export const REVIEW_GRADE_DIGIT_KEYS: readonly string[] =
+  Object.keys(DIGIT_TO_EASE);
+
 export function reviewEaseForDigit(
   digit: string,
   buttons: ReviewAnswerButtons
