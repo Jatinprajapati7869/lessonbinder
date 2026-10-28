@@ -586,3 +586,20 @@ cd ui && npm test       # 59 files; 193 passed
 ```
 
 - [x] 351 — Freeze — [`V1.6.md`](V1.6.md) ends **READY** (350 counts; sitting **305–311** in [`SITTING-RUN.md`](SITTING-RUN.md); six icon copy rows; AppImage launch **unproven** → [`PACKAGE.md`](PACKAGE.md)); no release tag; commit **351**.
+
+## Playback and dark surfaces (prompts 352–363)
+
+Repo: `/home/xingzi/Documents/lessonbinder`. Full text: `~/Documents/auravault-cursor-prompts.md`. Diagnose the first video, hand decode failures to mpv on PATH, put the controls on the frame, and make dark mode use the dark tokens.
+
+- [x] 352 — Why the first video fails — [`PLAYBACK.md`](PLAYBACK.md) prompt **352**: Dandadan first row **`[EMBER] Dandadan - 13.mkv`** (HEVC); `convertFileSrc` **asset** URL recorded; `<video>` stuck **`networkState` 2**, **`error` null**; sitting **`intro.mp4`** control plays in WebKit; commit **352** (tree was dirty with **352–363** PROGRESS section only).
+- [ ] 353 — Engine rule
+- [ ] 354 — IPC client
+- [ ] 355 — Hand off when video errors
+- [ ] 356 — One bar on the frame
+- [ ] 357 — Dark surfaces that ignore the theme
+- [ ] 358 — Dark tokens everywhere
+- [ ] 359 — The frame stays dark
+- [ ] 360 — Tests
+- [ ] 361 — README
+- [ ] 362 — No extra window
+- [ ] 363 — Freeze
