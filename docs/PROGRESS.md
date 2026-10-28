@@ -505,8 +505,8 @@ cargo test --workspace   # 241 passed (77 suites); 0 failed
 cd ui && npm test       # 59 files; 192 passed
 ```
 
-- [ ] 295 — Checklist evidence
-- [ ] 296 — Unsigned
+- [x] 295 — Checklist evidence — [`V1.5.md`](V1.5.md) pass rows cite named tests or pack doc lines (**293** SITTING human-only, **264** cancel-before-upsert, exact `LibraryEmpty` test); none demoted to **unproven**.
+- [x] 296 — Unsigned — [`PACKAGE.md`](PACKAGE.md) **Bundle identity** + prompt **248** paragraph: **unsigned**, `createUpdaterArtifacts` **false**, `version` **0.0.0**; **not published** from this repo.
 - [ ] 297 — Typecheck
 - [ ] 298 — Lint
 - [ ] 299 — First course page
