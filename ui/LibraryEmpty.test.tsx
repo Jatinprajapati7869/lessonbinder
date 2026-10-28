@@ -124,8 +124,6 @@ describe("Library empty state", () => {
         async (paths: readonly string[]) => {
           const dropError = await libraryFolderDropIntoLibrary(paths, {
             pathIsDirectory: (path) => commands.pathIsDirectory(path),
-            validateImportFolderPath: (path) =>
-              commands.validateImportFolderPath(path),
             importFolderAtPath,
           });
           if (dropError !== null) {

@@ -2,7 +2,6 @@ import {
   libraryImportErrorMessage,
   LIBRARY_DROP_FILE_MESSAGE,
   LIBRARY_DROP_ONE_FOLDER_MESSAGE,
-  RISKY_IMPORT_PATH_MESSAGE,
 } from "./libraryImportError";
 
 export {
@@ -36,8 +35,7 @@ export async function applyLibraryFolderDrop(
   paths: readonly string[],
   deps: {
     isDirectory: (path: string) => Promise<boolean>;
-    validateImportFolderPath: (path: string) => Promise<void>;
-    importFolder: (path: string) => Promise<void>;
+    importFolderAtPath: (path: string) => Promise<void>;
   }
 ): Promise<string | null> {
   const decision = await resolveLibraryFolderDrop(paths, deps.isDirectory);
@@ -48,14 +46,10 @@ export async function applyLibraryFolderDrop(
     return decision.message;
   }
   try {
-    await deps.validateImportFolderPath(decision.path);
+    await deps.importFolderAtPath(decision.path);
   } catch (raw) {
-    return (
-      libraryImportErrorMessage(raw, RISKY_IMPORT_PATH_MESSAGE) ??
-      RISKY_IMPORT_PATH_MESSAGE
-    );
+    return libraryImportErrorMessage(raw, "Import folder failed.");
   }
-  await deps.importFolder(decision.path);
   return null;
 }
 
@@ -63,13 +57,11 @@ export async function libraryFolderDropIntoLibrary(
   paths: readonly string[],
   deps: {
     pathIsDirectory: (path: string) => Promise<boolean>;
-    validateImportFolderPath: (path: string) => Promise<void>;
     importFolderAtPath: (path: string) => Promise<void>;
   }
 ): Promise<string | null> {
   return applyLibraryFolderDrop(paths, {
     isDirectory: deps.pathIsDirectory,
-    validateImportFolderPath: deps.validateImportFolderPath,
-    importFolder: deps.importFolderAtPath,
+    importFolderAtPath: deps.importFolderAtPath,
   });
 }

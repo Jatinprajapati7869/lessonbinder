@@ -30,6 +30,7 @@ import { emptyStudyHeatmap52Weeks } from "../api/libraryStudyHeatmapTypes";
 import { LibraryVisibilityFilter } from "../library/LibraryVisibilityFilter";
 import type { LibraryVisibility } from "../api/libraryTypes";
 import { libraryImportErrorMessage } from "../library/libraryImportError";
+import { importCancellableFolderAtPath } from "../library/libraryCancellableFolderImport";
 import { libraryFolderDropIntoLibrary } from "../library/libraryFolderDrop";
 import { useLibraryCommands } from "../library/useLibraryCommands";
 
@@ -112,9 +113,18 @@ export function LibraryScreen({
       setBusy(true);
       setError(null);
       try {
-        setScanningFolder(true);
-        await commands.importFolder(path);
-        await refresh();
+        const validationError = await importCancellableFolderAtPath(path, {
+          validateImportFolderPath: (picked) =>
+            commands.validateImportFolderPath(picked),
+          importFolder: async (picked) => {
+            setScanningFolder(true);
+            await commands.importFolder(picked);
+            await refresh();
+          },
+        });
+        if (validationError !== null) {
+          setError(validationError);
+        }
       } catch (e) {
         const message = libraryImportErrorMessage(e, "Import folder failed.");
         if (message !== null) {
@@ -144,8 +154,6 @@ export function LibraryScreen({
             event.payload.paths,
             {
               pathIsDirectory: (path) => commands.pathIsDirectory(path),
-              validateImportFolderPath: (path) =>
-                commands.validateImportFolderPath(path),
               importFolderAtPath,
             }
           );

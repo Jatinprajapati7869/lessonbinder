@@ -1,6 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { RISKY_IMPORT_PATH_MESSAGE } from "./src/library/libraryImportError";
 import {
   applyLibraryFolderDrop,
   LIBRARY_DROP_FILE_MESSAGE,
@@ -42,48 +41,22 @@ describe("resolveLibraryFolderDrop", () => {
 
 describe("applyLibraryFolderDrop", () => {
   it("does not import when the drop is a file", async () => {
-    const importFolder = vi.fn();
-    const validateImportFolderPath = vi.fn();
+    const importFolderAtPath = vi.fn();
     const message = await applyLibraryFolderDrop(["/tmp/notes.md"], {
       isDirectory: async () => false,
-      validateImportFolderPath,
-      importFolder,
+      importFolderAtPath,
     });
     expect(message).toBe(LIBRARY_DROP_FILE_MESSAGE);
-    expect(validateImportFolderPath).not.toHaveBeenCalled();
-    expect(importFolder).not.toHaveBeenCalled();
+    expect(importFolderAtPath).not.toHaveBeenCalled();
   });
 
-  it("runs risky-import validation before import", async () => {
-    const importFolder = vi.fn();
-    const validateImportFolderPath = vi.fn().mockRejectedValue(
-      new Error(
-        JSON.stringify({
-          code: "risky_import_path",
-          message: "risky_import_path",
-        })
-      )
-    );
-    const message = await applyLibraryFolderDrop(["/"], {
-      isDirectory: async () => true,
-      validateImportFolderPath,
-      importFolder,
-    });
-    expect(validateImportFolderPath).toHaveBeenCalledWith("/");
-    expect(importFolder).not.toHaveBeenCalled();
-    expect(message).toBe(RISKY_IMPORT_PATH_MESSAGE);
-  });
-
-  it("imports a dropped directory like Add folder", async () => {
-    const importFolder = vi.fn().mockResolvedValue(undefined);
-    const validateImportFolderPath = vi.fn().mockResolvedValue(undefined);
+  it("delegates directory import to the same entry as Add folder", async () => {
+    const importFolderAtPath = vi.fn().mockResolvedValue(undefined);
     const message = await applyLibraryFolderDrop(["/tmp/course-dir"], {
       isDirectory: async () => true,
-      validateImportFolderPath,
-      importFolder,
+      importFolderAtPath,
     });
     expect(message).toBeNull();
-    expect(validateImportFolderPath).toHaveBeenCalledWith("/tmp/course-dir");
-    expect(importFolder).toHaveBeenCalledWith("/tmp/course-dir");
+    expect(importFolderAtPath).toHaveBeenCalledWith("/tmp/course-dir");
   });
 });

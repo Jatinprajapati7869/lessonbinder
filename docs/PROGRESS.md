@@ -372,8 +372,8 @@ Repo: `/home/xingzi/Documents/lessonbinder`. Full text: `~/Documents/auravault-c
 - [x] 210 — Import yields — `import_folder_with_cancel` checks cancel during scan and before each lesson upsert; `#[tauri::command(async)]` on `import_course_folder`; `import_cancel.rs` keeps first lesson on mid-import cancel.
 - [x] 211 — Cancel control — `LibraryFolderScan` while `scanningFolder`; `Cancel import` calls `cancelImportFolder`; hidden when idle (`Library.test.tsx`).
 - [x] 212 — Rescan yields — `rescan_with_cancel` + `#[tauri::command(async)]` on `rescan_course`; same `cancel_import_course_folder` flag; `LibraryFolderScan` **Cancel rescan** on course screen; `rescan_cancel.rs` + `Course.test.tsx`.
-- [ ] 213 — One import path
-- [ ] 214 — Cancel is not completion
+- [x] 213 — One import path — `importCancellableFolderAtPath` for Add folder + drop; `validate_import_folder_path` before scan; `libraryCancellableFolderImport.test.ts`.
+- [x] 214 — Cancel is not completion — `import_cancel.rs`: cancel after first of two files leaves that lesson `not_started`, not `done` or `broken`.
 - [ ] 215 — Count
 - [ ] 216 — One scan at a time
 - [ ] 217 — Fonts the bundle will ship

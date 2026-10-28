@@ -16,8 +16,8 @@ This note defines how **Cancel** during **Add folder** / drag-and-drop import sh
 | ------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Between files**                    | Cancel is honored only **after** the current file’s vault row is committed and **before** starting the next eligible path. Do **not** abort halfway through writing one lesson row. |
 | **Lessons already written stay**     | Rows inserted before cancel remain in the course; nothing rolls back completed lesson records.                                                                                      |
-| **Cancelled import is not “done”**   | The course must not be treated as a finished import (no “import complete” success semantics for the operation as a whole).                                                          |
-| **Cancelled import is not “broken”** | Cancel is normal user action, not a corruption or broken-lesson state. Partial courses stay usable; the user can rescan or import again later.                                      |
+| **Cancelled import is not “done”**   | Cancel does **not** call manual completion or mark any lesson **`done`**. Lesson progress stays **`not_started`** (or whatever it was before that upsert).                          |
+| **Cancelled import is not “broken”** | Cancel does **not** mark lessons **`broken`** (that path is for missing media on rescan). Partial courses stay usable; the user can rescan or import again later.                   |
 
 If cancel fires before any lesson is written, the course row may be empty or absent depending on implementation; the important part is **no half-written lesson** and **no false “done”**.
 

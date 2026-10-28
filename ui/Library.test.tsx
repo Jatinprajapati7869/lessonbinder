@@ -182,7 +182,7 @@ describe("LibraryScreen", () => {
       .fn()
       .mockResolvedValueOnce([])
       .mockResolvedValueOnce([sampleCourse]);
-    const importFolder = vi.fn().mockRejectedValue(
+    const validateImportFolderPath = vi.fn().mockRejectedValue(
       new Error(
         JSON.stringify({
           code: "risky_import_path",
@@ -190,9 +190,11 @@ describe("LibraryScreen", () => {
         })
       )
     );
+    const importFolder = vi.fn();
     renderLibrary(
       libraryCommands({
         listCourses,
+        validateImportFolderPath,
         importFolder,
         pickFolder: vi.fn().mockResolvedValue("/"),
       })
@@ -207,7 +209,8 @@ describe("LibraryScreen", () => {
     await user.click(screen.getByRole("button", { name: "Add folder" }));
 
     await waitFor(() => {
-      expect(importFolder).toHaveBeenCalledWith("/");
+      expect(validateImportFolderPath).toHaveBeenCalledWith("/");
+      expect(importFolder).not.toHaveBeenCalled();
       expect(screen.getByRole("alert")).toHaveTextContent(
         "That folder is too broad; pick the course directory itself."
       );
