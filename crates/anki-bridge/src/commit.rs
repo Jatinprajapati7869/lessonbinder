@@ -1,4 +1,4 @@
-//! Commit vault card drafts into the AuraVault Anki collection.
+//! Commit vault card drafts into the Lessonbinder Anki collection.
 
 use std::path::Path;
 

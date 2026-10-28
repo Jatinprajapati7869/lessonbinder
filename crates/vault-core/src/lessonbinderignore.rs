@@ -1,15 +1,15 @@
-//! `.auravaultignore` at a course root (gitignore-style patterns).
+//! `.lessonbinderignore` at a course root (gitignore-style patterns).
 
 use std::path::Path;
 
-const IGNORE_FILE: &str = ".auravaultignore";
+const IGNORE_FILE: &str = ".lessonbinderignore";
 
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
-pub struct AuravaultIgnore {
+pub struct LessonbinderIgnore {
     patterns: Vec<String>,
 }
 
-impl AuravaultIgnore {
+impl LessonbinderIgnore {
     pub fn load_from_course_root(root: &Path) -> std::io::Result<Self> {
         let path = root.join(IGNORE_FILE);
         if !path.is_file() {

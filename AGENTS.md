@@ -1,4 +1,4 @@
-# AuraVault agent rules
+# Lessonbinder agent rules
 
 ## Agent skills
 

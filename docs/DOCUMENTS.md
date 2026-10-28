@@ -1,6 +1,6 @@
 # Document lessons (PDF, Markdown, text)
 
-AuraVault treats **`.pdf`**, **`.md`**, and **`.txt`** imports as document lessons (not the video player). Progress uses the same rules as video resume:
+Lessonbinder treats **`.pdf`**, **`.md`**, and **`.txt`** imports as document lessons (not the video player). Progress uses the same rules as video resume:
 
 - **`not_started` → `in_progress`** when a saved position is greater than zero.
 - **`done`** is still **manual only** (Mark complete on the lesson screen).

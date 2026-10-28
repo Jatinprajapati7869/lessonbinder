@@ -103,7 +103,7 @@ impl OcrEngine for TesseractOcrEngine {
 
 #[cfg(feature = "tesseract")]
 fn recognize_with_tesseract(tesseract: &Path, image: &[u8]) -> Result<OcrResult, OcrError> {
-    let work = std::env::temp_dir().join(format!("auravault-ocr-{}", uuid::Uuid::new_v4()));
+    let work = std::env::temp_dir().join(format!("lessonbinder-ocr-{}", uuid::Uuid::new_v4()));
     std::fs::create_dir_all(&work).map_err(|e| OcrError::Io(e.to_string()))?;
     let image_path = work.join("input.png");
     std::fs::write(&image_path, image).map_err(|e| OcrError::Io(e.to_string()))?;

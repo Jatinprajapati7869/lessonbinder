@@ -31,7 +31,7 @@ export function AppShell({
       <header className="top-bar">
         <h1 className="top-bar__title">{screenTitle}</h1>
         <div className="top-bar__end">
-          <div className="due-counts" aria-label="AuraVault due counts">
+          <div className="due-counts" aria-label="Lessonbinder due counts">
             <span className="due-count">
               <span className="due-count__value">{due.new}</span>
               <span className="due-count__label">New</span>

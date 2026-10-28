@@ -17,7 +17,7 @@ export function VaultUnavailableScreen({
 
   return (
     <div className="vault-unavailable">
-      <h1 className="screen-title">AuraVault</h1>
+      <h1 className="screen-title">Lessonbinder</h1>
       <p className="library-error" role="alert">
         {message}
       </p>

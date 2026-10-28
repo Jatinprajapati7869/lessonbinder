@@ -33,7 +33,7 @@ describe("AppShell", () => {
     expect(
       screen.getByRole("button", { name: "Settings" })
     ).toBeInTheDocument();
-    expect(screen.getByLabelText("AuraVault due counts")).toHaveTextContent(
+    expect(screen.getByLabelText("Lessonbinder due counts")).toHaveTextContent(
       "0"
     );
     const study = screen.getByRole("button", { name: "Study" });

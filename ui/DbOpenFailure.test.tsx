@@ -2,15 +2,15 @@ import React from "react";
 import { render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
-import { AuraVaultApp } from "./src/App";
+import { LessonbinderApp } from "./src/App";
 
 describe("DbOpenFailure", () => {
   it("shows vault error and does not render library", async () => {
     render(
-      <AuraVaultApp
+      <LessonbinderApp
         fetchVaultBootstrapImpl={async () => ({
           ready: false,
-          path: "/home/user/.local/share/AuraVault/vault.db",
+          path: "/home/user/.local/share/dev.lessonbinder.app/vault.db",
           error: "permission denied opening vault.db",
         })}
         fetchStudyBarStateImpl={async () => ({

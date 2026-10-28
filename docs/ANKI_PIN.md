@@ -1,6 +1,6 @@
 # Anki (`rslib`) path pin
 
-AuraVault links the **`anki`** crate from a local checkout (AGPL). Do not vendor Anki source into this repo.
+Lessonbinder links the **`anki`** crate from a local checkout (AGPL). Do not vendor Anki source into this repo.
 
 | Field               | Value                                                                                                                                                                                                                                               |
 | ------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |

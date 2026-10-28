@@ -1,6 +1,6 @@
 use anki::prelude::NoteId;
 use anki_bridge::{
-    audio_filename_for_bytes, commit_card_draft, get_note, open_profile, AuraVaultProfilePaths,
+    audio_filename_for_bytes, commit_card_draft, get_note, open_profile, LessonbinderProfilePaths,
 };
 use tempfile::tempdir;
 use vault_core::audio_clip::encode_lesson_audio_clip;
@@ -21,7 +21,7 @@ fn fixture_lesson(db: &VaultDb, dir: &tempfile::TempDir) -> String {
 fn commit_audio_clip_stores_mp3_reference_in_screenshot_field() {
     let profile = tempdir().unwrap();
     let mut col = open_profile(profile.path()).unwrap();
-    let paths = AuraVaultProfilePaths::in_dir(profile.path());
+    let paths = LessonbinderProfilePaths::in_dir(profile.path());
 
     let db = VaultDb::open_in_memory().unwrap();
     let lesson_id = fixture_lesson(&db, &profile);

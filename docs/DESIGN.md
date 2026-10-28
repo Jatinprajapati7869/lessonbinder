@@ -1,8 +1,8 @@
-# AuraVault design system (v1)
+# Lessonbinder design system (v1)
 
 **Product:** Desktop study vault for **long local courses**—library, honest progress, roadmaps, offline playback, Anki capture. **Not** a marketing site.
 
-**Stack:** React + TypeScript in Tauri (`auravault-ARCHITECTURE.md`). Implement UI from this document only; do not invent a second aesthetic in later prompts.
+**Stack:** React + TypeScript in Tauri (`lessonbinder-ARCHITECTURE.md`). Implement UI from this document only; do not invent a second aesthetic in later prompts.
 
 **Rejected defaults (do not use):** purple gradients, glassmorphism, hero sections, three-column feature grids, testimonials, emoji icons, Inter/Roboto as the voice, cream+terracotta “AI landing” palettes, mint-tinted app backgrounds, playful kids’ education fonts (ui-ux-pro-max “Hero + Testimonials” output is explicitly out of scope).
 
@@ -10,7 +10,7 @@
 
 ## Design intent
 
-AuraVault should feel like **a well-made reference app**: calm surfaces, tight rows, legible type at small sizes, color only where progress and primary actions need attention. The subject matter is **hours of course material**—the UI stays out of the way and reports state clearly (`not_started`, `in_progress`, `done`, `broken`).
+Lessonbinder should feel like **a well-made reference app**: calm surfaces, tight rows, legible type at small sizes, color only where progress and primary actions need attention. The subject matter is **hours of course material**—the UI stays out of the way and reports state clearly (`not_started`, `in_progress`, `done`, `broken`).
 
 **One bold choice:** a single **teal** accent on an otherwise **stone-neutral** canvas—evokes “continue / on track” without startup-purple or achievement-orange gamification.
 
@@ -192,7 +192,7 @@ Dark theme is **out of v1** unless a later prompt adds paired tokens; do not shi
 
 ### Card capture
 
-**Job:** Select a **region on the current frame**, run **local OCR**, preview text, and **save an Anki note** on the AuraVault profile.
+**Job:** Select a **region on the current frame**, run **local OCR**, preview text, and **save an Anki note** on the Lessonbinder profile.
 
 **Layout:** Frozen frame + draggable selection rectangle; right column: OCR text (editable), lesson/course context, timestamp. Primary **Save card**; secondary Cancel.
 
@@ -246,5 +246,5 @@ Plain, instructional, sentence case. Errors state what failed and what to do nex
 
 ## Reference alignment
 
-- Domain statuses: `auravault-domain.md` (`LessonStatus`, `DerivedStatus`).
+- Domain statuses: `lessonbinder-domain.md` (`LessonStatus`, `DerivedStatus`).
 - Architecture: Tauri webview, no marketing routes.

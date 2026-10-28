@@ -93,5 +93,5 @@ pub fn run() {
             card_commands::commit_capture_card,
         ])
         .run(tauri::generate_context!())
-        .expect("error while running AuraVault");
+        .expect("error while running Lessonbinder");
 }

@@ -1,10 +1,10 @@
-//! First-test Anki / study checklist against `/tmp/auravault-first-test` and an isolated profile.
+//! First-test Anki / study checklist against `/tmp/lessonbinder-first-test` and an isolated profile.
 
 use std::path::Path;
 
 use anki::prelude::NoteId;
 use anki_bridge::{
-    commit_card_draft, due_summary, get_note, next_review_card, open_profile, AuraVaultProfilePaths,
+    commit_card_draft, due_summary, get_note, next_review_card, open_profile, LessonbinderProfilePaths,
 };
 use vault_core::anki_link::{list_lesson_card_links, unlink_card};
 use vault_core::card::{build_card_draft, card_draft_from_subtitle_cue, CardError};
@@ -12,7 +12,7 @@ use vault_core::import::import_folder;
 use vault_core::ocr::{OcrError, TesseractOcrEngine};
 use vault_core::VaultDb;
 
-const FIXTURE_ROOT: &str = "/tmp/auravault-first-test";
+const FIXTURE_ROOT: &str = "/tmp/lessonbinder-first-test";
 
 #[test]
 fn first_test_anki_pass_walkthrough() {
@@ -54,7 +54,7 @@ fn first_test_anki_pass_walkthrough() {
     );
 
     let draft = card_draft_from_subtitle_cue(&db, &lesson_id, 0, "First cue").expect("cue draft");
-    let paths = AuraVaultProfilePaths::in_dir(profile.path());
+    let paths = LessonbinderProfilePaths::in_dir(profile.path());
     let note_id = commit_card_draft(
         &mut col,
         &paths.media_folder,

@@ -1,4 +1,4 @@
-# AuraVault scope — v1.2
+# Lessonbinder scope — v1.2
 
 **Status:** Planning (prompt 111).
 **Baseline:** v1.1 scope and shipped behavior are in [`SCOPE-v1.1.md`](SCOPE-v1.1.md), [`V1.1.md`](V1.1.md), and [`LEARNINGS.md`](LEARNINGS.md). This slice is the **study loop**: deliberate lesson order, a reviewer queue that does not stall on foreign cards, and lessons that own their Anki links end-to-end.
@@ -16,7 +16,7 @@ v1.2 does **not** add accounts, sync, mobile, chat, auto-completion, bundled mod
 
 ### In-app review — skip foreign due cards
 
-- **`next_review_card`** (and the in-app review session built on it) **skips cards that are due but not in AuraVault decks**, instead of returning an **empty queue** while AuraVault-linked cards are still due elsewhere in the collection.
+- **`next_review_card`** (and the in-app review session built on it) **skips cards that are due but not in Lessonbinder decks**, instead of returning an **empty queue** while Lessonbinder-linked cards are still due elsewhere in the collection.
 
 ### Lesson ↔ Anki links
 
@@ -63,7 +63,7 @@ v1.2 does **not** add accounts, sync, mobile, chat, auto-completion, bundled mod
 | **Model download** (Whisper or other weights)    | Local path only when user configures |
 | **Drag-and-drop** library or course reorder UX   | Explicit up/down only in v1.2        |
 
-Also still out of scope: a second SRS, custom FSRS in AuraVault, playlist rippers, and renaming the existing OCR note type.
+Also still out of scope: a second SRS, custom FSRS in Lessonbinder, playlist rippers, and renaming the existing OCR note type.
 
 ---
 
@@ -74,5 +74,5 @@ Implementation checklist: [`PROGRESS.md`](PROGRESS.md) rows **112–130** (reord
 ## Success criteria (planning)
 
 - Learners can **fix lesson order** without losing it on the next rescan.
-- In-app **Study** and **Review this course** behave predictably when the Anki profile contains non-AuraVault due cards.
+- In-app **Study** and **Review this course** behave predictably when the Anki profile contains non-Lessonbinder due cards.
 - Each lesson is a hub for **linked cards** and **confirmed** promotion from vault notes, without breaking the two-database rule ([`LEARNINGS.md`](LEARNINGS.md)).

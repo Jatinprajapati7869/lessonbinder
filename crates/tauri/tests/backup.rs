@@ -1,7 +1,7 @@
 use std::fs;
 use std::path::Path;
 
-use auravault_tauri::backup::{anki_profile_dir, backup_to, vault_db_path, BackupError};
+use lessonbinder_tauri::backup::{anki_profile_dir, backup_to, vault_db_path, BackupError};
 use tempfile::tempdir;
 
 fn write_live_layout(app_data: &Path) -> (String, String) {

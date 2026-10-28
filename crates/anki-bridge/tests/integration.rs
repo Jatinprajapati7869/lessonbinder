@@ -18,7 +18,7 @@ fn fixture_lesson(db: &VaultDb) -> String {
 fn commit_card_creates_note_and_link() {
     let profile = tempdir().unwrap();
     let mut col = open_profile(profile.path()).unwrap();
-    let paths = anki_bridge::AuraVaultProfilePaths::in_dir(profile.path());
+    let paths = anki_bridge::LessonbinderProfilePaths::in_dir(profile.path());
 
     let db = VaultDb::open_in_memory().unwrap();
     let lesson_id = fixture_lesson(&db);
@@ -69,7 +69,7 @@ fn commit_card_creates_note_and_link() {
 fn duplicate_commit_same_note_id() {
     let profile = tempdir().unwrap();
     let mut col = open_profile(profile.path()).unwrap();
-    let paths = anki_bridge::AuraVaultProfilePaths::in_dir(profile.path());
+    let paths = anki_bridge::LessonbinderProfilePaths::in_dir(profile.path());
 
     let db = VaultDb::open_in_memory().unwrap();
     let lesson_id = fixture_lesson(&db);
@@ -107,7 +107,7 @@ fn duplicate_commit_same_note_id() {
 fn unlink_card_keeps_note_in_temp_profile() {
     let profile = tempdir().unwrap();
     let mut col = open_profile(profile.path()).unwrap();
-    let paths = anki_bridge::AuraVaultProfilePaths::in_dir(profile.path());
+    let paths = anki_bridge::LessonbinderProfilePaths::in_dir(profile.path());
 
     let db = VaultDb::open_in_memory().unwrap();
     let lesson_id = fixture_lesson(&db);

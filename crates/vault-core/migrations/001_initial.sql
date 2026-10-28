@@ -1,4 +1,4 @@
--- AuraVault vault.db schema v1 (domain entities: library → course → source_file → lesson → progress)
+-- Lessonbinder vault.db schema v1 (domain entities: library → course → source_file → lesson → progress)
 
 CREATE TABLE library (
     id TEXT PRIMARY KEY NOT NULL,

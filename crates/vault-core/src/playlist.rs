@@ -63,7 +63,7 @@ struct PlaylistDefinitionItemFile {
     duration_ms: Option<i64>,
 }
 
-const PASTED_PLAYLIST_URL: &str = "auravault://pasted-playlist";
+const PASTED_PLAYLIST_URL: &str = "lessonbinder://pasted-playlist";
 
 /// Parse `title<TAB>url` lines; blank lines are skipped.
 pub fn parse_playlist_lines(text: &str) -> Result<Vec<ParsedPlaylistLine>, PlaylistError> {

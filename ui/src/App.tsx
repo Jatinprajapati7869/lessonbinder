@@ -37,7 +37,7 @@ const unavailableAnki: AnkiLaunchStatus = {
     "Anki is not installed. Install Anki or check Settings for the executable path.",
 };
 
-export type AuraVaultAppProps = {
+export type LessonbinderAppProps = {
   fetchVaultBootstrapImpl?: () => Promise<VaultBootstrap>;
   fetchStudyBarStateImpl?: () => Promise<{
     due: DueSummary;
@@ -173,11 +173,11 @@ function MainContent({
   );
 }
 
-export function AuraVaultApp({
+export function LessonbinderApp({
   fetchVaultBootstrapImpl = fetchVaultBootstrap,
   fetchStudyBarStateImpl = fetchStudyBarState,
   launchAnkiProfileImpl = launchAnkiProfile,
-}: AuraVaultAppProps = {}) {
+}: LessonbinderAppProps = {}) {
   const [bootstrap, setBootstrap] = useState<VaultBootstrap | null>(null);
   const [bootstrapBusy, setBootstrapBusy] = useState(false);
   const [route, setRoute] = useState<AppRoute>("library");
@@ -398,5 +398,5 @@ export function AuraVaultApp({
 }
 
 export default function App() {
-  return <AuraVaultApp />;
+  return <LessonbinderApp />;
 }

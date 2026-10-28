@@ -1,3 +1,3 @@
 fn main() {
-    auravault_lib::run();
+    lessonbinder_lib::run();
 }

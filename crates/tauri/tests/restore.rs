@@ -1,6 +1,6 @@
 use std::fs;
 
-use auravault_tauri::backup::{
+use lessonbinder_tauri::backup::{
     anki_profile_dir, backup_to, restore_from, vault_db_path, BackupError,
 };
 use tempfile::tempdir;

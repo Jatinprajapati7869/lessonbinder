@@ -88,7 +88,7 @@ fn rescan_keeps_progress_for_remaining_lessons() {
 }
 
 #[test]
-fn rescan_applies_auravaultignore_to_new_files() {
+fn rescan_applies_lessonbinderignore_to_new_files() {
     let dir = tempdir().unwrap();
     let root = dir.path();
     fs::write(root.join("lecture.mp4"), b"").unwrap();
@@ -96,7 +96,7 @@ fn rescan_applies_auravaultignore_to_new_files() {
     let db = VaultDb::open_in_memory().unwrap();
     let report = import_folder(&db, root).unwrap();
 
-    fs::write(root.join(".auravaultignore"), "secret/*.mp4\n").unwrap();
+    fs::write(root.join(".lessonbinderignore"), "secret/*.mp4\n").unwrap();
     fs::create_dir(root.join("secret")).unwrap();
     fs::write(root.join("secret/new.mp4"), b"").unwrap();
 

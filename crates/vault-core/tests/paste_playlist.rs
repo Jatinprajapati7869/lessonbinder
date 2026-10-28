@@ -27,7 +27,7 @@ fn parse_playlist_lines_rejects_line_without_tab_with_line_number() {
 #[test]
 fn import_playlist_from_pasted_lines_creates_playlist_course_without_http() {
     let db = VaultDb::open_in_memory().unwrap();
-    let definition_path = "auravault://pasted/test-course";
+    let definition_path = "lessonbinder://pasted/test-course";
     let text = "First lesson\thttps://lesson.one\nSecond lesson\thttps://lesson.two\n";
     let report =
         import_playlist_from_pasted_lines(&db, definition_path, "My pasted course", text).unwrap();

@@ -52,13 +52,13 @@ function easeDigit(ease: ReviewEase): number {
   }
 }
 
-function auravaultDueTotal(due: DueSummary): number {
+function lessonbinderDueTotal(due: DueSummary): number {
   return due.new + due.learning + due.review;
 }
 
 function ReviewDueCounts({ due }: { due: DueSummary }) {
   return (
-    <div className="due-counts" aria-label="AuraVault due counts">
+    <div className="due-counts" aria-label="Lessonbinder due counts">
       <span className="due-count">
         <span className="due-count__value">{due.new}</span>
         <span className="due-count__label">New</span>
@@ -230,13 +230,13 @@ export function ReviewScreen({
     !loadError &&
     !card &&
     dueSummary !== null &&
-    auravaultDueTotal(dueSummary) > 0;
+    lessonbinderDueTotal(dueSummary) > 0;
   const queueEmpty =
     !loading &&
     !loadError &&
     !card &&
     dueSummary !== null &&
-    auravaultDueTotal(dueSummary) === 0;
+    lessonbinderDueTotal(dueSummary) === 0;
 
   return (
     <div className="review-screen">

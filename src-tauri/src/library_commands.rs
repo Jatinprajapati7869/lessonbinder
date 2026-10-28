@@ -12,7 +12,7 @@ use vault_core::search::{search, SearchMatchKind};
 use vault_core::DerivedStatus;
 use vault_core::VaultDb;
 
-use auravault_tauri::command_error::from_import_error;
+use lessonbinder_tauri::command_error::from_import_error;
 
 use crate::app_state::AppState;
 
@@ -217,7 +217,7 @@ pub fn import_playlist_paste(
     text: String,
 ) -> Result<(), String> {
     state.with_vault(|vault| {
-        let definition_path = format!("auravault://pasted/{}", uuid::Uuid::new_v4());
+        let definition_path = format!("lessonbinder://pasted/{}", uuid::Uuid::new_v4());
         import_playlist_from_pasted_lines(vault, &definition_path, &course_title, &text)
             .map_err(|e| e.to_string())?;
         Ok(())

@@ -146,10 +146,10 @@ describe("ReviewScreen", () => {
     expect(
       await screen.findByText("The review queue could not be read.")
     ).toBeInTheDocument();
-    expect(screen.getByLabelText("AuraVault due counts")).toHaveTextContent(
+    expect(screen.getByLabelText("Lessonbinder due counts")).toHaveTextContent(
       "2"
     );
-    expect(screen.getByLabelText("AuraVault due counts")).toHaveTextContent(
+    expect(screen.getByLabelText("Lessonbinder due counts")).toHaveTextContent(
       "1"
     );
     expect(

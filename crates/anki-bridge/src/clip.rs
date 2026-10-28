@@ -1,4 +1,4 @@
-//! AuraVault clip notes (`AuraVaultClip` notetype) and course-scoped decks.
+//! Lessonbinder clip notes (`LessonbinderClip` notetype) and course-scoped decks.
 
 use std::sync::Arc;
 
@@ -11,10 +11,10 @@ use anki::require;
 use anki::services::NotesService;
 use anki_proto::notes::NoteId as ProtoNoteId;
 
-pub const AURAVAULT_CLIP_NOTETYPE: &str = "AuraVaultClip";
-pub const AURAVAULT_DECK_PREFIX: &str = "AuraVault::";
+pub const LESSONBINDER_CLIP_NOTETYPE: &str = "LessonbinderClip";
+pub const LESSONBINDER_DECK_PREFIX: &str = "Lessonbinder::";
 
-pub const AURAVAULT_CLIP_FIELDS: [&str; 7] = [
+pub const LESSONBINDER_CLIP_FIELDS: [&str; 7] = [
     "Course",
     "Lesson",
     "Front",
@@ -46,40 +46,40 @@ pub struct ClipNote {
     pub screenshot: String,
 }
 
-/// Deck names must be exactly `AuraVault::<course title>` (no nesting).
-pub fn validate_auravault_deck_name(name: &str) -> Result<()> {
-    if !name.starts_with(AURAVAULT_DECK_PREFIX) {
-        invalid_input!("deck name must start with `{AURAVAULT_DECK_PREFIX}`");
+/// Deck names must be exactly `Lessonbinder::<course title>` (no nesting).
+pub fn validate_lessonbinder_deck_name(name: &str) -> Result<()> {
+    if !name.starts_with(LESSONBINDER_DECK_PREFIX) {
+        invalid_input!("deck name must start with `{LESSONBINDER_DECK_PREFIX}`");
     }
-    let title = name.strip_prefix(AURAVAULT_DECK_PREFIX).unwrap_or_default();
+    let title = name.strip_prefix(LESSONBINDER_DECK_PREFIX).unwrap_or_default();
     if title.is_empty() {
-        invalid_input!("deck name must include a course title after `{AURAVAULT_DECK_PREFIX}`");
+        invalid_input!("deck name must include a course title after `{LESSONBINDER_DECK_PREFIX}`");
     }
     if title.contains("::") {
-        invalid_input!("deck name must be `{AURAVAULT_DECK_PREFIX}<course title>` only");
+        invalid_input!("deck name must be `{LESSONBINDER_DECK_PREFIX}<course title>` only");
     }
     Ok(())
 }
 
 pub fn deck_name_for_course(course: &str) -> String {
-    format!("{AURAVAULT_DECK_PREFIX}{course}")
+    format!("{LESSONBINDER_DECK_PREFIX}{course}")
 }
 
-pub fn ensure_auravault_clip_notetype(col: &mut Collection) -> Result<Arc<Notetype>> {
-    if let Some(nt) = col.get_notetype_by_name(AURAVAULT_CLIP_NOTETYPE)? {
+pub fn ensure_lessonbinder_clip_notetype(col: &mut Collection) -> Result<Arc<Notetype>> {
+    if let Some(nt) = col.get_notetype_by_name(LESSONBINDER_CLIP_NOTETYPE)? {
         return Ok(nt);
     }
-    let mut nt = auravault_clip_notetype();
+    let mut nt = lessonbinder_clip_notetype();
     col.add_notetype(&mut nt, false)?;
-    col.get_notetype_by_name(AURAVAULT_CLIP_NOTETYPE)?
-        .or_invalid("AuraVaultClip notetype missing after add")
+    col.get_notetype_by_name(LESSONBINDER_CLIP_NOTETYPE)?
+        .or_invalid("LessonbinderClip notetype missing after add")
 }
 
 pub fn add_clip_note(col: &mut Collection, draft: ClipDraft) -> Result<NoteId> {
     let deck_name = deck_name_for_course(&draft.course);
-    validate_auravault_deck_name(&deck_name)?;
+    validate_lessonbinder_deck_name(&deck_name)?;
 
-    let nt = ensure_auravault_clip_notetype(col)?;
+    let nt = ensure_lessonbinder_clip_notetype(col)?;
     let deck = col.get_or_create_normal_deck(&deck_name)?;
 
     let mut note = nt.new_note();
@@ -97,8 +97,8 @@ pub fn get_note(col: &mut Collection, id: NoteId) -> Result<ClipNote> {
     let nt = col
         .get_notetype(note.notetype_id)?
         .or_not_found(note.notetype_id)?;
-    if nt.name != AURAVAULT_CLIP_NOTETYPE {
-        invalid_input!("note {id} is not an {AURAVAULT_CLIP_NOTETYPE} note");
+    if nt.name != LESSONBINDER_CLIP_NOTETYPE {
+        invalid_input!("note {id} is not an {LESSONBINDER_CLIP_NOTETYPE} note");
     }
     clip_note_from_storage(&note)
 }
@@ -107,15 +107,15 @@ fn fieldref(name: &str) -> String {
     format!("{{{{{}}}}}", name)
 }
 
-fn auravault_clip_notetype() -> Notetype {
-    let front = fieldref(AURAVAULT_CLIP_FIELDS[2]);
-    let screenshot = fieldref(AURAVAULT_CLIP_FIELDS[6]);
-    let back = fieldref(AURAVAULT_CLIP_FIELDS[3]);
+fn lessonbinder_clip_notetype() -> Notetype {
+    let front = fieldref(LESSONBINDER_CLIP_FIELDS[2]);
+    let screenshot = fieldref(LESSONBINDER_CLIP_FIELDS[6]);
+    let back = fieldref(LESSONBINDER_CLIP_FIELDS[3]);
     let qfmt = format!("{front}\n{screenshot}");
     let afmt = format!("{{{{FrontSide}}}}\n<hr id=answer>\n{back}");
     Notetype {
-        name: AURAVAULT_CLIP_NOTETYPE.into(),
-        fields: AURAVAULT_CLIP_FIELDS
+        name: LESSONBINDER_CLIP_NOTETYPE.into(),
+        fields: LESSONBINDER_CLIP_FIELDS
             .iter()
             .map(|name| NoteField::new(*name))
             .collect(),
@@ -143,9 +143,9 @@ fn set_clip_fields(note: &mut Note, draft: &ClipDraft) -> Result<()> {
 fn clip_note_from_storage(note: &Note) -> Result<ClipNote> {
     let fields = note.fields();
     require!(
-        fields.len() == AURAVAULT_CLIP_FIELDS.len(),
+        fields.len() == LESSONBINDER_CLIP_FIELDS.len(),
         "expected {} fields",
-        AURAVAULT_CLIP_FIELDS.len()
+        LESSONBINDER_CLIP_FIELDS.len()
     );
     Ok(ClipNote {
         course: fields[0].clone(),

@@ -5,7 +5,7 @@ use std::ffi::OsStr;
 use std::fs;
 use std::path::{Component, Path, PathBuf};
 
-use crate::auravaultignore::AuravaultIgnore;
+use crate::lessonbinderignore::LessonbinderIgnore;
 use crate::db::VaultDb;
 use crate::progress_persist::ProgressPersistenceError;
 
@@ -140,7 +140,7 @@ pub fn scan_folder_with_cancel(
     should_cancel: &dyn Fn() -> bool,
 ) -> Result<Vec<ScannedLesson>, ImportError> {
     let root = fs::canonicalize(root)?;
-    let ignore = AuravaultIgnore::load_from_course_root(&root).map_err(ImportError::from)?;
+    let ignore = LessonbinderIgnore::load_from_course_root(&root).map_err(ImportError::from)?;
     let mut primary_media_files: Vec<PathBuf> = Vec::new();
     let mut subtitle_files: Vec<PathBuf> = Vec::new();
     let mut sidecar_files: Vec<PathBuf> = Vec::new();
@@ -269,7 +269,7 @@ pub(crate) fn lesson_resource_kind(ext: &str) -> &'static str {
 fn collect_files(
     root: &Path,
     dir: &Path,
-    ignore: &AuravaultIgnore,
+    ignore: &LessonbinderIgnore,
     primary_media_out: &mut Vec<PathBuf>,
     subtitle_out: &mut Vec<PathBuf>,
     sidecar_out: &mut Vec<PathBuf>,

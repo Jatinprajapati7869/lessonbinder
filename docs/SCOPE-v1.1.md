@@ -1,9 +1,9 @@
-# AuraVault scope — v1.1
+# Lessonbinder scope — v1.1
 
 **Status:** Planning (prompt 51).
 **Baseline:** Shipped v1 behavior and gaps are summarized in [`V1.md`](V1.md). Charter intent for study and subtitles is in [`charter.md`](charter.md) (Decisions 9, 14, 16); current v1 study behavior is documented in [`STUDY.md`](STUDY.md).
 
-v1.1 closes the largest v1 honesty gaps **without** expanding into accounts, sync, mobile, or a second SRS. It does **not** rename the existing OCR note type (`AuraVaultClip` in code; charter wording “AuraVault OCR” unchanged for v1.1).
+v1.1 closes the largest v1 honesty gaps **without** expanding into accounts, sync, mobile, or a second SRS. It does **not** rename the existing OCR note type (`LessonbinderClip` in code; charter wording “Lessonbinder OCR” unchanged for v1.1).
 
 ---
 
@@ -11,8 +11,8 @@ v1.1 closes the largest v1 honesty gaps **without** expanding into accounts, syn
 
 ### Study — in-app review (primary)
 
-- **Default:** Review cards in **AuraVault decks** (`AuraVault::…`) through **`rslib`** in-process: show the next due card and grade with **Again / Hard / Good / Easy**.
-- **Profile:** Same dedicated AuraVault Anki profile as today (`anki-profile/` under app data). No reading the user’s everyday Anki profile.
+- **Default:** Review cards in **Lessonbinder decks** (`Lessonbinder::…`) through **`rslib`** in-process: show the next due card and grade with **Again / Hard / Good / Easy**.
+- **Profile:** Same dedicated Lessonbinder Anki profile as today (`anki-profile/` under app data). No reading the user’s everyday Anki profile.
 - **Fallback:** Launch **Anki Desktop** remains supported when in-app review cannot run (e.g. missing capability), but it is **not** the default “Study” path. Update [`STUDY.md`](STUDY.md) when this ships.
 - **Not in v1.1:** Custom FSRS, scheduler logic, or review UX duplicated outside Anki’s grading APIs; full Anki Desktop feature parity.
 
@@ -32,7 +32,7 @@ v1.1 closes the largest v1 honesty gaps **without** expanding into accounts, syn
 ### Folder rescan and ignore rules
 
 - **Rescan** an already-imported folder: pick up new files, mark removed files **broken**, keep idempotent lesson ids where paths match.
-- **`.auravaultignore`:** Honor ignore patterns at import/rescan (same spirit as hidden paths / `node_modules` exclusions in v1).
+- **`.lessonbinderignore`:** Honor ignore patterns at import/rescan (same spirit as hidden paths / `node_modules` exclusions in v1).
 
 ### Lesson notes (vault-only)
 
@@ -52,7 +52,7 @@ v1.1 closes the largest v1 honesty gaps **without** expanding into accounts, syn
 
 - **Only when** the user configures a **local model path** on disk.
 - Adapter plugs into the existing **`TranscriptionEngine`** port ([`TRANSCRIPTION.md`](TRANSCRIPTION.md)).
-- **No** AuraVault-initiated **download** of model weights over the network.
+- **No** Lessonbinder-initiated **download** of model weights over the network.
 - **Not** default-on; no Whisper requirement for v1.1 ship criteria.
 
 ---
@@ -69,9 +69,9 @@ Explicitly **not** part of v1.1 (unchanged from charter / v1):
 | **AI chat tutor** / coaching UI                  | —                                            |
 | **Auto-`done`** from watch percent or thresholds | `done` remains manual                        |
 | **Playlist downloaders** / term-breaking rippers | Metadata-only playlist courses stay as in v1 |
-| **Renaming** the existing OCR **note type**      | Keep `AuraVaultClip` / current fields        |
+| **Renaming** the existing OCR **note type**      | Keep `LessonbinderClip` / current fields        |
 
-Also still out of scope: custom FSRS in AuraVault, cloud OCR, bundled weight downloads, and “AI understands the course” summarization.
+Also still out of scope: custom FSRS in Lessonbinder, cloud OCR, bundled weight downloads, and “AI understands the course” summarization.
 
 ---
 

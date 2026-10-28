@@ -1,6 +1,6 @@
-# AuraVault SPEC (v1)
+# Lessonbinder SPEC (v1)
 
-**Sources:** `auravault-charter.md`, `auravault-domain.md`
+**Sources:** `lessonbinder-charter.md`, `lessonbinder-domain.md`
 **Status:** Pre-repo; scenarios target `vault-core` and `anki-bridge` crates (see Architecture prompt). No feature below is outside the charter.
 
 ---
@@ -11,7 +11,7 @@ Learners keep course material in local folders (videos, PDFs, subtitles, notes) 
 
 ## Solution
 
-AuraVault imports a folder as a **Course** of **Lessons**, extracts cheap metadata, persists **Progress** (resume, watch metrics, manual `done`), derives **Course** / **RoadmapStep** status, exposes **roadmap graph** data (nodes + edges), captures **OCR** selections into the AuraVault **Anki** profile via `rslib`, and surfaces **due counts** plus an in-app **study** path on the shipped Anki stack (Decision 16—not a separate Anki Desktop install).
+Lessonbinder imports a folder as a **Course** of **Lessons**, extracts cheap metadata, persists **Progress** (resume, watch metrics, manual `done`), derives **Course** / **RoadmapStep** status, exposes **roadmap graph** data (nodes + edges), captures **OCR** selections into the Lessonbinder **Anki** profile via `rslib`, and surfaces **due counts** plus an in-app **study** path on the shipped Anki stack (Decision 16—not a separate Anki Desktop install).
 
 ## User Stories
 
@@ -28,9 +28,9 @@ AuraVault imports a folder as a **Course** of **Lessons**, extracts cheap metada
 11. As a learner, I want a roadmap as a graph of courses, so that I see prerequisites/order as nodes and edges in a flowchart view.
 12. As a learner, I want roadmap step status derived from the linked course, so that there is no separate roadmap checkbox.
 13. As a learner, I want missing files to mark lessons broken, so that “broken” means missing media—not being behind.
-14. As a learner, I want to select text on a video frame via local OCR, so that it becomes an Anki note in the AuraVault profile.
-15. As a learner, I want due card counts from the AuraVault Anki collection, so that I know how much review is waiting without a custom scheduler in AuraVault.
-16. As a learner, I want to start study from AuraVault using the bundled Anki stack, so that I do not install Anki Desktop separately for v1.
+14. As a learner, I want to select text on a video frame via local OCR, so that it becomes an Anki note in the Lessonbinder profile.
+15. As a learner, I want due card counts from the Lessonbinder Anki collection, so that I know how much review is waiting without a custom scheduler in Lessonbinder.
+16. As a learner, I want to start study from Lessonbinder using the bundled Anki stack, so that I do not install Anki Desktop separately for v1.
 17. As a learner, I want deleting a course to break vault links to Anki notes without deleting those notes, so that my cards remain in the collection.
 18. As a learner, I want a playlist-backed course (later slice) with per-item watch tracking, so that online lists behave like local lessons without a term-breaking downloader.
 19. As a learner, I want one local SQLite database for library state, so that progress survives restarts without cloud sync.
@@ -39,7 +39,7 @@ AuraVault imports a folder as a **Course** of **Lessons**, extracts cheap metada
 
 ## Testable scenarios
 
-Each row is acceptance criteria. **Evidence** is the test name or command expected once the `auravault` repo exists (prompt pack naming).
+Each row is acceptance criteria. **Evidence** is the test name or command expected once the product repo exists (prompt pack naming).
 
 ### Folder import
 
@@ -121,7 +121,7 @@ v1 proposals are **deterministic** (relative path order). No ML (Decision 8). ML
 
 | ID   | Actor   | Trigger                                             | Result                                                                                    | Failure                            | Evidence                                            |
 | ---- | ------- | --------------------------------------------------- | ----------------------------------------------------------------------------------------- | ---------------------------------- | --------------------------------------------------- |
-| A-01 | Learner | OCR capture on frame at `t_ms` with local Tesseract | `OcrSelection` stored; `AnkiCardLink` with note in deck `AuraVault`, type `AuraVault OCR` | Cloud OCR endpoint called          | `anki_bridge::ocr::creates_note_local_tesseract`    |
+| A-01 | Learner | OCR capture on frame at `t_ms` with local Tesseract | `OcrSelection` stored; `AnkiCardLink` with note in deck `Lessonbinder`, type `Lessonbinder OCR` | Cloud OCR endpoint called          | `anki_bridge::ocr::creates_note_local_tesseract`    |
 | A-02 | System  | Note created                                        | Front = OCR text; Back contains lesson title, course name, timestamp                      | Card body stored only in vault SQL | `anki_bridge::ocr::card_fields_shape`               |
 | A-03 | Learner | Delete course                                       | `AnkiCardLink.link_status == broken`; note id still in collection                         | Note deleted from collection       | `vault_core::course_delete::breaks_links_not_notes` |
 
@@ -129,16 +129,16 @@ v1 proposals are **deterministic** (relative path order). No ML (Decision 8). ML
 
 | ID   | Actor  | Trigger                                 | Result                                       | Failure                   | Evidence                                            |
 | ---- | ------ | --------------------------------------- | -------------------------------------------- | ------------------------- | --------------------------------------------------- |
-| K-01 | System | Open AuraVault profile with N due cards | `due_counts()` returns N matching collection | Custom FSRS in vault-core | `anki_bridge::study::due_counts_matches_collection` |
+| K-01 | System | Open Lessonbinder profile with N due cards | `due_counts()` returns N matching collection | Custom FSRS in vault-core | `anki_bridge::study::due_counts_matches_collection` |
 | K-02 | System | Empty new profile                       | Due counts zero                              | Panic or wrong profile    | `anki_bridge::study::due_counts_empty_profile`      |
 
 ### Study session (shipped Anki stack—not separate Desktop install)
 
-Charter Decision 16 replaces “install Anki Desktop first.” v1 **study** opens review through the **bundled `rslib` path** on the AuraVault profile (UI shell TBD in architecture).
+Charter Decision 16 replaces “install Anki Desktop first.” v1 **study** opens review through the **bundled `rslib` path** on the Lessonbinder profile (UI shell TBD in architecture).
 
 | ID   | Actor   | Trigger                                | Result                                                | Failure                                 | Evidence                                              |
 | ---- | ------- | -------------------------------------- | ----------------------------------------------------- | --------------------------------------- | ----------------------------------------------------- |
-| S-01 | Learner | `start_study_session()`                | Session uses AuraVault Anki profile path only         | Reads user’s default Anki profile       | `anki_bridge::study::uses_auravault_profile_only`     |
+| S-01 | Learner | `start_study_session()`                | Session uses Lessonbinder Anki profile path only         | Reads user’s default Anki profile       | `anki_bridge::study::uses_lessonbinder_profile_only`     |
 | S-02 | Learner | `start_study_session()` with due cards | At least one card reachable via `rslib` review APIs   | Requires external `anki` binary on PATH | `anki_bridge::study::in_process_review_entry`         |
 | S-03 | System  | Profile missing / corrupt              | Structured error; no silent fallback to other profile | Opens wrong collection                  | `anki_bridge::study::errors_when_profile_unavailable` |
 
@@ -150,12 +150,12 @@ Charter Decision 16 replaces “install Anki Desktop first.” v1 **study** open
 - **Secondary seam:** `anki-bridge` — only crate linking `anki` / `rslib`: note creation, due counts, study session entry, dedicated profile path under app data.
 - **Persistence:** Single SQLite database per install (Decision 10); media paths on disk.
 - **Order proposals:** Deterministic generator (e.g. relative path) produces a proposal record; accept/reject commands mutate `Lesson.sort_index`; import alone does not apply proposals (O-01).
-- **Progress state machine:** Matches `auravault-domain.md` transition table; illegal edges rejected with error.
+- **Progress state machine:** Matches `lessonbinder-domain.md` transition table; illegal edges rejected with error.
 - **Rollup:** Single function `derive_status(Vec<LessonStatus>) -> DerivedStatus` used for courses and roadmap aggregates.
 - **Roadmap API:** `roadmap_graph(roadmap_id) -> { nodes: [{ step_id, course_id, label, derived_status }], edges: [{ from, to }] }` — data for SVG/canvas, not a raster asset.
 - **OCR:** Tesseract only (Decision 1); forbidden HTTP OCR hosts in v1 builds (lint or integration guard).
 - **Playlist:** Domain types present; importer tests ignored until post–folder-MVP slice.
-- **Anki:** One profile directory owned by AuraVault; card bodies only in collection; `AnkiCardLink` in vault DB.
+- **Anki:** One profile directory owned by Lessonbinder; card bodies only in collection; `AnkiCardLink` in vault DB.
 
 ### Progress + rollup (decision-rich snippet from domain)
 
@@ -193,9 +193,9 @@ derive_status(lessons):
 - Local ML order proposals (Decision 8).
 - Cloud OCR (Decision 1).
 - Bundled video downloaders that violate site terms (Decision 2).
-- Custom FSRS or parallel scheduler in AuraVault.
+- Custom FSRS or parallel scheduler in Lessonbinder.
 - Auto-`done` from watch percentage (Decision 11).
-- AulaVault trademark, license server, Anki Qt fork, second SRS (`auravault-workspace.md`).
+- AulaVault trademark, license server, Anki Qt fork, second SRS (`lessonbinder-workspace.md`).
 - UI polish adjectives without acceptance rows (e.g. “intuitive”, “AI organizes the course”).
 - Requiring a **separate** Anki Desktop install (Decision 16)—superseded by shipped `rslib` study path (S-01–S-03).
 
@@ -203,7 +203,7 @@ derive_status(lessons):
 
 ## Further Notes
 
-- **Issue tracker:** Product repo `/home/xingzi/Documents/auravault` does not exist yet; this SPEC is file-based until prompt 09. No `ready-for-agent` label applied.
+- **Issue tracker:** Product repo lives under `/home/xingzi/Documents/` (see prompt 09); this SPEC is file-based until prompt 09. No `ready-for-agent` label applied.
 - **Prompt vs charter:** Scenarios use **study session / rslib** instead of “open Anki Desktop” where Decision 16 conflicts with older prompt wording.
-- **AGPL:** Distributing builds that link `anki` triggers AGPL obligations (`auravault-workspace.md`).
-- **Glossary:** Use terms from `auravault-domain.md` (`Lesson`, `Progress`, `DerivedStatus`, `broken`, etc.) in all future docs and tests.
+- **AGPL:** Distributing builds that link `anki` triggers AGPL obligations (`lessonbinder-workspace.md`).
+- **Glossary:** Use terms from `lessonbinder-domain.md` (`Lesson`, `Progress`, `DerivedStatus`, `broken`, etc.) in all future docs and tests.

@@ -1,4 +1,4 @@
-//! Local backup of `vault.db` and the AuraVault Anki profile (no cloud).
+//! Local backup of `vault.db` and the Lessonbinder Anki profile (no cloud).
 
 use std::fs;
 use std::io;
@@ -23,7 +23,7 @@ pub enum BackupError {
     Io(String),
 }
 
-const ASIDE_DIR_PREFIX: &str = "auravault-aside-";
+const ASIDE_DIR_PREFIX: &str = "lessonbinder-aside-";
 
 pub fn vault_db_path(app_data_dir: &Path) -> PathBuf {
     app_data_dir.join(VAULT_DB_FILE)
@@ -107,7 +107,7 @@ fn backup_folder_name() -> String {
         .duration_since(UNIX_EPOCH)
         .map(|d| d.as_secs())
         .unwrap_or(0);
-    format!("auravault-backup-{secs}")
+    format!("lessonbinder-backup-{secs}")
 }
 
 fn destination_targets_live_profile(

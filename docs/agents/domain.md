@@ -4,7 +4,7 @@ How the engineering skills should consume this repo's domain documentation when 
 
 ## Before exploring, read these
 
-- **`docs/domain.md`**: AuraVault entities, invariants, and ubiquitous language (canonical for this product).
+- **`docs/domain.md`**: Lessonbinder entities, invariants, and ubiquitous language (canonical for this product).
 - **`GLOSSARY.md`** at the repo root, if it exists (lazy additions from `/domain-modeling`).
 - **`docs/adr/`**: read ADRs that touch the area you're about to work in.
 

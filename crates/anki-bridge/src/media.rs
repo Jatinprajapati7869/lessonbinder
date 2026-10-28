@@ -1,4 +1,4 @@
-//! Read files from the AuraVault profile media folder (local only).
+//! Read files from the Lessonbinder profile media folder (local only).
 
 use std::path::{Component, Path};
 

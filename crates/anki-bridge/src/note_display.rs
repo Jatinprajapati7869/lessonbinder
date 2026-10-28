@@ -10,7 +10,7 @@ use anki_proto::notes::NoteId as ProtoNoteId;
 use regex::Regex;
 use regex::RegexBuilder;
 
-use crate::clip::AURAVAULT_CLIP_NOTETYPE;
+use crate::clip::LESSONBINDER_CLIP_NOTETYPE;
 
 static SCRIPT_TAG: LazyLock<Regex> = LazyLock::new(|| {
     RegexBuilder::new(r"(?is)<script\b[^>]*>.*?</script>")
@@ -65,7 +65,7 @@ pub fn note_study_text(col: &mut Collection, note_id: NoteId) -> Result<NoteStud
 
 fn raw_front_back(note: &Note, nt: &anki::notetype::Notetype) -> (String, String) {
     let fields = note.fields();
-    if nt.name == AURAVAULT_CLIP_NOTETYPE {
+    if nt.name == LESSONBINDER_CLIP_NOTETYPE {
         return (fields[2].clone(), fields[3].clone());
     }
     if fields.len() >= 2 {

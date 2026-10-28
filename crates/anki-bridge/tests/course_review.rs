@@ -81,7 +81,7 @@ fn each_course_gets_its_own_due_card_while_global_queue_keeps_both() {
         .expect("global due");
     assert!(
         global.note_id == note_a || global.note_id == note_b,
-        "global reviewer still sees AuraVault dues from any course"
+        "global reviewer still sees Lessonbinder dues from any course"
     );
 }
 

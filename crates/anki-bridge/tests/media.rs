@@ -1,6 +1,6 @@
 use anki_bridge::{
     commit_card_draft, open_profile, read_media, screenshot_filename_for_bytes,
-    AuraVaultProfilePaths, ReadMediaError,
+    LessonbinderProfilePaths, ReadMediaError,
 };
 use vault_core::card::build_card_draft;
 use vault_core::ocr::FakeOcrEngine;
@@ -16,7 +16,7 @@ fn fixture_lesson(db: &VaultDb) -> String {
 fn read_media_returns_png_written_by_commit() {
     let profile = tempfile::tempdir().unwrap();
     let mut col = open_profile(profile.path()).unwrap();
-    let paths = AuraVaultProfilePaths::in_dir(profile.path());
+    let paths = LessonbinderProfilePaths::in_dir(profile.path());
     let db = VaultDb::open_in_memory().unwrap();
     let lesson_id = fixture_lesson(&db);
     let png = b"\x89PNG\r\n\0read-media-test-bytes";
@@ -46,7 +46,7 @@ fn read_media_rejects_symlink_outside_media_root() {
     use std::os::unix::fs::symlink;
 
     let profile = tempfile::tempdir().unwrap();
-    let paths = AuraVaultProfilePaths::in_dir(profile.path());
+    let paths = LessonbinderProfilePaths::in_dir(profile.path());
     std::fs::create_dir_all(&paths.media_folder).unwrap();
     let outside = profile.path().join("outside-secret.png");
     std::fs::write(&outside, b"secret").unwrap();
@@ -59,7 +59,7 @@ fn read_media_rejects_symlink_outside_media_root() {
 #[test]
 fn read_media_rejects_path_escape() {
     let profile = tempfile::tempdir().unwrap();
-    let paths = AuraVaultProfilePaths::in_dir(profile.path());
+    let paths = LessonbinderProfilePaths::in_dir(profile.path());
     std::fs::create_dir_all(&paths.media_folder).unwrap();
 
     let err = read_media(&paths.media_folder, "../outside.png").unwrap_err();

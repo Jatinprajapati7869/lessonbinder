@@ -1,4 +1,4 @@
-# AuraVault SPEC (v1.1)
+# Lessonbinder SPEC (v1.1)
 
 **Scope:** [`SCOPE-v1.1.md`](SCOPE-v1.1.md) only.
 **Baseline:** v1 scenarios that already **pass** in [`V1.md`](V1.md) are not repeated here (e.g. subtitle **indexing** C-03, folder import F-01–F-03, due counts K-01–K-02).
@@ -13,13 +13,13 @@ Each row is acceptance criteria. **Evidence** is the expected Rust integration t
 
 | ID   | Trigger                                                            | Result                                                                          | Failure                                            | Evidence                                                                                  |
 | ---- | ------------------------------------------------------------------ | ------------------------------------------------------------------------------- | -------------------------------------------------- | ----------------------------------------------------------------------------------------- |
-| R-01 | `start_review_session()` on temp AuraVault profile                 | Session opens **only** `{app_data}/anki-profile/` collection; no home Anki path | Default or fallback profile used                   | `anki_bridge::study::uses_auravault_profile_only`                                         |
-| R-02 | Session started; at least one due card in `AuraVault::` deck       | `next_review_card()` returns a card id in that deck subtree                     | Card from unrelated deck or empty while dues exist | `anki_bridge::study::next_card_from_auravault_decks`                                      |
+| R-01 | `start_review_session()` on temp Lessonbinder profile                 | Session opens **only** `{app_data}/anki-profile/` collection; no home Anki path | Default or fallback profile used                   | `anki_bridge::study::uses_lessonbinder_profile_only`                                         |
+| R-02 | Session started; at least one due card in `Lessonbinder::` deck       | `next_review_card()` returns a card id in that deck subtree                     | Card from unrelated deck or empty while dues exist | `anki_bridge::study::next_card_from_lessonbinder_decks`                                      |
 | R-03 | `answer_card(card_id, Good)` (and Again / Hard / Easy)             | Card scheduled via `rslib`; session can advance to next due                     | Grade no-op, panic, or writes outside collection   | `anki_bridge::study::answer_grades_persist_in_collection`                                 |
-| R-04 | No cards due in AuraVault subtree                                  | `next_review_card()` returns end-of-queue (not error)                           | Panic or infinite repeat of same card              | `anki_bridge::study::empty_queue_ends_session`                                            |
+| R-04 | No cards due in Lessonbinder subtree                                  | `next_review_card()` returns end-of-queue (not error)                           | Panic or infinite repeat of same card              | `anki_bridge::study::empty_queue_ends_session`                                            |
 | R-05 | Profile directory missing or collection cannot open                | Structured error; no silent open of another profile                             | Wrong collection or empty success                  | `anki_bridge::study::errors_when_profile_unavailable`                                     |
 | R-06 | Primary **Study** action in shell (integration / manual checklist) | In-app review surface opens by default                                          | Spawns Anki Desktop without user choosing fallback | `ui::StudyScreen.test.tsx::opens_in_app_review_by_default`                                |
-| R-07 | User chooses explicit **Study in Anki** fallback                   | `anki` binary spawned with AuraVault `-b`/`-p` args                             | Wrong profile args or required when in-app works   | `auravault_tauri::study::launch_command_uses_profile_dir` (existing); manual UI checklist |
+| R-07 | User chooses explicit **Study in Anki** fallback                   | `anki` binary spawned with Lessonbinder `-b`/`-p` args                             | Wrong profile args or required when in-app works   | `lessonbinder_tauri::study::launch_command_uses_profile_dir` (existing); manual UI checklist |
 
 ---
 
@@ -55,9 +55,9 @@ Each row is acceptance criteria. **Evidence** is the expected Rust integration t
 | I-01 | `rescan_course_folder(course_id)` after adding `new.webm` on disk | New lesson row; existing lesson ids unchanged | Duplicate lessons or ids reused wrongly | `vault_core::import::rescan_adds_new_files`                         |
 | I-02 | Rescan after deleting a lesson file from disk                     | That lesson `Progress.status == broken`       | Stays `not_started` / `done`            | `vault_core::import::rescan_missing_file_marks_broken`              |
 | I-03 | Rescan with no filesystem changes                                 | Lesson count and ids unchanged                | Spurious new rows                       | `vault_core::import::rescan_unchanged_is_idempotent`                |
-| I-04 | Import folder containing `.auravaultignore` listing `extras/`     | Files under `extras/` not lessons             | Ignored paths imported as lessons       | `vault_core::import::auravaultignore_excludes_paths`                |
-| I-05 | Rescan after adding ignored path under existing ignore rules      | No lesson created for ignored file            | New lesson for ignored path             | `vault_core::import::rescan_honors_auravaultignore`                 |
-| I-06 | Import with ignore file + normal media at root                    | Eligible root files still become lessons      | Everything ignored                      | `vault_core::import::auravaultignore_does_not_block_eligible_files` |
+| I-04 | Import folder containing `.lessonbinderignore` listing `extras/`     | Files under `extras/` not lessons             | Ignored paths imported as lessons       | `vault_core::import::lessonbinderignore_excludes_paths`                |
+| I-05 | Rescan after adding ignored path under existing ignore rules      | No lesson created for ignored file            | New lesson for ignored path             | `vault_core::import::rescan_honors_lessonbinderignore`                 |
+| I-06 | Import with ignore file + normal media at root                    | Eligible root files still become lessons      | Everything ignored                      | `vault_core::import::lessonbinderignore_does_not_block_eligible_files` |
 
 ---
 
@@ -108,10 +108,10 @@ Each row is acceptance criteria. **Evidence** is the expected Rust integration t
 
 ## Implementation decisions
 
-- **Review:** New `anki-bridge` study session API wraps `rslib` card queue and answer paths; AuraVault profile lock matches existing `open_profile` / `GuardedProfile` behavior. UI default route is in-app review; Desktop launch remains `auravault-tauri::study` fallback.
+- **Review:** New `anki-bridge` study session API wraps `rslib` card queue and answer paths; Lessonbinder profile lock matches existing `open_profile` / `GuardedProfile` behavior. UI default route is in-app review; Desktop launch remains `lessonbinder-tauri::study` fallback.
 - **Subtitles:** Cues served from existing extractor/index data; player commands reuse `CardDraft` / `commit_card_draft` without new note types.
 - **Watch union:** Persist normalized intervals on `Progress` (or child table); `watched_percent` derived at read time when `duration_ms` known; `done` rules unchanged from v1.
-- **Rescan:** Explicit `rescan_course_folder` on known `Course` source path; `.auravaultignore` parsed with gitignore-style rules alongside existing hidden/`node_modules` skips.
+- **Rescan:** Explicit `rescan_course_folder` on known `Course` source path; `.lessonbinderignore` parsed with gitignore-style rules alongside existing hidden/`node_modules` skips.
 - **Lesson notes:** New vault entity or column keyed by `lesson_id`; never synced to Anki.
 - **Document position:** Typed fields per `SourceFileKind` (page vs scroll offset).
 - **Search:** SQLite FTS or normalized index table rebuilt on import/rescan/index; queries return lesson + course ids only.

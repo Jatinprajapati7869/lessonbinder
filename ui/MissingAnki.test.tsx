@@ -23,10 +23,10 @@ describe("MissingAnki", () => {
       </AppShell>
     );
 
-    expect(screen.getByLabelText("AuraVault due counts")).toHaveTextContent(
+    expect(screen.getByLabelText("Lessonbinder due counts")).toHaveTextContent(
       "3"
     );
-    expect(screen.getByLabelText("AuraVault due counts")).toHaveTextContent(
+    expect(screen.getByLabelText("Lessonbinder due counts")).toHaveTextContent(
       "7"
     );
     expect(screen.getByRole("button", { name: "Study" })).toBeEnabled();

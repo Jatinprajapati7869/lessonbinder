@@ -10,7 +10,7 @@ Issues and specs for this repo live as markdown files in `.scratch/`.
 - Triage state is recorded as a `Status:` line near the top of each issue file (see `triage-labels.md` for the role strings)
 - Comments and conversation history append to the bottom of the file under a `## Comments` heading
 
-## AuraVault planning source
+## Lessonbinder planning source
 
 Until tickets are copied from `docs/TICKETS.md`, implementation order follows prompt numbers in `~/Documents/auravault-cursor-prompts.md` and `docs/PROGRESS.md`.
 

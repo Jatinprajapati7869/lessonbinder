@@ -1,5 +1,5 @@
 use anki_bridge::{
-    commit_card_draft, get_clip_note, open_profile, AuraVaultProfilePaths, CommitCardError,
+    commit_card_draft, get_clip_note, open_profile, LessonbinderProfilePaths, CommitCardError,
 };
 use serde::Serialize;
 use tauri::State;
@@ -128,7 +128,7 @@ pub fn commit_lesson_note_card(
 
         let profile_dir = anki_profile_dir(&state.app_data_dir);
         let mut col = open_profile(&profile_dir).map_err(|e| e.to_string())?;
-        let paths = AuraVaultProfilePaths::in_dir(&profile_dir);
+        let paths = LessonbinderProfilePaths::in_dir(&profile_dir);
 
         let note_id = commit_card_draft(
             &mut col,
@@ -174,7 +174,7 @@ pub fn commit_subtitle_cue_card(
 
         let profile_dir = anki_profile_dir(&state.app_data_dir);
         let mut col = open_profile(&profile_dir).map_err(|e| e.to_string())?;
-        let paths = AuraVaultProfilePaths::in_dir(&profile_dir);
+        let paths = LessonbinderProfilePaths::in_dir(&profile_dir);
 
         let note_id = commit_card_draft(
             &mut col,
@@ -258,7 +258,7 @@ pub fn commit_audio_clip_card(
 
         let profile_dir = anki_profile_dir(&state.app_data_dir);
         let mut col = open_profile(&profile_dir).map_err(|e| e.to_string())?;
-        let paths = AuraVaultProfilePaths::in_dir(&profile_dir);
+        let paths = LessonbinderProfilePaths::in_dir(&profile_dir);
 
         let note_id = commit_card_draft(
             &mut col,
@@ -306,7 +306,7 @@ pub fn commit_capture_card(
 
         let profile_dir = anki_profile_dir(&state.app_data_dir);
         let mut col = open_profile(&profile_dir).map_err(|e| e.to_string())?;
-        let paths = AuraVaultProfilePaths::in_dir(&profile_dir);
+        let paths = LessonbinderProfilePaths::in_dir(&profile_dir);
 
         let note_id = commit_card_draft(
             &mut col,

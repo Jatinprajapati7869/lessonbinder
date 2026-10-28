@@ -1,4 +1,4 @@
-//! Study queue counts and in-process review entry for AuraVault decks.
+//! Study queue counts and in-process review entry for Lessonbinder decks.
 
 use std::collections::HashSet;
 
@@ -14,9 +14,9 @@ use anki_proto::decks::DeckTreeNode;
 use anki_proto::notes::NoteId as ProtoNoteId;
 use thiserror::Error;
 
-use crate::clip::{AURAVAULT_CLIP_FIELDS, AURAVAULT_DECK_PREFIX};
+use crate::clip::{LESSONBINDER_CLIP_FIELDS, LESSONBINDER_DECK_PREFIX};
 
-/// New / learning / review counts for all `AuraVault::<course>` decks combined.
+/// New / learning / review counts for all `Lessonbinder::<course>` decks combined.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
 pub struct DueSummary {
     pub new: u32,
@@ -42,7 +42,7 @@ pub enum ReviewEase {
     Easy,
 }
 
-/// Next due card in the AuraVault deck subtree, ready to show in-app.
+/// Next due card in the Lessonbinder deck subtree, ready to show in-app.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ReviewCard {
     pub card_id: CardId,
@@ -75,14 +75,14 @@ impl ReviewSession {
         &self.answers
     }
 
-    /// Grade `card_id` and append to the session log. Fails if the card is not in an AuraVault deck.
+    /// Grade `card_id` and append to the session log. Fails if the card is not in a Lessonbinder deck.
     pub fn answer(
         &mut self,
         col: &mut Collection,
         card_id: CardId,
         ease: ReviewEase,
     ) -> Result<(), AnswerCardError> {
-        ensure_card_in_auravault_decks(col, card_id)?;
+        ensure_card_in_lessonbinder_decks(col, card_id)?;
         answer_card(col, card_id, ease)?;
         self.answers.push(ReviewSessionAnswer { card_id, ease });
         Ok(())
@@ -96,47 +96,47 @@ impl ReviewSession {
 
 #[derive(Debug, Error)]
 pub enum AnswerCardError {
-    #[error("no AuraVault deck in collection")]
-    NoAuraVaultDeck,
-    #[error("no cards due in AuraVault study queue")]
+    #[error("no Lessonbinder deck in collection")]
+    NoLessonbinderDeck,
+    #[error("no cards due in Lessonbinder study queue")]
     EmptyQueue,
-    #[error("card is not at the head of the AuraVault study queue")]
+    #[error("card is not at the head of the Lessonbinder study queue")]
     CardNotAtQueueHead,
-    #[error("card is not in an AuraVault deck")]
-    CardNotInAuraVaultDecks,
+    #[error("card is not in a Lessonbinder deck")]
+    CardNotInLessonbinderDecks,
     #[error("scheduler does not offer {0:?} for this card")]
     EaseNotOffered(ReviewEase),
     #[error(transparent)]
     Anki(#[from] anki::error::AnkiError),
 }
 
-/// Due counts from Anki's deck tree for the `AuraVault::` subtree only.
+/// Due counts from Anki's deck tree for the `Lessonbinder::` subtree only.
 pub fn due_summary(col: &mut Collection) -> Result<DueSummary> {
     let tree = col.deck_tree(Some(TimestampSecs::now()))?;
     Ok(due_summary_from_tree(&tree))
 }
 
-/// Next card due in decks under the top-level `AuraVault` deck, or `None` when no AuraVault
+/// Next card due in decks under the top-level `Lessonbinder` deck, or `None` when no Lessonbinder
 /// card appears in the next slice of the scoped study queue.
 ///
 /// Foreign due cards ahead in the scheduler order are skipped (not answered or buried).
 /// Uses `set_current_deck` + `get_queued_cards`; does not query SQL directly.
 pub fn next_review_card(col: &mut Collection) -> Result<Option<ReviewCard>> {
-    let Some(root_id) = auravault_root_deck_id(col)? else {
+    let Some(root_id) = lessonbinder_root_deck_id(col)? else {
         return Ok(None);
     };
-    next_auravault_review_card(col, root_id, None)
+    next_lessonbinder_review_card(col, root_id, None)
 }
 
-/// Next due AuraVault card whose note id is in `allowed_note_ids`.
+/// Next due Lessonbinder card whose note id is in `allowed_note_ids`.
 pub fn next_review_card_for_course(
     col: &mut Collection,
     allowed_note_ids: &HashSet<NoteId>,
 ) -> Result<Option<ReviewCard>> {
-    let Some(root_id) = auravault_root_deck_id(col)? else {
+    let Some(root_id) = lessonbinder_root_deck_id(col)? else {
         return Ok(None);
     };
-    next_auravault_review_card(col, root_id, Some(allowed_note_ids))
+    next_lessonbinder_review_card(col, root_id, Some(allowed_note_ids))
 }
 
 /// Same as [`next_review_card_for_course`] with vault link note ids (`i64`).
@@ -148,7 +148,7 @@ pub fn next_review_card_for_course_note_ids(
     next_review_card_for_course(col, &allowed)
 }
 
-/// Grade the card at the head of the AuraVault study queue.
+/// Grade the card at the head of the Lessonbinder study queue.
 ///
 /// `card_id` must match the card returned by the most recent `next_review_card` on this collection.
 /// `answer_card` with primitive ids for IPC boundaries.
@@ -165,18 +165,18 @@ pub fn answer_card(
     card_id: CardId,
     ease: ReviewEase,
 ) -> Result<(), AnswerCardError> {
-    let Some(root_id) = auravault_root_deck_id(col)? else {
-        return Err(AnswerCardError::NoAuraVaultDeck);
+    let Some(root_id) = lessonbinder_root_deck_id(col)? else {
+        return Err(AnswerCardError::NoLessonbinderDeck);
     };
     col.set_current_deck(root_id)?;
     let queue_head = col.get_next_card()?;
-    let Some(review) = next_auravault_review_card(col, root_id, None)? else {
+    let Some(review) = next_lessonbinder_review_card(col, root_id, None)? else {
         return Err(AnswerCardError::EmptyQueue);
     };
     if review.card_id != card_id {
         return Err(AnswerCardError::CardNotAtQueueHead);
     }
-    ensure_card_in_auravault_decks(col, card_id)?;
+    ensure_card_in_lessonbinder_decks(col, card_id)?;
     col.set_current_deck(root_id)?;
     let Some(queued) = col
         .get_queued_cards(64, false)?
@@ -212,14 +212,14 @@ pub fn answer_card(
     Ok(())
 }
 
-fn next_auravault_review_card(
+fn next_lessonbinder_review_card(
     col: &mut Collection,
     root_id: DeckId,
     allowed_note_ids: Option<&HashSet<NoteId>>,
 ) -> Result<Option<ReviewCard>> {
     col.set_current_deck(root_id)?;
     for queued in col.get_queued_cards(64, false)?.cards {
-        if !card_in_auravault_decks(col, &queued.card)? {
+        if !card_in_lessonbinder_decks(col, &queued.card)? {
             continue;
         }
         let note_id = queued.card.note_id();
@@ -246,7 +246,7 @@ fn next_auravault_review_card(
     Ok(None)
 }
 
-fn ensure_card_in_auravault_decks(
+fn ensure_card_in_lessonbinder_decks(
     col: &mut Collection,
     card_id: CardId,
 ) -> Result<(), AnswerCardError> {
@@ -254,10 +254,10 @@ fn ensure_card_in_auravault_decks(
     let deck_id = DeckId(proto.deck_id);
     let deck = col.get_deck(deck_id)?.or_not_found(deck_id)?;
     let name = deck.human_name();
-    if name.starts_with(AURAVAULT_DECK_PREFIX) || name == auravault_root_name() {
+    if name.starts_with(LESSONBINDER_DECK_PREFIX) || name == lessonbinder_root_name() {
         Ok(())
     } else {
-        Err(AnswerCardError::CardNotInAuraVaultDecks)
+        Err(AnswerCardError::CardNotInLessonbinderDecks)
     }
 }
 
@@ -281,7 +281,7 @@ fn ensure_ease_offered(
 fn front_fields_for_note(note: &Note) -> Result<Vec<String>> {
     let fields = note.fields();
     require!(
-        fields.len() == AURAVAULT_CLIP_FIELDS.len(),
+        fields.len() == LESSONBINDER_CLIP_FIELDS.len(),
         "unexpected field count on review note"
     );
     Ok(vec![fields[2].clone(), fields[6].clone()])
@@ -304,25 +304,25 @@ pub(crate) fn answer_buttons_for_state(current: &CardState) -> ReviewAnswerButto
     }
 }
 
-fn card_in_auravault_decks(col: &mut Collection, card: &Card) -> Result<bool> {
+fn card_in_lessonbinder_decks(col: &mut Collection, card: &Card) -> Result<bool> {
     let deck = col.get_deck(card.deck_id())?.or_not_found(card.deck_id())?;
     let name = deck.human_name();
-    Ok(name.starts_with(AURAVAULT_DECK_PREFIX) || name == auravault_root_name())
+    Ok(name.starts_with(LESSONBINDER_DECK_PREFIX) || name == lessonbinder_root_name())
 }
 
-fn auravault_root_name() -> &'static str {
-    AURAVAULT_DECK_PREFIX.trim_end_matches("::")
+fn lessonbinder_root_name() -> &'static str {
+    LESSONBINDER_DECK_PREFIX.trim_end_matches("::")
 }
 
-fn auravault_root_deck_id(col: &Collection) -> Result<Option<DeckId>> {
-    col.get_deck_id(auravault_root_name())
+fn lessonbinder_root_deck_id(col: &Collection) -> Result<Option<DeckId>> {
+    col.get_deck_id(lessonbinder_root_name())
 }
 
 fn due_summary_from_tree(tree: &DeckTreeNode) -> DueSummary {
     let node = tree
         .children
         .iter()
-        .find(|child| auravault_root_deck(child));
+        .find(|child| lessonbinder_root_deck(child));
     match node {
         Some(n) => DueSummary {
             new: n.new_count,
@@ -333,9 +333,9 @@ fn due_summary_from_tree(tree: &DeckTreeNode) -> DueSummary {
     }
 }
 
-/// Top-level deck node named `AuraVault` (parent of `AuraVault::<course>` leaves).
-fn auravault_root_deck(node: &DeckTreeNode) -> bool {
-    node.level == 1 && node.name == auravault_root_name()
+/// Top-level deck node named `Lessonbinder` (parent of `Lessonbinder::<course>` leaves).
+fn lessonbinder_root_deck(node: &DeckTreeNode) -> bool {
+    node.level == 1 && node.name == lessonbinder_root_name()
 }
 
 #[cfg(test)]

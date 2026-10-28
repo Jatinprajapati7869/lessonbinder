@@ -1,6 +1,6 @@
-# AuraVault domain model (v1)
+# Lessonbinder domain model (v1)
 
-Derived from `/home/xingzi/Documents/auravault-charter.md`. Describes **entities, identity, fields, and invariants** only—no UI framework, no SQL schema.
+Derived from `/home/xingzi/Documents/lessonbinder-charter.md`. Describes **entities, identity, fields, and invariants** only—no UI framework, no SQL schema.
 
 ---
 
@@ -79,7 +79,7 @@ Per metadata field: `known(value)` | `unknown(reason)` — never invented summar
 | Field          | Type        | Notes               |
 | -------------- | ----------- | ------------------- |
 | `id`           | `LibraryId` | Primary key.        |
-| `display_name` | string      | e.g. `"AuraVault"`. |
+| `display_name` | string      | e.g. `"Lessonbinder"`. |
 | `created_at`   | timestamp   |                     |
 | `updated_at`   | timestamp   |                     |
 
@@ -309,12 +309,12 @@ Setting resume **does not** set `done`. Watch % **does not** auto-set `done` (De
 | -------------------- | ---------------- | ------------------------------------------- |
 | `id`                 | `AnkiCardLinkId` |                                             |
 | `lesson_id`          | `LessonId`       |                                             |
-| `anki_note_id`       | int64            | Note id in AuraVault-owned Anki collection. |
+| `anki_note_id`       | int64            | Note id in Lessonbinder-owned Anki collection. |
 | `video_timestamp_ms` | int              | Same sense as charter “timestamp”.          |
 | `link_status`        | `LinkStatus`     |                                             |
 | `created_at`         | timestamp        |                                             |
 
-**Invariant:** **Card body lives only in the Anki collection** (deck `AuraVault`, type `AuraVault OCR` in v1). Vault stores ids and context, not card HTML.
+**Invariant:** **Card body lives only in the Anki collection** (deck `Lessonbinder`, type `Lessonbinder OCR` in v1). Vault stores ids and context, not card HTML.
 
 **Invariant — course delete:** Deleting a course sets all its lessons’ `AnkiCardLink.link_status` to `broken`. **Does not** delete the Anki note.
 

@@ -1,5 +1,5 @@
-use auravault_tauri::command_error::CommandError;
-use auravault_tauri::command_log::{log_unexpected_command_error, UNEXPECTED_COMMAND_ERROR_CODE};
+use lessonbinder_tauri::command_error::CommandError;
+use lessonbinder_tauri::command_log::{log_unexpected_command_error, UNEXPECTED_COMMAND_ERROR_CODE};
 use serde_json::Value;
 
 use crate::app_state::AppState;

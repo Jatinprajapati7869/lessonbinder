@@ -1,4 +1,4 @@
-//! Manual first-test walkthrough against `/tmp/auravault-first-test` (see `docs/FIRST-TEST.md`).
+//! Manual first-test walkthrough against `/tmp/lessonbinder-first-test` (see `docs/FIRST-TEST.md`).
 
 use std::path::Path;
 
@@ -7,7 +7,7 @@ use vault_core::import::{import_folder, rescan};
 use vault_core::order::{learning_order, reorder_lessons};
 use vault_core::{LessonStatus, VaultDb};
 
-const FIXTURE_ROOT: &str = "/tmp/auravault-first-test";
+const FIXTURE_ROOT: &str = "/tmp/lessonbinder-first-test";
 
 #[test]
 fn first_test_fixture_walkthrough() {

@@ -6,21 +6,21 @@
 
 **Product hints in binary:** bundle id `com.coursevault.app`, marketing strings `coursevault` / `aulavault`, Pro-license gating on some features, bundled Whisper with **Hugging Face download URLs** for `ggml-tiny/base/small` weights, and LLM-style **flashcard generation** from transcripts (`src/flashcards.rs` path string only).
 
-This document compares those IPC surfaces to **AuraVault** [`docs/SPEC.md`](SPEC.md) and [`docs/SCOPE-v1.1.md`](SCOPE-v1.1.md). AuraVault has **no accounts, cloud sync, or automatic course understanding**.
+This document compares those IPC surfaces to **Lessonbinder** [`docs/SPEC.md`](SPEC.md) and [`docs/SCOPE-v1.1.md`](SCOPE-v1.1.md). Lessonbinder has **no accounts, cloud sync, or automatic course understanding**.
 
 ---
 
 ## Library and files
 
-| Command                     | Implied behavior                                                                          | AuraVault equivalent                                                                                                          |
+| Command                     | Implied behavior                                                                          | Lessonbinder equivalent                                                                                                          |
 | --------------------------- | ----------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
 | `scan_course_folder`        | Import or index a folder as a course (likely with progress events).                       | **Yes** — `import_course_folder` / folder import (`SPEC` F-01–F-05); v1.1 rescan (`SPEC-v1.1` I-01–I-03) via `rescan_course`. |
-| `cancel_scan_course_folder` | Abort an in-flight folder scan.                                                           | **No** — AuraVault rescan/import is synchronous from the UI’s perspective; no cancel command.                                 |
-| `check_risky_import_path`   | Warn or block dangerous import paths (binary strings mention scanning `/` / system root). | **Partial** — charter/SPEC honest import and `.auravaultignore` (v1.1 I-04–I-06); no dedicated “risky path” IPC name.         |
+| `cancel_scan_course_folder` | Abort an in-flight folder scan.                                                           | **No** — Lessonbinder rescan/import is synchronous from the UI’s perspective; no cancel command.                                 |
+| `check_risky_import_path`   | Warn or block dangerous import paths (binary strings mention scanning `/` / system root). | **Partial** — charter/SPEC honest import and `.lessonbinderignore` (v1.1 I-04–I-06); no dedicated “risky path” IPC name.         |
 | `check_missing_paths`       | Detect lessons whose media paths no longer exist on disk.                                 | **Partial** — broken-lesson semantics on rescan/import (`SPEC` F-04, v1.1 I-02); not exposed under this name.                 |
 | `pick_course_folders`       | Native dialog to choose one or more course directories.                                   | **Partial** — library import picks a folder (`import_course_folder`); no multi-folder picker in SPEC.                         |
 | `open_directory_fallback`   | Open a directory in the OS file manager when a path cannot be shown in-app.               | **No** in SPEC — opener plugin may exist for URLs; not a documented v1/v1.1 requirement.                                      |
-| `allow_asset_paths`         | Register or validate extra filesystem roots for webview/asset access.                     | **No** — AuraVault serves lesson media via controlled paths/commands, not competitor-style asset allowlists.                  |
+| `allow_asset_paths`         | Register or validate extra filesystem roots for webview/asset access.                     | **No** — Lessonbinder serves lesson media via controlled paths/commands, not competitor-style asset allowlists.                  |
 | `lesson_resources`          | List or resolve ancillary files tied to a lesson (attachments, sidecars).                 | **Partial** — subtitle sidecars indexed at import (`SPEC` F-03, C-03); no separate `lesson_resources` API.                    |
 | `list_lesson_resources`     | Enumerate lesson-linked files for the UI.                                                 | **Partial** — course detail / lesson rows expose paths; not this command name.                                                |
 | `lesson_subtitles`          | Fetch subtitle/cue data for a lesson.                                                     | **Yes** — `list_lesson_cues` / player cues (`SPEC-v1.1` S-01, S-02).                                                          |
@@ -35,29 +35,29 @@ This document compares those IPC surfaces to **AuraVault** [`docs/SPEC.md`](SPEC
 
 ## Whisper / subtitles pipeline
 
-| Command                     | Implied behavior                                                             | AuraVault equivalent                                                                                                                                                              |
+| Command                     | Implied behavior                                                             | Lessonbinder equivalent                                                                                                                                                              |
 | --------------------------- | ---------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `whisper_download_model`    | Download Whisper weights from the network (binary embeds Hugging Face URLs). | **Do not implement** — v1.1 allows **optional local** transcription only when the user sets a **model path**; SCOPE-v1.1 explicitly excludes AuraVault-initiated weight download. |
+| `whisper_download_model`    | Download Whisper weights from the network (binary embeds Hugging Face URLs). | **Do not implement** — v1.1 allows **optional local** transcription only when the user sets a **model path**; SCOPE-v1.1 explicitly excludes Lessonbinder-initiated weight download. |
 | `whisper_model_status`      | Report whether a model is present, downloading, or ready.                    | **Partial** — `get_transcription_model_path` + engine availability (`SPEC-v1.1` T-01–T-02); no bundled downloader status.                                                         |
-| `whisper_cancel_transcribe` | Stop an in-progress Whisper run.                                             | **Partial** — `transcribe_lesson` exists (`SPEC-v1.1` T-02); **no cancel** command in AuraVault today.                                                                            |
+| `whisper_cancel_transcribe` | Stop an in-progress Whisper run.                                             | **Partial** — `transcribe_lesson` exists (`SPEC-v1.1` T-02); **no cancel** command in Lessonbinder today.                                                                            |
 | `whisper_cancel_download`   | Abort a model download.                                                      | **Do not implement** (pairs with `whisper_download_model`).                                                                                                                       |
-| `whisper_delete_model`      | Remove a downloaded model from disk.                                         | **Do not implement** — AuraVault does not manage downloaded model stores.                                                                                                         |
+| `whisper_delete_model`      | Remove a downloaded model from disk.                                         | **Do not implement** — Lessonbinder does not manage downloaded model stores.                                                                                                         |
 | `generate_subtitles`        | Run speech-to-text to create subtitle/cue data for a lesson.                 | **Partial** — `transcribe_lesson` + `TranscriptionEngine` (`SPEC-v1.1` T-*); user-supplied binary/model, not competitor’s integrated downloader.                                  |
 
 ---
 
 ## Flashcards
 
-| Command               | Implied behavior                                                                                                      | AuraVault equivalent                                                                                                                                        |
+| Command               | Implied behavior                                                                                                      | Lessonbinder equivalent                                                                                                                                        |
 | --------------------- | --------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `generate_flashcards` | LLM batch-generates Q/A cards from a transcript (binary prompt: “study flashcards from a video lesson's transcript”). | **No** — AuraVault uses **manual** OCR capture and **subtitle cue → card draft** (`SPEC-v1.1` S-04); no automatic flashcard synthesis from full transcript. |
+| `generate_flashcards` | LLM batch-generates Q/A cards from a transcript (binary prompt: “study flashcards from a video lesson's transcript”). | **No** — Lessonbinder uses **manual** OCR capture and **subtitle cue → card draft** (`SPEC-v1.1` S-04); no automatic flashcard synthesis from full transcript. |
 | `ollama_list_models`  | List local Ollama models (likely used to pick an LLM for flashcards).                                                 | **No** — not in SPEC or SCOPE-v1.1; no Ollama integration.                                                                                                  |
 
 ---
 
 ## License
 
-| Command              | Implied behavior                                               | AuraVault equivalent                                                        |
+| Command              | Implied behavior                                               | Lessonbinder equivalent                                                        |
 | -------------------- | -------------------------------------------------------------- | --------------------------------------------------------------------------- |
 | `license_status`     | Return activation state for a Pro/commercial license.          | **Do not implement** — no accounts or license server in charter/SPEC/SCOPE. |
 | `activate_license`   | Activate with a license key (`license.json` string in binary). | **Do not implement**                                                        |
@@ -68,7 +68,7 @@ This document compares those IPC surfaces to **AuraVault** [`docs/SPEC.md`](SPEC
 
 ## Required names — classification index
 
-| Name                        | Group      | AuraVault stance             |
+| Name                        | Group      | Lessonbinder stance             |
 | --------------------------- | ---------- | ---------------------------- |
 | `scan_course_folder`        | library    | Equivalent (import/rescan)   |
 | `cancel_scan_course_folder` | library    | No equivalent                |
@@ -120,7 +120,7 @@ Included for completeness from the same `strings` pass; same grouping rules appl
 
 **Out of scope for this gap list (explicit):**
 
-- **`generate_flashcards`** — Already covered by AuraVault’s **cue → card draft → Anki commit** path (implementation prompts **62** cue-to-card draft, **29** selection to card draft, **30** write the Anki note). We do not add LLM batch flashcards from full transcripts.
+- **`generate_flashcards`** — Already covered by Lessonbinder’s **cue → card draft → Anki commit** path (implementation prompts **62** cue-to-card draft, **29** selection to card draft, **30** write the Anki note). We do not add LLM batch flashcards from full transcripts.
 - **Whisper model download** (`whisper_download_model`, `whisper_cancel_download`, `whisper_delete_model`) — **Refused.** v1.1 transcription is optional and **local-only** (user-supplied model path); see [`SCOPE-v1.1.md`](SCOPE-v1.1.md).
 - **Licensing** (`license_status`, `activate_license`, `deactivate_license`, `check_in_license`) — **Refused.** No accounts, activation server, or Pro gate in charter/SPEC.
 

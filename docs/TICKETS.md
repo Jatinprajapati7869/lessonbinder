@@ -1,6 +1,6 @@
-# AuraVault implementation tickets
+# Lessonbinder implementation tickets
 
-**Sources:** `auravault-SPEC.md`, `auravault-ARCHITECTURE.md`, `auravault-cursor-prompts.md` (prompts **11–42**).
+**Sources:** `lessonbinder-SPEC.md`, `lessonbinder-ARCHITECTURE.md`, `auravault-cursor-prompts.md` (prompts **11–42**).
 **Format:** One ticket per prompt; vertical slices in dependency order. No accounts, cloud sync, or custom in-app reviewer (no embedded FSRS UI).
 
 **Tracker:** Pre-repo; publish to GitHub issues after prompt 09 if desired. **Blocked by** lists prompt numbers.
@@ -22,7 +22,7 @@
 **Prompt:** 11
 **Blocked by:** None (after repo scaffold prompt 10).
 
-**What:** `anki-bridge` opens the AuraVault profile via `CollectionBuilder`, creates `collection.anki2` + media paths, reopens without raw SQL in our crate.
+**What:** `anki-bridge` opens the Lessonbinder profile via `CollectionBuilder`, creates `collection.anki2` + media paths, reopens without raw SQL in our crate.
 
 **Done when:** `cargo test -p anki-bridge` passes; `docs/ANKI_PIN.md` records `anki-main` git rev; `docs/PROGRESS.md` marks 11.
 
@@ -37,7 +37,7 @@
 **Prompt:** 12
 **Blocked by:** T11.
 
-**What:** `AuraVaultClip` notetype (fields: Course, Lesson, Front, Back, Source, Timestamp, Screenshot). Decks `AuraVault::<course title>` only; `add_clip_note` / `get_note`.
+**What:** `LessonbinderClip` notetype (fields: Course, Lesson, Front, Back, Source, Timestamp, Screenshot). Decks `Lessonbinder::<course title>` only; `add_clip_note` / `get_note`.
 
 **Done when:** `cargo test -p anki-bridge` covers notetype, deck prefix guard, roundtrip note fields.
 
@@ -322,7 +322,7 @@
 **Prompt:** 31
 **Blocked by:** T30.
 
-**What:** `due_summary()` for `AuraVault::` decks only (K-01, K-02).
+**What:** `due_summary()` for `Lessonbinder::` decks only (K-01, K-02).
 
 **Done when:** Fresh collection zeros; after add note, assert real scheduler counts (document behavior in test name).
 
@@ -337,7 +337,7 @@
 **Prompt:** 32
 **Blocked by:** T31.
 
-**What:** Build argv for `anki` on AuraVault profile; typed error if binary missing; no GUI in CI (ARCHITECTURE review boundary).
+**What:** Build argv for `anki` on Lessonbinder profile; typed error if binary missing; no GUI in CI (ARCHITECTURE review boundary).
 
 **Done when:** Argument-vector unit tests pass; `docs/STUDY.md` documents v1 study in Anki Desktop.
 
@@ -397,7 +397,7 @@
 **Prompt:** 36
 **Blocked by:** T35.
 
-**What:** Implement `auravault-DESIGN.md` tokens on shell only; strip Vite/Tauri starter chrome.
+**What:** Implement `lessonbinder-DESIGN.md` tokens on shell only; strip Vite/Tauri starter chrome.
 
 **Done when:** Running app uses IBM Plex + stone palette + accent rules; verification noted in PROGRESS.
 

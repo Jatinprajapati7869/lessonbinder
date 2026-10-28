@@ -1,5 +1,5 @@
 [package]
-name = "auravault"
+name = "lessonbinder"
 version = "0.0.0"
 edition.workspace = true
 license.workspace = true
@@ -7,11 +7,11 @@ rust-version.workspace = true
 publish = false
 
 [lib]
-name = "auravault_lib"
+name = "lessonbinder_lib"
 crate-type = ["lib", "cdylib", "staticlib"]
 
 [[bin]]
-name = "auravault"
+name = "lessonbinder"
 path = "src/main.rs"
 
 [build-dependencies]
@@ -19,7 +19,7 @@ tauri-build = { version = "2", features = [] }
 
 [dependencies]
 anki-bridge = { path = "../crates/anki-bridge" }
-auravault-tauri = { path = "../crates/tauri" }
+lessonbinder-tauri = { path = "../crates/tauri" }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 tauri = { version = "2", features = [] }

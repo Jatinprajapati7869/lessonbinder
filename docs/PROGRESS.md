@@ -1,4 +1,4 @@
-# AuraVault prompt progress
+# Lessonbinder prompt progress
 
 Check off when the matching prompt in `auravault-cursor-prompts.md` (under `~/Documents/`) is complete.
 
@@ -276,13 +276,28 @@ No new features. Full text: `~/Documents/auravault-cursor-prompts.md`.
 
 Product name is Lessonbinder. Full text: `~/Documents/auravault-cursor-prompts.md`. Keep `vault-core` and `vault.db`. Keep the competitor name AulaVault.
 
-- [ ] 141 — Write the map
-- [ ] 142 — Words a person sees
-- [ ] 143 — Packages and the binary
-- [ ] 144 — Anki deck and note type
-- [ ] 145 — Ignore file and playlist scheme
-- [ ] 146 — Docs inside the repo
-- [ ] 147 — Planning copies in Documents
-- [ ] 148 — Leftovers and tests
-- [ ] 149 — Folder and GitHub
-- [ ] 150 — Name is on the window
+- [x] 141 — Write the map
+  - [`docs/RENAME.md`](RENAME.md): spelling map, keep list, app-data note.
+- [x] 142 — Words a person sees
+  - README, `ui/index.html`, `tauri.conf.json` titles, UI headings/aria-labels/capture copy; Vitest label assertions updated.
+- [x] 143 — Packages and the binary
+  - `lessonbinder` / `lessonbinder_lib` / `lessonbinder-tauri`; root `package.json`; Rust `use lessonbinder_tauri`.
+- [x] 144 — Anki deck and note type
+  - `Lessonbinder::`, `LessonbinderClip`, constants/functions/errors; default library name; no Anki migrator (see `docs/RENAME.md`).
+- [x] 145 — Ignore file and playlist scheme
+  - `.lessonbinderignore` module; `lessonbinder://` pasted playlist; tests and `docs/FIRST-TEST.md`.
+- [x] 146 — Docs inside the repo
+  - `docs/`, `AGENTS.md`, and product comments → Lessonbinder; `AULAVAULT-BEHAVIOR.md` keeps competitor `aulavault`; `ANKI_PIN.md` path unchanged.
+- [x] 147 — Planning copies in Documents
+  - Renamed `~/Documents/lessonbinder-{charter,domain,SPEC,ARCHITECTURE,DESIGN,TICKETS,workspace}.md`; product name updated; prompt pack header unchanged for 01–140.
+- [x] 148 — Leftovers and tests
+  - `rg` cleanup; `LessonbinderApp` / `LessonbinderProfilePaths`; identifier `dev.lessonbinder.app`; tests 195 + 93 + typecheck pass; leftovers in `docs/RENAME.md`.
+- [x] 149 — Folder and GitHub
+  - Checkout moved to `/home/xingzi/Documents/lessonbinder`; GitHub repo + About updated (see `docs/RENAME.md`).
+- [x] 150 — Name is on the window
+
+## README (prompt 151)
+
+Can run after 142. Full text: `~/Documents/auravault-cursor-prompts.md`.
+
+- [x] 151 — README

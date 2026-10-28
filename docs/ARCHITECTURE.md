@@ -1,6 +1,6 @@
-# AuraVault architecture (v1)
+# Lessonbinder architecture (v1)
 
-**Related:** `auravault-charter.md`, `auravault-domain.md`, `auravault-SPEC.md`, `auravault-workspace.md`
+**Related:** `lessonbinder-charter.md`, `lessonbinder-domain.md`, `lessonbinder-SPEC.md`, `lessonbinder-workspace.md`
 **Upstream reference (read-only):** `/home/xingzi/Documents/anki-main/rslib`
 
 Desktop **Tauri 2** app with **React + TypeScript** UI. Domain logic lives in **`vault-core`** (deep module, no Anki). All **`anki`** / **`rslib`** access lives in **`anki-bridge`**. **`src-tauri`** is a thin orchestration shell: Tauri commands, persistence wiring, background jobs, and process launch for review.
@@ -11,13 +11,13 @@ Desktop **Tauri 2** app with **React + TypeScript** UI. Domain logic lives in **
 
 | Store                  | Path (under app data)                      | Owner                                            | Contents                                                                                                                                                                     |
 | ---------------------- | ------------------------------------------ | ------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **AuraVault vault DB** | `{app_data}/vault.db`                      | `vault-core` (+ `src-tauri` persistence adapter) | `Library`, `Course`, `Lesson`, `Progress`, `Roadmap`, `SourceFile`, `PlaylistItem`, `TranscriptSegment`, `OcrSelection`, `AnkiCardLink`, order proposals, job queue metadata |
+| **Lessonbinder vault DB** | `{app_data}/vault.db`                      | `vault-core` (+ `src-tauri` persistence adapter) | `Library`, `Course`, `Lesson`, `Progress`, `Roadmap`, `SourceFile`, `PlaylistItem`, `TranscriptSegment`, `OcrSelection`, `AnkiCardLink`, order proposals, job queue metadata |
 | **Anki collection**    | `{app_data}/anki-profile/collection.anki2` | `anki` / `rslib` via `anki-bridge`               | Notes, cards, revlog, decks, notetypes—**Anki’s schema only**                                                                                                                |
 
 **Rules**
 
-- **No AuraVault business tables** inside `collection.anki2` (no lessons, no watch %, no roadmaps in Anki SQL).
-- **No raw SQL** against Anki tables from AuraVault code. Use `anki::collection::Collection` APIs opened with **`CollectionBuilder`** only.
+- **No Lessonbinder business tables** inside `collection.anki2` (no lessons, no watch %, no roadmaps in Anki SQL).
+- **No raw SQL** against Anki tables from Lessonbinder code. Use `anki::collection::Collection` APIs opened with **`CollectionBuilder`** only.
 - `vault.db` and `collection.anki2` are **separate files**; link rows in `AnkiCardLink` (vault) point at Anki note ids (collection).
 
 ### Anki profile directory
@@ -31,14 +31,14 @@ Desktop **Tauri 2** app with **React + TypeScript** UI. Domain logic lives in **
     └── collection.media.db   # Anki media index
 ```
 
-`CollectionBuilder::new("{app_data}/anki-profile/collection.anki2")` with media paths set to match Anki’s expected layout (same as Anki Desktop for a profile). AuraVault **creates** this profile on first run; it is **not** the user’s default `~/Anki` profile.
+`CollectionBuilder::new("{app_data}/anki-profile/collection.anki2")` with media paths set to match Anki’s expected layout (same as Anki Desktop for a profile). Lessonbinder **creates** this profile on first run; it is **not** the user’s default `~/Anki` profile.
 
 ---
 
 ## Crate layout and dependency rules
 
 ```
-auravault/                    # product repo (future)
+lessonbinder/                    # product repo (this checkout)
 ├── crates/
 │   ├── vault-core/           # domain + vault.db access
 │   └── anki-bridge/          # only crate that links `anki`
@@ -148,8 +148,8 @@ Tests hit **`vault-core`** without Tauri or Anki (`cargo test -p vault-core`).
 **Interface:**
 
 - `open_collection(profile_dir) -> Collection` via **`anki::collection::CollectionBuilder`**
-- `ensure_profile(profile_dir)` — create `collection.anki2`, media folder, default deck `AuraVault`, notetype `AuraVault OCR` if missing
-- `due_counts() -> DueSummary` — scheduler-backed counts; **no custom FSRS** in AuraVault
+- `ensure_profile(profile_dir)` — create `collection.anki2`, media folder, default deck `Lessonbinder`, notetype `Lessonbinder OCR` if missing
+- `due_counts() -> DueSummary` — scheduler-backed counts; **no custom FSRS** in Lessonbinder
 - `create_ocr_note(front, back, lesson_context) -> NoteId`
 - **No** lesson/order/progress APIs here
 
@@ -201,13 +201,13 @@ Long work must not block the webview thread. **`src-tauri`** schedules jobs; han
 
 | Concern                    | Where it runs      | Mechanism                                                 |
 | -------------------------- | ------------------ | --------------------------------------------------------- |
-| **Due counts**             | In-process         | `anki-bridge::due_counts()` on AuraVault `Collection`     |
+| **Due counts**             | In-process         | `anki-bridge::due_counts()` on Lessonbinder `Collection`     |
 | **OCR → note**             | In-process         | `anki-bridge::create_ocr_note()`                          |
-| **Full review / study UI** | **Out-of-process** | **Installed Anki binary** launched with AuraVault profile |
+| **Full review / study UI** | **Out-of-process** | **Installed Anki binary** launched with Lessonbinder profile |
 
-**Launch boundary (v1):** `src-tauri` spawns the **system Anki executable** (discover via `PATH`, platform defaults, or user setting) with arguments/environment so Anki opens **`{app_data}/anki-profile/`**—not the user’s everyday profile. AuraVault does **not** embed Anki’s Qt UI; it **delegates** review to Anki Desktop while keeping vault state in `vault.db`.
+**Launch boundary (v1):** `src-tauri` spawns the **system Anki executable** (discover via `PATH`, platform defaults, or user setting) with arguments/environment so Anki opens **`{app_data}/anki-profile/`**—not the user’s everyday profile. Lessonbinder does **not** embed Anki’s Qt UI; it **delegates** review to Anki Desktop while keeping vault state in `vault.db`.
 
-**Failure modes:** Anki not installed → structured error in UI (counts may still work if collection exists). Wrong profile → prevented by always passing AuraVault profile path to launcher helper.
+**Failure modes:** Anki not installed → structured error in UI (counts may still work if collection exists). Wrong profile → prevented by always passing Lessonbinder profile path to launcher helper.
 
 **Future (charter Decision 16):** in-app review via `rslib` without spawning Anki is a **later** adapter behind the same `anki-bridge` seam; v1 explicitly uses **binary launch** for study.
 

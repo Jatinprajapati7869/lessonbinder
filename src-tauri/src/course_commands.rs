@@ -24,8 +24,8 @@ use vault_core::CueError;
 use vault_core::LessonStatus;
 use vault_core::WatchedRange;
 
-use auravault_tauri::command_error::{from_rescan_error, from_thumbnail_error};
-use auravault_tauri::command_log::log_command_error;
+use lessonbinder_tauri::command_error::{from_rescan_error, from_thumbnail_error};
+use lessonbinder_tauri::command_log::log_command_error;
 
 use crate::app_state::AppState;
 use crate::vault_paths::thumbnails_dir;

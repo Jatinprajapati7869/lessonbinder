@@ -30,7 +30,7 @@ describe("SettingsScreen", () => {
       saveVaultSettings: vi.fn(),
       getAnkiProfilePath: vi
         .fn()
-        .mockResolvedValue("/home/user/.local/share/auravault/anki-profile"),
+        .mockResolvedValue("/home/user/.local/share/dev.lessonbinder.app/anki-profile"),
       ...backupRestoreCommandStubs,
     };
 
@@ -42,7 +42,7 @@ describe("SettingsScreen", () => {
       );
     });
     expect(screen.getByTestId("anki-profile-path")).toHaveTextContent(
-      "/home/user/.local/share/auravault/anki-profile"
+      "/home/user/.local/share/dev.lessonbinder.app/anki-profile"
     );
   });
 
@@ -101,7 +101,7 @@ describe("SettingsScreen", () => {
       backupVault: vi.fn(),
       pickRestoreFolder: vi
         .fn()
-        .mockResolvedValue("/backups/auravault-backup-1"),
+        .mockResolvedValue("/backups/lessonbinder-backup-1"),
       restoreVault,
     };
 
@@ -122,7 +122,7 @@ describe("SettingsScreen", () => {
     await user.click(screen.getByRole("button", { name: "Restore backup" }));
 
     await waitFor(() => {
-      expect(restoreVault).toHaveBeenCalledWith("/backups/auravault-backup-1");
+      expect(restoreVault).toHaveBeenCalledWith("/backups/lessonbinder-backup-1");
     });
   });
 });

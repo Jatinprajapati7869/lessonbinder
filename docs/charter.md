@@ -1,8 +1,8 @@
-# AuraVault product charter (v1)
+# Lessonbinder product charter (v1)
 
-AuraVault is a **course vault** desktop app: organize local and online learning material, track honest lesson progress, visualize learning paths as a flowchart, and connect study to **Anki** (`rslib`) for spaced repetition. It is **not** Anki Desktop, **not** AulaVault, and **not** a second SRS.
+Lessonbinder is a **course vault** desktop app: organize local and online learning material, track honest lesson progress, visualize learning paths as a flowchart, and connect study to **Anki** (`rslib`) for spaced repetition. It is **not** Anki Desktop, **not** AulaVault, and **not** a second SRS.
 
-**Sources for this charter:** `/home/xingzi/Documents/auravault-cursor-prompts.md`, workspace boundary in `auravault-workspace.md`. The competitor’s public marketing site and roadmap docs were **not used** as sources here. Progress and roadmap rules below align with the prompt pack and a lesson-level / derived-status / manual-roadmap model—without copying the competitor’s name, license server, or UI.
+**Sources for this charter:** `/home/xingzi/Documents/auravault-cursor-prompts.md`, workspace boundary in `lessonbinder-workspace.md`. The competitor’s public marketing site and roadmap docs were **not used** as sources here. Progress and roadmap rules below align with the prompt pack and a lesson-level / derived-status / manual-roadmap model—without copying the competitor’s name, license server, or UI.
 
 ---
 
@@ -32,7 +32,7 @@ Canonical lesson state (stored on each lesson; never a separate “roadmap check
 7. **Offline video** — Playback from local files with **resume position** persisted per lesson.
 8. **Online playlist** — A course may be sourced from a **playlist**; track **per-item watched** state (our data; playback via embedded page or user-supplied local file per later architecture decisions).
 9. **OCR → Anki** — User selects text from a **video frame** (OCR); selection creates an **Anki note** through **`rslib`** (card body lives in the Anki collection).
-10. **Review in Anki** — Scheduling stays in Anki (`rslib` on the **dedicated AuraVault-owned profile**). v1 shows **due counts** and creates cards from OCR; review UX ships **with the app** (Decision 16), not “install Anki Desktop first.” **No custom FSRS** and no parallel scheduler in AuraVault.
+10. **Review in Anki** — Scheduling stays in Anki (`rslib` on the **dedicated Lessonbinder-owned profile**). v1 shows **due counts** and creates cards from OCR; review UX ships **with the app** (Decision 16), not “install Anki Desktop first.” **No custom FSRS** and no parallel scheduler in Lessonbinder.
 
 ---
 
@@ -51,9 +51,9 @@ Canonical lesson state (stored on each lesson; never a separate “roadmap check
 
 | Document                 | Role                                                                                |
 | ------------------------ | ----------------------------------------------------------------------------------- |
-| `auravault-workspace.md` | Where repos live; AGPL; non-goals (trademark, license server, Qt fork, second SRS). |
-| `auravault-domain.md`    | Entities and invariants (prompt 04).                                                |
-| `auravault-SPEC.md`      | Testable scenarios (prompt 05).                                                     |
+| `lessonbinder-workspace.md` | Where repos live; AGPL; non-goals (trademark, license server, Qt fork, second SRS). |
+| `lessonbinder-domain.md`    | Entities and invariants (prompt 04).                                                |
+| `lessonbinder-SPEC.md`      | Testable scenarios (prompt 05).                                                     |
 
 ## Decisions
 
@@ -61,11 +61,11 @@ Settled in prompt 03 (grill). Each line is one binding v1 choice unless a later 
 
 1. **OCR engine** — **Local only.** v1 uses **Tesseract** (on-device; bundled or system dependency per platform). **Cloud OCR is forbidden** in v1. A local ONNX model is out of scope for v1 unless we reopen this decision after Tesseract quality testing.
 
-2. **Playlist ingest & playback** — **Offline-first for initial delivery**, same product shape as AulaVault today: local course folders, real files, resume, and lesson progress are the priority. When playlist-backed courses ship, we store **URL, title, duration**, and **our** per-item watch/progress data only; we **do not** bundle a video downloader that ignores site terms. Playback is an **embedded provider page** or a **user-supplied local file** mapped to that item—not a built-in ripper. **Tracking is always AuraVault’s data.**
+2. **Playlist ingest & playback** — **Offline-first for initial delivery**, same product shape as AulaVault today: local course folders, real files, resume, and lesson progress are the priority. When playlist-backed courses ship, we store **URL, title, duration**, and **our** per-item watch/progress data only; we **do not** bundle a video downloader that ignores site terms. Playback is an **embedded provider page** or a **user-supplied local file** mapped to that item—not a built-in ripper. **Tracking is always Lessonbinder’s data.**
 
 3. **Content understanding & lesson order** — **Deterministic extractors first** (duration, tags, sidecars, cheap PDF text, etc.). An **optional local model** may **propose** lesson order; the user **must accept or reject** the proposal. **Never reorder silently.**
 
-4. **Anki profile** — **One Anki profile directory owned by AuraVault** (under app data), **not** the user’s everyday Anki profile, so vault/OCR work cannot corrupt their main collection. Review data and scheduling go through **`rslib`** on **that** profile. **How** the user reviews (in-app vs shipped Anki UI) is decided in Decision 16; profile isolation here is unchanged.
+4. **Anki profile** — **One Anki profile directory owned by Lessonbinder** (under app data), **not** the user’s everyday Anki profile, so vault/OCR work cannot corrupt their main collection. Review data and scheduling go through **`rslib`** on **that** profile. **How** the user reviews (in-app vs shipped Anki UI) is decided in Decision 16; profile isolation here is unchanged.
 
 5. **Frontend stack** — **Tauri 2** desktop shell with **React + TypeScript** UI (cross-platform: Linux, Windows, macOS). This matches the ecosystem we target and allows **react-doctor** `/doctor` on the webview UI later. Not Svelte; not Anki Qt.
 
@@ -87,6 +87,6 @@ Settled in prompt 03 (grill). Each line is one binding v1 choice unless a later 
 
 14. **Watched % (v1 display)** — `watched_percent = min(100, max_position_reached_ms / duration_ms)` when duration is known; unknown duration → show unknown, not a fake %. Interval-union (full YouTube semantics) may come later.
 
-15. **OCR → Anki note (v1)** — On the AuraVault profile: default deck **`AuraVault`**, note type **`AuraVault OCR`**: **Front** = OCR text; **Back** = lesson title, course name, timestamp (and optional source path). No deck picker on every capture in v1.
+15. **OCR → Anki note (v1)** — On the Lessonbinder profile: default deck **`Lessonbinder`**, note type **`Lessonbinder OCR`**: **Front** = OCR text; **Back** = lesson title, course name, timestamp (and optional source path). No deck picker on every capture in v1.
 
-16. **Ship with Anki (not a separate install)** — AuraVault ships as **one product** with the **Anki review stack included** (dedicated profile + **`rslib`** collection in-process). Users are **not** required to install Anki Desktop separately for v1. Deeper Anki-powered features later (e.g. quiz flows) build on the same profile; full Anki Desktop parity or bundling details belong in **architecture**, not a second SRS in AuraVault.
+16. **Ship with Anki (not a separate install)** — Lessonbinder ships as **one product** with the **Anki review stack included** (dedicated profile + **`rslib`** collection in-process). Users are **not** required to install Anki Desktop separately for v1. Deeper Anki-powered features later (e.g. quiz flows) build on the same profile; full Anki Desktop parity or bundling details belong in **architecture**, not a second SRS in Lessonbinder.

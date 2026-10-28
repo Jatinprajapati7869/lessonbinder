@@ -2260,7 +2260,7 @@ fn ensure_default_library(conn: &Connection) -> Result<(), DbError> {
     let now = now_iso8601();
     conn.execute(
         "INSERT INTO library (id, display_name, created_at, updated_at) VALUES (?1, ?2, ?3, ?3)",
-        rusqlite::params![DEFAULT_LIBRARY_ID, "AuraVault", now],
+        rusqlite::params![DEFAULT_LIBRARY_ID, "Lessonbinder", now],
     )?;
     Ok(())
 }

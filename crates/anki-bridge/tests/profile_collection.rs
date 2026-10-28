@@ -1,6 +1,6 @@
 use std::path::Path;
 
-use anki_bridge::{open_profile, read_stored_schema_version, AuraVaultProfilePaths};
+use anki_bridge::{open_profile, read_stored_schema_version, LessonbinderProfilePaths};
 use tempfile::tempdir;
 
 /// `SCHEMA_MAX_VERSION` in pinned `anki-main` (`rslib/src/storage/upgrades/mod.rs`).
@@ -9,7 +9,7 @@ const LATEST_COLLECTION_SCHEMA: u8 = 18;
 #[test]
 fn opens_new_profile_and_creates_collection_files() {
     let dir = tempdir().unwrap();
-    let paths = AuraVaultProfilePaths::in_dir(dir.path());
+    let paths = LessonbinderProfilePaths::in_dir(dir.path());
 
     let col = open_profile(dir.path()).unwrap();
     let ver = read_stored_schema_version(&col).unwrap();
@@ -23,7 +23,7 @@ fn opens_new_profile_and_creates_collection_files() {
 #[test]
 fn reopens_existing_profile_and_reads_schema_version() {
     let dir = tempdir().unwrap();
-    let paths = AuraVaultProfilePaths::in_dir(dir.path());
+    let paths = LessonbinderProfilePaths::in_dir(dir.path());
 
     {
         let col = open_profile(dir.path()).unwrap();

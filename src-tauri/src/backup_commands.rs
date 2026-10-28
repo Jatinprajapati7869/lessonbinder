@@ -1,8 +1,8 @@
 use std::path::Path;
 
-use auravault_tauri::backup::{backup_to, restore_from};
-use auravault_tauri::command_error::from_backup_error;
-use auravault_tauri::command_log::log_command_error;
+use lessonbinder_tauri::backup::{backup_to, restore_from};
+use lessonbinder_tauri::command_error::from_backup_error;
+use lessonbinder_tauri::command_log::log_command_error;
 use tauri::State;
 
 use crate::app_state::AppState;
@@ -10,7 +10,7 @@ use crate::app_state::AppState;
 fn map_backup_failure(
     state: &AppState,
     command: &str,
-    err: auravault_tauri::backup::BackupError,
+    err: lessonbinder_tauri::backup::BackupError,
 ) -> String {
     let coded = from_backup_error(err);
     let _ = log_command_error(&state.app_data_dir, command, &coded.code, None);

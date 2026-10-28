@@ -1,8 +1,8 @@
-//! AuraVault domain logic and `vault.db` access. No Anki dependency.
+//! Lessonbinder domain logic and `vault.db` access. No Anki dependency.
 
 pub mod anki_link;
 pub mod audio_clip;
-pub mod auravaultignore;
+pub mod lessonbinderignore;
 pub mod card;
 pub mod chapters;
 pub mod clip_encoder;

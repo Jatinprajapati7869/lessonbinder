@@ -1,6 +1,6 @@
 # Performance budgets (local reference)
 
-AuraVault keeps list and library search responsive for large folder courses. Budgets are enforced in `vault-core` integration tests (`tests/perf_large_course.rs`), not in the UI.
+Lessonbinder keeps list and library search responsive for large folder courses. Budgets are enforced in `vault-core` integration tests (`tests/perf_large_course.rs`), not in the UI.
 
 ## Reference machine
 

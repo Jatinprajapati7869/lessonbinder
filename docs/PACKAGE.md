@@ -1,6 +1,6 @@
 # Packaging (Linux AppImage)
 
-AuraVault is **not published** to an app store or update channel from this repository. Builds are for local distribution and testing only. **No code signing** is configured.
+Lessonbinder is **not published** to an app store or update channel from this repository. Builds are for local distribution and testing only. **No code signing** is configured.
 
 ## Build command (AppImage)
 
@@ -20,7 +20,7 @@ Release artifacts:
 
 | Output                            | Path                                        |
 | --------------------------------- | ------------------------------------------- |
-| Binary                            | `target/release/auravault`                  |
+| Binary                            | `target/release/lessonbinder`                  |
 | AppImage (when bundling succeeds) | `target/release/bundle/appimage/*.AppImage` |
 
 `src-tauri/tauri.conf.json` sets `bundle.targets` to **`["appimage"]`** on Linux (no `.deb` / `.rpm` from this config). Updater artifacts are disabled (`createUpdaterArtifacts: false`).
@@ -62,24 +62,24 @@ Tauri downloads **AppRun** from GitHub during the bundle step. A slow or blocked
 | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
 | **`patchelf`** | Required to patch the release binary when assembling the AppImage. Install with `sudo pacman -S patchelf`, then re-run the build command above. |
 
-Until `patchelf` is installed (and AppRun download succeeds), treat **`target/release/auravault`** as the working local build output.
+Until `patchelf` is installed (and AppRun download succeeds), treat **`target/release/lessonbinder`** as the working local build output.
 
 ## Runtime dependencies (not inside the AppImage)
 
-These are **system** tools AuraVault invokes or expects on `PATH`. They are **not** vendored in the bundle.
+These are **system** tools Lessonbinder invokes or expects on `PATH`. They are **not** vendored in the bundle.
 
 | Dependency                                               | Required?                     | Notes                                                                                                                                                                                                                          |
 | -------------------------------------------------------- | ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | **Tesseract** (`tesseract` CLI)                          | **Yes** for frame OCR capture | Without it, capture returns a clear “not installed” error. Images are processed locally only.                                                                                                                                  |
 | **whisper.cpp** (`whisper-cli` or path set in Settings)  | **Optional**                  | Local lesson transcription when `transcription_model_path` points at a model file. Empty path disables transcription.                                                                                                          |
-| **Anki Desktop** (`anki` on `PATH`, or path in Settings) | **Optional**                  | In-app review uses the embedded collection via `anki-bridge`. **Study in Anki** launches external Anki Desktop against the AuraVault profile; if Anki is missing, that fallback is unavailable (in-app review may still work). |
+| **Anki Desktop** (`anki` on `PATH`, or path in Settings) | **Optional**                  | In-app review uses the embedded collection via `anki-bridge`. **Study in Anki** launches external Anki Desktop against the Lessonbinder profile; if Anki is missing, that fallback is unavailable (in-app review may still work). |
 | **ffprobe**                                              | Optional                      | Better video duration metadata when present.                                                                                                                                                                                   |
 
 ## AGPL source offer
 
-AuraVault is licensed under **AGPL-3.0-or-later** (see workspace `Cargo.toml`). Binaries link **`anki` / `rslib`**, which is also AGPL.
+Lessonbinder is licensed under **AGPL-3.0-or-later** (see workspace `Cargo.toml`). Binaries link **`anki` / `rslib`**, which is also AGPL.
 
-If you distribute an AuraVault AppImage or binary to others, you must comply with the AGPL, including offering **complete corresponding source** for that build. A practical offer:
+If you distribute an Lessonbinder AppImage or binary to others, you must comply with the AGPL, including offering **complete corresponding source** for that build. A practical offer:
 
 1. State that the program is AGPL-3.0-or-later.
 2. Provide a written offer (for example in release notes or a `SOURCE-OFFER.txt` beside the AppImage) to deliver source on request for at least three years, or point to a public Git repository tag/commit that matches the distributed binary.
@@ -96,8 +96,8 @@ Not configured. Tauri bundle settings do not enable macOS notarization or Window
 **Artifact check (2026-10-28):** Prompt 92 did **not** produce an AppImage on this machine.
 
 - `target/release/bundle/appimage/` does not exist.
-- No `*.AppImage` under the repository (`find` / glob over `auravault/`).
-- `target/release/auravault` **does** exist (~28 MB release binary from a successful `cargo`/Tauri compile step before bundling failed).
+- No `*.AppImage` under the repository (`find` / glob over repo root).
+- `target/release/lessonbinder` **does** exist (~28 MB release binary from a successful `cargo`/Tauri compile step before bundling failed).
 
 Bundling failed earlier because **`patchelf`** was not installed and the AppRun download hit a **network timeout** (see above). There is nothing to run as an AppImage; the smoke test below was **not** executed.
 

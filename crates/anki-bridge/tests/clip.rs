@@ -2,8 +2,8 @@ use anki::services::CardsService;
 use anki::services::NotesService;
 use anki_bridge::open_profile;
 use anki_bridge::{
-    add_clip_note, ensure_auravault_clip_notetype, get_note, validate_auravault_deck_name,
-    ClipDraft, AURAVAULT_CLIP_FIELDS, AURAVAULT_CLIP_NOTETYPE, AURAVAULT_DECK_PREFIX,
+    add_clip_note, ensure_lessonbinder_clip_notetype, get_note, validate_lessonbinder_deck_name,
+    ClipDraft, LESSONBINDER_CLIP_FIELDS, LESSONBINDER_CLIP_NOTETYPE, LESSONBINDER_DECK_PREFIX,
 };
 use tempfile::tempdir;
 
@@ -20,18 +20,18 @@ fn sample_draft(course: &str) -> ClipDraft {
 }
 
 #[test]
-fn ensure_notetype_defines_auravault_clip_fields() {
+fn ensure_notetype_defines_lessonbinder_clip_fields() {
     let dir = tempdir().unwrap();
     let mut col = open_profile(dir.path()).unwrap();
 
-    let nt = ensure_auravault_clip_notetype(&mut col).unwrap();
-    assert_eq!(nt.name, AURAVAULT_CLIP_NOTETYPE);
+    let nt = ensure_lessonbinder_clip_notetype(&mut col).unwrap();
+    assert_eq!(nt.name, LESSONBINDER_CLIP_NOTETYPE);
     assert_eq!(
         nt.fields
             .iter()
             .map(|f| f.name.as_str())
             .collect::<Vec<_>>(),
-        AURAVAULT_CLIP_FIELDS
+        LESSONBINDER_CLIP_FIELDS
     );
 }
 
@@ -44,8 +44,8 @@ fn creates_note_in_prefixed_deck() {
     let nid = add_clip_note(&mut col, draft).unwrap();
     assert!(nid.0 > 0);
 
-    let expected_deck = format!("{}Linear Algebra", AURAVAULT_DECK_PREFIX);
-    validate_auravault_deck_name(&expected_deck).unwrap();
+    let expected_deck = format!("{}Linear Algebra", LESSONBINDER_DECK_PREFIX);
+    validate_lessonbinder_deck_name(&expected_deck).unwrap();
 
     let stored = get_note(&mut col, nid).unwrap();
     assert_eq!(stored.course, "Linear Algebra");
@@ -78,7 +78,7 @@ fn creates_note_in_prefixed_deck() {
 
 #[test]
 fn rejects_deck_outside_prefix() {
-    assert!(validate_auravault_deck_name("Default").is_err());
-    assert!(validate_auravault_deck_name("AuraVault::").is_err());
-    assert!(validate_auravault_deck_name("AuraVault::Course::Nested").is_err());
+    assert!(validate_lessonbinder_deck_name("Default").is_err());
+    assert!(validate_lessonbinder_deck_name("Lessonbinder::").is_err());
+    assert!(validate_lessonbinder_deck_name("Lessonbinder::Course::Nested").is_err());
 }

@@ -1,4 +1,4 @@
-//! Launch Anki Desktop for review on the AuraVault profile.
+//! Launch Anki Desktop for review on the Lessonbinder profile.
 
 use std::ffi::OsStr;
 use std::path::{Path, PathBuf};
@@ -26,7 +26,7 @@ pub fn resolve_anki_binary_in(path: Option<&OsStr>) -> Result<PathBuf, LaunchAnk
 
 /// Argument vector to open Anki Desktop on `profile_dir` without spawning.
 ///
-/// `profile_dir` is AuraVault's `{app_data}/anki-profile/` folder (contains `collection.anki2`).
+/// `profile_dir` is Lessonbinder's `{app_data}/anki-profile/` folder (contains `collection.anki2`).
 /// Anki expects `-b` on the parent folder and `-p` on the profile folder name.
 pub fn anki_argv_for_profile(
     profile_dir: impl AsRef<Path>,
@@ -67,7 +67,7 @@ mod tests {
 
     #[test]
     fn anki_argv_for_profile() {
-        let profile = Path::new("/data/AuraVault/anki-profile");
+        let profile = Path::new("/data/Lessonbinder/anki-profile");
         let argv =
             super::anki_argv_for_profile(profile, "/usr/bin/anki").expect("argv should build");
         assert_eq!(
@@ -75,7 +75,7 @@ mod tests {
             vec![
                 "/usr/bin/anki",
                 "-b",
-                "/data/AuraVault",
+                "/data/Lessonbinder",
                 "-p",
                 "anki-profile",
             ]

@@ -273,7 +273,7 @@ export function CaptureCardPanel({
 
       {committed?.duplicate ? (
         <p className="capture-card__duplicate" role="status">
-          This card already exists in your AuraVault profile. Showing the saved
+          This card already exists in your Lessonbinder profile. Showing the saved
           note.
         </p>
       ) : null}

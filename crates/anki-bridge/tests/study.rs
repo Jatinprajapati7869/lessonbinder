@@ -69,7 +69,7 @@ fn next_review_card_empty_collection() {
 }
 
 #[test]
-fn next_review_card_returns_auravault_new_note() {
+fn next_review_card_returns_lessonbinder_new_note() {
     let dir = tempfile::tempdir().unwrap();
     let mut col = open_profile(dir.path()).unwrap();
 
@@ -167,7 +167,7 @@ fn review_session_start_does_not_create_cards() {
 }
 
 #[test]
-fn next_card_from_auravault_decks() {
+fn next_card_from_lessonbinder_decks() {
     let dir = tempfile::tempdir().unwrap();
     let mut col = open_profile(dir.path()).unwrap();
     let col = col.collection_mut();
@@ -177,7 +177,7 @@ fn next_card_from_auravault_decks() {
 
     let review = next_review_card(col)
         .unwrap()
-        .expect("AuraVault due card while foreign deck also has a new card");
+        .expect("Lessonbinder due card while foreign deck also has a new card");
     assert_eq!(review.front_fields[0], "What is X?");
 
     let foreign_stored = CardsService::get_card(
@@ -195,7 +195,7 @@ fn next_card_from_auravault_decks() {
 }
 
 #[test]
-fn answer_card_grades_auravault_card_when_foreign_due_first() {
+fn answer_card_grades_lessonbinder_card_when_foreign_due_first() {
     let dir = tempfile::tempdir().unwrap();
     let mut col = open_profile(dir.path()).unwrap();
     let col = col.collection_mut();
@@ -203,12 +203,12 @@ fn answer_card_grades_auravault_card_when_foreign_due_first() {
     add_basic_card_in_deck(col, "Other");
     add_clip_note(col, sample_draft("Linear Algebra")).unwrap();
 
-    let due = next_review_card(col).unwrap().expect("AuraVault card");
+    let due = next_review_card(col).unwrap().expect("Lessonbinder card");
     answer_card(col, due.card_id, ReviewEase::Good).unwrap();
 }
 
 #[test]
-fn review_session_rejects_card_outside_auravault_prefix() {
+fn review_session_rejects_card_outside_lessonbinder_prefix() {
     let dir = tempfile::tempdir().unwrap();
     let mut profile = open_profile(dir.path()).unwrap();
     let col = profile.collection_mut();
@@ -218,7 +218,7 @@ fn review_session_rejects_card_outside_auravault_prefix() {
     let err = session
         .answer(col, other_card, ReviewEase::Good)
         .unwrap_err();
-    assert!(matches!(err, AnswerCardError::CardNotInAuraVaultDecks));
+    assert!(matches!(err, AnswerCardError::CardNotInLessonbinderDecks));
     assert!(session.answers().is_empty());
 }
 

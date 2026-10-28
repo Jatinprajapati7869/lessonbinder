@@ -1,10 +1,10 @@
-# Code review — AuraVault v1.1
+# Code review — Lessonbinder v1.1
 
 **Date:** 2026-10-28
-**Scope:** v1.1 implementation on the current working tree (`/home/xingzi/Documents/auravault`). There is **no git baseline** yet (`No commits yet on master`); this review treats the staged v1.1 work as a whole against [`docs/SPEC-v1.1.md`](SPEC-v1.1.md) and [`docs/SCOPE-v1.1.md`](SCOPE-v1.1.md).
+**Scope:** v1.1 implementation on the current working tree (this repository). There is **no git baseline** yet (`No commits yet on master`); this review treats the staged v1.1 work as a whole against [`docs/SPEC-v1.1.md`](SPEC-v1.1.md) and [`docs/SCOPE-v1.1.md`](SCOPE-v1.1.md).
 **Instruction:** Findings only — **no fixes** in this pass.
 
-**Validation run:** `cargo test -p anki-bridge -p vault-core -p auravault-tauri` — **143 passed** (this turn).
+**Validation run:** `cargo test -p anki-bridge -p vault-core -p lessonbinder-tauri` — **143 passed** (this turn).
 
 ---
 
@@ -12,7 +12,7 @@
 
 | Risk                                           | Verdict                                                                                                    | Severity           |
 | ---------------------------------------------- | ---------------------------------------------------------------------------------------------------------- | ------------------ |
-| Scheduler answers affecting the **wrong deck** | **Mostly mitigated** for grades; **gap** on “empty queue” when a non–AuraVault card sits at scheduler head | Medium             |
+| Scheduler answers affecting the **wrong deck** | **Mostly mitigated** for grades; **gap** on “empty queue” when a non–Lessonbinder card sits at scheduler head | Medium             |
 | **Media path escape**                          | **Mitigated** in `read_media` + test; UI trusts note field filename (expected)                             | Low–medium         |
 | **Transcription network**                      | **No HTTP in app code**; **T-03 evidence test missing**                                                    | Low (doc gap)      |
 | **Silent reorder**                             | **Course order:** proposal + post-transcription guard; **roadmap** reorder is explicit UI                  | Low                |
@@ -27,16 +27,16 @@
 
 **What works**
 
-- `answer_card` re-fetches the queue head, requires `card_id` match (`CardNotAtQueueHead`), and rejects cards outside `AuraVault::` decks (`CardNotInAuraVaultDecks`). Covered by `crates/anki-bridge/tests/study.rs` (`answer_card_rejects_wrong_queue_head`, `review_session_rejects_card_outside_auravault_prefix`).
-- `ReviewSession::answer` calls `ensure_card_in_auravault_decks` before grading.
+- `answer_card` re-fetches the queue head, requires `card_id` match (`CardNotAtQueueHead`), and rejects cards outside `Lessonbinder::` decks (`CardNotInLessonbinderDecks`). Covered by `crates/anki-bridge/tests/study.rs` (`answer_card_rejects_wrong_queue_head`, `review_session_rejects_card_outside_lessonbinder_prefix`).
+- `ReviewSession::answer` calls `ensure_card_in_lessonbinder_decks` before grading.
 - UI sends the `card_id` from `review_next_card` and the server re-validates queue head on answer (`ui/src/screens/ReviewScreen.tsx`, `src-tauri/src/study_commands.rs`).
 
 **Gap (spec R-02) — fixed**
 
-- `next_review_card` scans the scoped queue via `get_queued_cards` and **skips** due cards outside AuraVault decks (`next_auravault_review_card` in `crates/anki-bridge/src/study.rs`); foreign dues are not answered or buried.
-- **Evidence:** `anki_bridge::study::next_card_from_auravault_decks` (`crates/anki-bridge/tests/study.rs`) — foreign **Other** deck new card plus AuraVault clip; `next_review_card` returns the AuraVault front and the foreign card stays on the **New** queue.
+- `next_review_card` scans the scoped queue via `get_queued_cards` and **skips** due cards outside Lessonbinder decks (`next_lessonbinder_review_card` in `crates/anki-bridge/src/study.rs`); foreign dues are not answered or buried.
+- **Evidence:** `anki_bridge::study::next_card_from_lessonbinder_decks` (`crates/anki-bridge/tests/study.rs`) — foreign **Other** deck new card plus Lessonbinder clip; `next_review_card` returns the Lessonbinder front and the foreign card stays on the **New** queue.
 
-**Judgement:** Wrong-deck **grading** is well guarded; R-02 **empty queue while AuraVault dues exist** is covered by the named test above.
+**Judgement:** Wrong-deck **grading** is well guarded; R-02 **empty queue while Lessonbinder dues exist** is covered by the named test above.
 
 ### 2. Media path escape
 
@@ -83,7 +83,7 @@
 
 **Backup:** `backup_to` refuses when `destination_parent` normalizes to the live `anki-profile` path or lies inside it (`destination_targets_live_profile`). Test: `backup_to_refuses_live_anki_profile_directory`.
 
-**Restore:** Copies live `vault.db` + profile to `auravault-aside-{ts}` before overwriting live data (`restore_from`). Test: `restore_from_replaces_live_data_and_preserves_lesson_and_note_id`.
+**Restore:** Copies live `vault.db` + profile to `lessonbinder-aside-{ts}` before overwriting live data (`restore_from`). Test: `restore_from_replaces_live_data_and_preserves_lesson_and_note_id`.
 
 **Residual:** Restore still `remove_dir_all` on live profile before copying backup profile — failure **after** removal leaves live profile empty until retry, though aside should hold the pre-restore copy. Not the same as “backup deletes live,” but worth a hardening note for a follow-up (atomic swap).
 
@@ -95,7 +95,7 @@ _Sources:_ `AGENTS.md` (SPEC before behavior, anki-bridge-only Anki access, DESI
 
 | Finding                                 | Type                           | Detail                                                                                                                                                                                                            |
 | --------------------------------------- | ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Missing SPEC-named tests                | Hard vs spec                   | Several v1.1 evidence functions are named in SPEC but absent as tests (`next_card_from_auravault_decks`, `union_full_watch_does_not_auto_done`, `no_network_weight_download`, `failure_leaves_lesson_unchanged`). |
+| Missing SPEC-named tests                | Hard vs spec                   | Several v1.1 evidence functions are named in SPEC but absent as tests (`next_card_from_lessonbinder_decks`, `union_full_watch_does_not_auto_done`, `no_network_weight_download`, `failure_leaves_lesson_unchanged`). |
 | `transcribe_with_cues` write-then-check | Judgement (Shotgun / ordering) | Cues are committed before order/progress checks; unlikely to fail in practice, but T-04 “no partial writes” is not airtight.                                                                                      |
 | `ReviewScreen.tsx` size/complexity      | Judgement                      | react-doctor (prompt 96) flagged high complexity; not a standards violation but maintainability debt.                                                                                                             |
 | Duplicated profile open per command     | Judgement (Duplicated Code)    | Each `study_commands` handler opens profile independently — acceptable for v1.1, could consolidate later.                                                                                                         |
@@ -108,7 +108,7 @@ _Sources:_ `AGENTS.md` (SPEC before behavior, anki-bridge-only Anki access, DESI
 
 | ID                        | Status                   | Notes                                                                   |
 | ------------------------- | ------------------------ | ----------------------------------------------------------------------- |
-| R-02                      | **Partial**              | See scheduler head skip → `None` when non-AuraVault card is queue head. |
+| R-02                      | **Partial**              | See scheduler head skip → `None` when non-Lessonbinder card is queue head. |
 | R-03                      | **Met**                  | Answers persist via `col.answer_card`; tests present.                   |
 | R-04                      | **Met** with R-02 caveat | Empty when truly no dues; false empty possible per R-02.                |
 | W-05                      | **Likely met**           | Behavior consistent; **evidence test missing**.                         |
@@ -118,13 +118,13 @@ _Sources:_ `AGENTS.md` (SPEC before behavior, anki-bridge-only Anki access, DESI
 
 **Scope creep (acceptable):** Local whisper transcription ships in v1.1 though early SCOPE text mentioned “not in v1.1”; SPEC `T-*` rows now govern.
 
-**Spec axis:** **2 partial** (R-02, T-04), **2 likely-met-without-tests** (W-05, T-03). **Worst:** R-02 false empty queue with dues still in AuraVault decks.
+**Spec axis:** **2 partial** (R-02, T-04), **2 likely-met-without-tests** (W-05, T-03). **Worst:** R-02 false empty queue with dues still in Lessonbinder decks.
 
 ---
 
 ## Thermo-nuclear code quality
 
-1. **Code-judo candidate — `next_review_card`:** Loop or skip until an AuraVault card or true queue end, **or** return a dedicated error instead of `None`, would align implementation with R-02 in one place and remove a class of “works in clean profile only” behavior.
+1. **Code-judo candidate — `next_review_card`:** Loop or skip until an Lessonbinder card or true queue end, **or** return a dedicated error instead of `None`, would align implementation with R-02 in one place and remove a class of “works in clean profile only” behavior.
 2. **Transcription transaction:** Run order/progress checks inside the same DB transaction as cue replace, or write cues only after checks on a dry-run — simplifies T-04 story.
 3. **`ReviewScreen`:** Split load/answer/media into hooks or subcomponents to address complexity without behavior change.
 4. **File size:** No file reviewed here crossed 1k lines due to v1.1 alone; `db.rs` remains a concentration risk for future features.
@@ -147,4 +147,4 @@ _Sources:_ `AGENTS.md` (SPEC before behavior, anki-bridge-only Anki access, DESI
 
 ## One-line summary
 
-**Standards:** 4 findings — worst: SPEC evidence tests not wired for scheduler, watch, and transcription network contract. **Spec:** 2 partial (R-02, T-04) — worst: `next_review_card` can return empty while AuraVault dues exist. **Thermo-nuclear:** fix queue draining in `next_review_card` and tighten transcription DB atomicity before calling v1.1 done.
+**Standards:** 4 findings — worst: SPEC evidence tests not wired for scheduler, watch, and transcription network contract. **Spec:** 2 partial (R-02, T-04) — worst: `next_review_card` can return empty while Lessonbinder dues exist. **Thermo-nuclear:** fix queue draining in `next_review_card` and tighten transcription DB atomicity before calling v1.1 done.

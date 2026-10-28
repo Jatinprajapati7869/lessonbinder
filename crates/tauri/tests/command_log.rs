@@ -1,6 +1,6 @@
 use std::fs;
 
-use auravault_tauri::command_log::{
+use lessonbinder_tauri::command_log::{
     command_log_path, log_command_error, redact_json_value, COMMAND_LOG_FILE,
 };
 use serde_json::json;

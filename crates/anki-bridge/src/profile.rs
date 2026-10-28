@@ -1,4 +1,4 @@
-//! AuraVault-owned Anki profile paths and collection open helpers.
+//! Lessonbinder-owned Anki profile paths and collection open helpers.
 
 use std::fs::{File, OpenOptions};
 use std::io;
@@ -16,18 +16,18 @@ use fs2::FileExt;
 /// Schema version (`col.ver`) for collections created by current pinned `anki` (see `docs/ANKI_PIN.md`).
 pub const COLLECTION_SCHEMA_VERSION: u8 = 18;
 
-const PROFILE_LOCK_FILE: &str = ".auravault-collection.lock";
+const PROFILE_LOCK_FILE: &str = ".lessonbinder-collection.lock";
 
 /// Standard layout under `{app_data}/anki-profile/`.
 #[derive(Debug, Clone)]
-pub struct AuraVaultProfilePaths {
+pub struct LessonbinderProfilePaths {
     pub profile_dir: PathBuf,
     pub collection_path: PathBuf,
     pub media_folder: PathBuf,
     pub media_db: PathBuf,
 }
 
-impl AuraVaultProfilePaths {
+impl LessonbinderProfilePaths {
     pub fn in_dir(profile_dir: impl Into<PathBuf>) -> Self {
         let profile_dir = profile_dir.into();
         let collection_path = profile_dir.join("collection.anki2");
@@ -71,10 +71,10 @@ impl GuardedProfile {
 
 /// Create profile directories and open (or create) the collection with desktop media paths.
 ///
-/// Holds an exclusive lock on `{profile_dir}/.auravault-collection.lock` until the returned
+/// Holds an exclusive lock on `{profile_dir}/.lessonbinder-collection.lock` until the returned
 /// [`GuardedProfile`] is dropped, so only one in-app collection session runs at a time.
 pub fn open_profile(profile_dir: impl AsRef<Path>) -> Result<GuardedProfile> {
-    let paths = AuraVaultProfilePaths::in_dir(profile_dir.as_ref());
+    let paths = LessonbinderProfilePaths::in_dir(profile_dir.as_ref());
     create_dir_all(&paths.profile_dir)?;
     create_dir_all(&paths.media_folder)?;
 
@@ -88,7 +88,7 @@ pub fn open_profile(profile_dir: impl AsRef<Path>) -> Result<GuardedProfile> {
     if let Err(e) = lock.try_lock_exclusive() {
         if e.kind() == io::ErrorKind::WouldBlock {
             invalid_input!(
-                "AuraVault Anki profile is in use (close Anki or wait for another operation to finish)"
+                "Lessonbinder Anki profile is in use (close Anki or wait for another operation to finish)"
             );
         }
         return Err(anki::error::AnkiError::from(e));

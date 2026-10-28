@@ -1,6 +1,6 @@
 use anki_bridge::{
     answer_card_by_id, next_review_card, next_review_card_for_course_note_ids,
-    note_study_back_text, open_profile, read_media, AnswerCardError, AuraVaultProfilePaths,
+    note_study_back_text, open_profile, read_media, AnswerCardError, LessonbinderProfilePaths,
     ReviewAnswerButtons, ReviewCard, ReviewEase,
 };
 use serde::{Deserialize, Serialize};
@@ -79,8 +79,8 @@ impl From<ReviewEaseDto> for ReviewEase {
     }
 }
 
-fn profile_paths(state: &AppState) -> AuraVaultProfilePaths {
-    AuraVaultProfilePaths::in_dir(anki_profile_dir(&state.app_data_dir))
+fn profile_paths(state: &AppState) -> LessonbinderProfilePaths {
+    LessonbinderProfilePaths::in_dir(anki_profile_dir(&state.app_data_dir))
 }
 
 #[tauri::command]

@@ -1,7 +1,7 @@
 use anki_bridge::due_summary;
 use anki_bridge::open_profile;
 use anki_bridge::DueSummary;
-use auravault_tauri::study::{anki_launch_command, resolve_anki_binary, LaunchAnkiError};
+use lessonbinder_tauri::study::{anki_launch_command, resolve_anki_binary, LaunchAnkiError};
 use serde::Serialize;
 use std::process::Command;
 use tauri::State;

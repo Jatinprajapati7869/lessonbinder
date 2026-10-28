@@ -1,4 +1,4 @@
-# AuraVault — first manual test checklist
+# Lessonbinder — first manual test checklist
 
 Use this in a **running dev build** (`cargo tauri dev` from the repo root after `cd ui && npm install`). Keep sample media on disk: a small folder with at least one `.mp4` (and optionally a matching `.srt`), plus a PDF or `.md` if you want document lessons.
 
@@ -10,7 +10,7 @@ Use this in a **running dev build** (`cargo tauri dev` from the repo root after 
 
 ## Launch
 
-AuraVault has **no** dedicated app-data env var. On Linux, Tauri stores data under `{XDG_DATA_HOME}/{identifier}/` (`identifier` = `dev.auravault.app` from `src-tauri/tauri.conf.json`). For an isolated first-run profile, point `XDG_DATA_HOME` at an empty temp directory.
+Lessonbinder has **no** dedicated app-data env var. On Linux, Tauri stores data under `{XDG_DATA_HOME}/{identifier}/` (`identifier` = `dev.lessonbinder.app` from `src-tauri/tauri.conf.json`). For an isolated first-run profile, point `XDG_DATA_HOME` at an empty temp directory.
 
 **Command (repo root):**
 
@@ -18,12 +18,12 @@ AuraVault has **no** dedicated app-data env var. On Linux, Tauri stores data und
 export XDG_DATA_HOME="$(mktemp -d)"
 export XDG_CONFIG_HOME="$(mktemp -d)"
 export XDG_CACHE_HOME="$(mktemp -d)"
-cd /home/xingzi/Documents/auravault && npm run tauri:dev
+npm run tauri:dev
 ```
 
-**Data directory used (2026-10-28 dev launch):** `/tmp/tmp.9Gr4oH9z3U/dev.auravault.app/` (`vault.db` created on first open; sibling `anki-profile/` created when study/Anki paths initialize).
+**Data directory used (2026-10-28 dev launch):** `/tmp/tmp.9Gr4oH9z3U/dev.lessonbinder.app/` (`vault.db` created on first open; sibling `anki-profile/` created when study/Anki paths initialize).
 
-**Result:** Window title **AuraVault**; **Library** route with side nav (Library / Roadmap / Settings), screen title **Library**, empty-library copy and **Add folder** / **Add playlist JSON** / **Paste playlist** — not a blank webview and not the Vite/React starter template.
+**Result:** Window title **Lessonbinder**; **Library** route with side nav (Library / Roadmap / Settings), screen title **Library**, empty-library copy and **Add folder** / **Add playlist JSON** / **Paste playlist** — not a blank webview and not the Vite/React starter template.
 
 **Crash / startup failure text:** none (process exited cleanly after manual quit once the library was visible).
 
@@ -33,12 +33,12 @@ cd /home/xingzi/Documents/auravault && npm run tauri:dev
 
 ## Fixture pass
 
-**Fixture directory:** `/tmp/auravault-first-test` (local only; not committed).
+**Fixture directory:** `/tmp/lessonbinder-first-test` (local only; not committed).
 
 **Seed (re-run anytime):**
 
 ```bash
-FIX=/tmp/auravault-first-test
+FIX=/tmp/lessonbinder-first-test
 rm -rf "$FIX" && mkdir -p "$FIX"
 if command -v ffmpeg >/dev/null; then
   ffmpeg -y -f lavfi -i color=c=black:s=320x240:d=1 -pix_fmt yuv420p "$FIX/alpha.mp4"
@@ -60,7 +60,7 @@ cat > "$FIX/notes.md" <<'EOF'
 
 Short markdown lesson for first-test.
 EOF
-cat > "$FIX/.auravaultignore" <<'EOF'
+cat > "$FIX/.lessonbinderignore" <<'EOF'
 # Second video is out of scope for this course import.
 private-beta.mp4
 EOF
@@ -74,7 +74,7 @@ cargo test -p vault-core --test first_test_fixture
 
 | Step                                                                                                    | Result   | Notes                                                                                                 |
 | ------------------------------------------------------------------------------------------------------- | -------- | ----------------------------------------------------------------------------------------------------- |
-| Fixture on disk (`alpha.mp4`, `alpha.srt`, `notes.md`, `.auravaultignore`, excluded `private-beta.mp4`) | **pass** | `alpha.mp4` generated with **ffmpeg** when available (~1s silent 320×240).                            |
+| Fixture on disk (`alpha.mp4`, `alpha.srt`, `notes.md`, `.lessonbinderignore`, excluded `private-beta.mp4`) | **pass** | `alpha.mp4` generated with **ffmpeg** when available (~1s silent 320×240).                            |
 | Import folder                                                                                           | **pass** | Two lessons (`alpha.mp4`, `notes.md`); `private-beta.mp4` skipped; `.srt` paired, not a third lesson. |
 | Mark first lesson (`alpha`) complete                                                                    | **pass** | `LessonStatus::Done` on first import order id.                                                        |
 | Move first lesson down (swap with `notes`)                                                              | **pass** | `reorder_lessons` → order `[notes, alpha]` by title.                                                  |
@@ -84,7 +84,7 @@ cargo test -p vault-core --test first_test_fixture
 
 ## Anki pass
 
-**Profile:** isolated temp AuraVault `anki-profile/` (same pattern as dev: empty collection under a fresh directory—not your daily Anki profile). Reuse fixture **`/tmp/auravault-first-test`** for the lesson row.
+**Profile:** isolated temp Lessonbinder `anki-profile/` (same pattern as dev: empty collection under a fresh directory—not your daily Anki profile). Reuse fixture **`/tmp/lessonbinder-first-test`** for the lesson row.
 
 **Verification (2026-10-28):**
 
@@ -98,7 +98,7 @@ cd ui && npm test -- Review.test.tsx CaptureCard.test.tsx
 | **Study** with empty queue → empty state                            | **pass** | Fresh profile: `next_review_card` = none, `due_summary` all zero (`first_test_anki_pass_walkthrough`). UI: `Review.test.tsx` shows **The review queue is empty.** when `fetchNextCard` is null and due counts are zero.                                                                                                                        |
 | **Capture** when Tesseract missing                                  | **pass** | `TesseractOcrEngine::without_tesseract()` → `OcrUnavailable`; no Anki note created (`due_summary` unchanged). UI: `CaptureCard.test.tsx` alert **Tesseract is not installed… Images are not sent anywhere else.** (matches `capture_ocr_status` / `build_capture_draft` error mapping). OCR is local CLI only in `vault-core`; no upload path. |
 | Create one note (subtitle cue draft), **Unlink**, Anki note remains | **pass** | `card_draft_from_subtitle_cue` + `commit_card_draft` with cue **First cue** on fixture `alpha` lesson; `unlink_card` clears vault link; `get_note` still returns front **First cue**.                                                                                                                                                          |
-| Top-bar due counts from AuraVault profile                           | **pass** | After commit, `due_summary` → **1** new (not learning/review). App loads counts via `study_bar_state` → `anki_bridge::due_summary` on `{app_data}/anki-profile/` (`fetchStudyBarState` in UI); `zeroDue` is only used when that command fails—not a normal empty-queue guess.                                                                  |
+| Top-bar due counts from Lessonbinder profile                           | **pass** | After commit, `due_summary` → **1** new (not learning/review). App loads counts via `study_bar_state` → `anki_bridge::due_summary` on `{app_data}/anki-profile/` (`fetchStudyBarState` in UI); `zeroDue` is only used when that command fails—not a normal empty-queue guess.                                                                  |
 
 ---
 
@@ -152,7 +152,7 @@ cd ui && npm test -- Review.test.tsx CaptureCard.test.tsx
 
 | Step                                                                                                                                                                                                              | Expected result                                                                                 | Blocked if                                                                                                                              |
 | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| Open a **local video** lesson. Pause on a frame with readable text. Click **Capture card**, drag a region on the frame, run OCR, edit front/back if needed, confirm **Save card** (or equivalent commit control). | Card commits into the AuraVault **Anki profile**; capture panel closes without a generic crash. | **Tesseract** not installed or app built without OCR support (capture shows install hint / error). Non-video lesson (no frame capture). |
+| Open a **local video** lesson. Pause on a frame with readable text. Click **Capture card**, drag a region on the frame, run OCR, edit front/back if needed, confirm **Save card** (or equivalent commit control). | Card commits into the Lessonbinder **Anki profile**; capture panel closes without a generic crash. | **Tesseract** not installed or app built without OCR support (capture shows install hint / error). Non-video lesson (no frame capture). |
 
 ---
 
@@ -160,9 +160,9 @@ cd ui && npm test -- Review.test.tsx CaptureCard.test.tsx
 
 | Step                                                                                                                                             | Expected result                                                                                    | Blocked if                                                              |
 | ------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
-| After at least one AuraVault card exists (e.g. from OCR capture above), note **New / Learning / Review** counts in the top bar. Click **Study**. | In-app **review** opens: front shown, **Show answer**, then Again / Hard / Good / Easy as offered. | No due cards in AuraVault decks (counts all zero and nothing captured). |
+| After at least one Lessonbinder card exists (e.g. from OCR capture above), note **New / Learning / Review** counts in the top bar. Click **Study**. | In-app **review** opens: front shown, **Show answer**, then Again / Hard / Good / Easy as offered. | No due cards in Lessonbinder decks (counts all zero and nothing captured). |
 | Grade one card **Good** (or another offered button).                                                                                             | Next card loads or empty-queue message appears; top-bar due counts change.                         | —                                                                       |
-| (Optional) With **Anki Desktop** installed and path set in Settings, from review fallback use **Open in Anki Desktop**.                          | External Anki opens on the same **AuraVault profile** directory shown in Settings.                 | **`anki`** not on PATH and Settings binary path wrong.                  |
+| (Optional) With **Anki Desktop** installed and path set in Settings, from review fallback use **Open in Anki Desktop**.                          | External Anki opens on the same **Lessonbinder profile** directory shown in Settings.                 | **`anki`** not on PATH and Settings binary path wrong.                  |
 
 ---
 

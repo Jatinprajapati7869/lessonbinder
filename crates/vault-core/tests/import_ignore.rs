@@ -1,12 +1,12 @@
 use std::fs;
 
 use tempfile::tempdir;
-use vault_core::auravaultignore::parse_patterns;
+use vault_core::lessonbinderignore::parse_patterns;
 use vault_core::import::import_folder;
 use vault_core::VaultDb;
 
 #[test]
-fn parse_auravaultignore_skips_comments_and_blanks() {
+fn parse_lessonbinderignore_skips_comments_and_blanks() {
     let patterns = parse_patterns(
         "\
 # secrets stay local
@@ -26,7 +26,7 @@ fn import_skips_secret_mp4_and_keeps_lecture() {
     let dir = tempdir().unwrap();
     let root = dir.path();
     fs::write(
-        root.join(".auravaultignore"),
+        root.join(".lessonbinderignore"),
         "# do not import secrets\nsecret/*.mp4\n",
     )
     .unwrap();
@@ -45,10 +45,10 @@ fn import_skips_secret_mp4_and_keeps_lecture() {
 }
 
 #[test]
-fn rescan_honors_auravaultignore_for_new_files() {
+fn rescan_honors_lessonbinderignore_for_new_files() {
     let dir = tempdir().unwrap();
     let root = dir.path();
-    fs::write(root.join(".auravaultignore"), "secret/*.mp4\n").unwrap();
+    fs::write(root.join(".lessonbinderignore"), "secret/*.mp4\n").unwrap();
     fs::write(root.join("lecture.mp4"), b"").unwrap();
 
     let db = VaultDb::open_in_memory().unwrap();
