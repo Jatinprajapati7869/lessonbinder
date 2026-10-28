@@ -37,7 +37,7 @@ Lessonbinder is an offline desktop app (Tauri, React, and TypeScript) for course
 
 ## Install
 
-Build a **Linux AppImage on your own machine** from this repository. Images are **unsigned** and meant for **local** installation and testing only—not a published or signed release from the project.
+Build a **Linux AppImage on your own machine** from this repository. Images are **unsigned**; the bundled app version in `tauri.conf.json` is **0.0.0**. Builds are for **local** installation and testing only—not a published or signed release from the project.
 
 From the repository root, with UI dependencies installed (`npm ci --prefix ui`):
 
@@ -47,7 +47,7 @@ npm run tauri:build:appimage
 
 When bundling succeeds, the file appears under `target/release/bundle/appimage/*.AppImage`. Host dependencies, runtime tools on `PATH`, and AGPL distribution notes are in [`docs/PACKAGE.md`](docs/PACKAGE.md).
 
-**Build did not finish on the reference machine (2026-10-28):** **`patchelf`** is not installed on this host (`command -v patchelf` fails). Install with `sudo pacman -S patchelf` before retrying. Do not claim an AppImage exists until a bundle completes and `target/release/bundle/appimage/*.AppImage` is present.
+**258 (2026-10-28):** `npm run tauri:build:appimage` was **not run** on the reference machine because **`patchelf`** is not installed (`command -v patchelf` fails). Install with `sudo pacman -S patchelf` before retrying. Bundling did not finish; there is no AppImage path until a build completes and `target/release/bundle/appimage/*.AppImage` exists. Details: [`docs/PACKAGE.md`](docs/PACKAGE.md).
 
 ## Develop
 

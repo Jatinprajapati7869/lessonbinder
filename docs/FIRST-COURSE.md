@@ -31,7 +31,7 @@ npm run tauri:dev
 
 **Non-fatal console noise:** Vite logged repeated React duplicate-key warnings (`1970-01-01`) from `LibraryStudyHeatmap` on the library screen; startup was not blocked.
 
-**AppImage:** Prompt **218** did not produce `target/release/bundle/appimage/*.AppImage` on this host (`patchelf` was missing), so prompt **219** had no image to launch—use **Boot** above or [`docs/PACKAGE.md`](PACKAGE.md) when bundling succeeds.
+**AppImage:** Prompt **218** did not produce `target/release/bundle/appimage/*.AppImage` on this host (`patchelf` was missing), so prompt **219** had no image to launch—use **Boot** above or [`docs/PACKAGE.md`](PACKAGE.md) when bundling succeeds. Prompt **258** did not run the bundler for the same reason, so **259** has no AppImage to launch—see [`docs/PACKAGE.md`](PACKAGE.md).
 
 ---
 

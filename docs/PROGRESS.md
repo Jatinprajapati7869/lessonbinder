@@ -456,8 +456,8 @@ Repo: `/home/xingzi/Documents/lessonbinder`. Full text: `~/Documents/auravault-c
 - [x] 256 — Do not fake the human rows — `docs/FIRST-COURSE.md` points at `SITTING.md` and says not to check human-only rows pass.
 - [x] 257 — patchelf, no install — **`patchelf` missing** (`command -v patchelf` empty, 2026-10-28); left existing `sudo pacman -S patchelf` line in [`docs/PACKAGE.md`](PACKAGE.md); stopped (no install).
 - [x] 258 — One bundle attempt — **not run** (`patchelf` missing; bundler not invoked).
-- [ ] 259 — Launch only a real image
-- [ ] 260 — Install section stays true
+- [x] 259 — Launch only a real image — no AppImage from **258**; one sentence in [`docs/FIRST-COURSE.md`](FIRST-COURSE.md) § Boot → [`docs/PACKAGE.md`](PACKAGE.md) (no launch invented).
+- [x] 260 — Install section stays true — [`README.md`](../README.md) **Install** matches **258** (bundler not run; **`patchelf`**); still **unsigned**, **0.0.0**.
 - [ ] 261 — Bundle identity
 - [ ] 262 — Fonts in that build
 - [ ] 263 — Cancel before the row write
