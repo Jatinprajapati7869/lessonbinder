@@ -14,3 +14,22 @@ fn tesseract_unavailable_error() {
     let err = engine.recognize(&[1, 2, 3]).unwrap_err();
     assert_eq!(err, OcrError::OcrUnavailable);
 }
+
+#[test]
+fn ocr_shells_out_to_local_tesseract_binary_opens_no_url() {
+    let source = include_str!("../src/ocr.rs");
+    assert!(
+        source.contains("Command::new(tesseract)"),
+        "OCR must shell out to the local tesseract binary via std::process::Command, not a remote service"
+    );
+    assert!(
+        !source.contains("http://") && !source.contains("https://"),
+        "OCR source must not open HTTP(S) URLs"
+    );
+    for forbidden in ["reqwest", "ureq", "hyper::", "TcpStream", "Url::parse"] {
+        assert!(
+            !source.contains(forbidden),
+            "OCR source must not use network client API {forbidden:?}"
+        );
+    }
+}

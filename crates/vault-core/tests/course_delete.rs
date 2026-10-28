@@ -1,3 +1,6 @@
+//! Course delete breaks vault links (SPEC A-03). Anki note retention in collection:
+//! `anki_bridge` integration test `breaks_links_not_notes` in `crates/anki-bridge/tests/course_delete.rs`.
+
 use vault_core::anki_link::{anki_card_link, insert_anki_card_link, LinkStatus};
 use vault_core::card::lesson_exists;
 use vault_core::roadmap::delete_course;

@@ -384,8 +384,8 @@ Repo: `/home/xingzi/Documents/lessonbinder`. Full text: `~/Documents/auravault-c
 - [x] 222 — Empty folder
 - [x] 223 — File disappears
 - [x] 224 — Media symlink
-- [ ] 225 — Delete keeps the Anki note
-- [ ] 226 — OCR stays on the machine
+- [x] 225 — Delete keeps the Anki note
+- [x] 226 — OCR stays on the machine
 - [ ] 227 — Cancel copy
 - [ ] 228 — Escape is not cancel
 - [ ] 229 — Cancelled rescan keeps work
